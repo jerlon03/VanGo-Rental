@@ -1,2 +1,2 @@
 # VanGo-Rental
-for capstone purposes progess
+for capstone purposes progress
