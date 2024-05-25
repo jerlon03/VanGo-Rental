@@ -1,7 +1,6 @@
-import Header from '@/components/landing/header'
+import AdminSidebar from "@/components/admin/adminSidebar";
 
-
-export default function LandingLayout({
+export default function AdminLayout({
     children,
   }: Readonly<{
     children: React.ReactNode;
@@ -9,7 +8,7 @@ export default function LandingLayout({
     return (
       <html lang="en">
         <body>
-            <Header />
+            <AdminSidebar />
             {children}
             </body>
       </html>
