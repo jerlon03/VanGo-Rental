@@ -8,6 +8,7 @@ const LandingPage = () => {
       <Header/>
       Landing Page
       HELLO
+      IM ROSELLE
       <Footer />
     </div>
   )
