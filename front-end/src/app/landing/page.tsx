@@ -6,9 +6,9 @@ const LandingPage = () => {
   return (
     <div>
       <Header/>
-      Landing Page
-      HELLO
-      IM ROSELLE
+      <div>
+        hello
+      </div>
       <Footer />
     </div>
   )
