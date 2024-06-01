@@ -10,7 +10,11 @@ export default function AdminLayout({
         <body>
           <div className="w-full flex">
             <div className=""><AdminSidebar /></div>
-            <div className="w-full">{children}</div>
+            <div className="w-full ml-[220px]">
+              <div className="w-full p-[3%]">
+                {children}
+              </div>
+            </div>
           </div>
         </body>
       </html>
