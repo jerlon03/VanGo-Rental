@@ -8,9 +8,11 @@ export default function AdminLayout({
     return (
       <html lang="en">
         <body>
-            <AdminSidebar />
-            {children}
-            </body>
+          <div className="w-full flex">
+            <div className=""><AdminSidebar /></div>
+            <div className="w-full">{children}</div>
+          </div>
+        </body>
       </html>
     );
   }
