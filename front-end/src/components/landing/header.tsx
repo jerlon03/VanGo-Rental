@@ -44,6 +44,11 @@ const Header = () => {
             </Link>
           </li>
           <li>
+            <Link href="/blog" className={getNavLinkClass('/blog')}>
+              BLOG
+            </Link>
+          </li>
+          <li>
             <Link href="/contact-us" className={getNavLinkClass('/contact-us')}>
               CONTACT US
             </Link>
@@ -78,6 +83,11 @@ const Header = () => {
             <li className="py-2 text-center w-full" onClick={toggleMenu}>
               <Link href="/van" className={getNavLinkClass('/van')}>
                 VAN
+              </Link>
+            </li>
+            <li className="py-2 text-center w-full" onClick={toggleMenu}>
+              <Link href="/blog" className={getNavLinkClass('/blog')}>
+                BLOG
               </Link>
             </li>
             <li className="py-2 text-center w-full" onClick={toggleMenu}>
