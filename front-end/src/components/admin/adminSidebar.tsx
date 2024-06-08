@@ -28,7 +28,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </svg>
             </button>
           </div>
-          <div className='w-full text-white py-[80px] flex flex-col gap-[.3rem] px-2 cursor-pointer'>
+          <div className='w-full text-white py-[50px] flex flex-col gap-[.3rem] px-2 cursor-pointer'>
             <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
               <MdDashboard size={20} color='white' />
               {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Dashboard</p>}
@@ -44,6 +44,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
             <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
               <MdDashboard size={20} color='white' />
               {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Posting</p>}
+            </div>
+            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <MdDashboard size={20} color='white' />
+              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Users</p>}
+            </div>
+            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <MdDashboard size={20} color='white' />
+              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Invoice</p>}
             </div>
           </div>
         </div>
