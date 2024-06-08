@@ -1,5 +1,4 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Header from '@/components/landing/header';
 import Faqs from '@/components/landing/faqs';
 import Footer from '@/components/landing/footer';
