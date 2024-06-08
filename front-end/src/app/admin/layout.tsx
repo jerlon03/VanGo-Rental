@@ -15,10 +15,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="w-full flex">
           <AdminSidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
           <div className={`w-full transition-margin duration-300 ${isCollapsed ? 'ml-[60px]' : 'ml-[220px]'}`}>
-            <div className="w-full p-[3%]">
               {children}
             </div>
-          </div>
         </div>
       </body>
     </html>

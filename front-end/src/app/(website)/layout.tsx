@@ -10,7 +10,7 @@ export default function LandingLayout({
     return (
       <html lang="en">
         <body>
-            <Header />
+          <Header />
             {children}
             <Footer />
         </body>
