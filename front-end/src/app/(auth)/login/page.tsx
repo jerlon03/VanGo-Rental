@@ -7,7 +7,7 @@ import Link from 'next/link';
 const Login = () => {
   return (
     <div className='w-full  h-screen  flex font-Poppins'>
-      <div className='basis-[35%]  h-full w-full bg-primaryColor p-2 max-md:basis-[100%] max-lg:basis-[45%]max-sm:justify-center max-sm:items-center'>
+      <div className='basis-[35%]  h-full w-full bg-primaryColor p-2 max-md:basis-[100%] max-lg:basis-[45%]max-sm:justify-center max-sm:items-center max-sm:h-screen'>
         <div className='cursor-pointer'>
           <Link href="/"> 
             <Image src="/logo.svg" width={80} height={80} alt='logo' className=' max-md:hidden '></Image>
