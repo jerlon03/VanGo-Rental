@@ -7,7 +7,7 @@ import Link from 'next/link';
 const Login = () => {
   return (
     <div className='w-full  h-screen  flex font-Poppins'>
-      <div className='basis-[35%] border h-full w-full bg-primaryColor p-2 max-md:basis-[100%] max-lg:basis-[45%]max-sm:justify-center max-sm:items-center'>
+      <div className='basis-[35%]  h-full w-full bg-primaryColor p-2 max-md:basis-[100%] max-lg:basis-[45%]max-sm:justify-center max-sm:items-center'>
         <div className='cursor-pointer'>
           <Link href="/"> 
             <Image src="/logo.svg" width={80} height={80} alt='logo' className=' max-md:hidden '></Image>
@@ -15,7 +15,7 @@ const Login = () => {
            
 
         </div>
-        <div className='flex w-full flex-col  px-[15%]  max-lg:px-[3%] max-xl:px-[5%] max-md:px-[20%] max-sm:px-2  pt-[10rem] max-sm:pt-[5rem]'>
+        <div className='flex w-full flex-col  px-[15%]  max-lg:px-[3%] max-xl:px-0 max-md:px-[20%] max-sm:px-2  max-sm:pt-[4rem]'>
             <div className=' flex justify-center flex-col items-center w-full'>
                 <Image src="/logo.svg" width={80} height={80} alt='logo' className='hidden max-md:block'></Image>
                 <h1 className='text-[25px] font-semibold text-white max-sm:text-[20px]'>LOGIN</h1>
@@ -45,11 +45,22 @@ const Login = () => {
             </div>
         </div>
       </div>
-      <div className='basis-[65%] border h-full w-full flex justify-center flex-col items-center max-md:hidden'>
-        <h1 className='text-[45px] font-bold'>VanGO Rentals</h1>
-        <h3 className='text-[25px]'>Welcome back, its great to have you here again!</h3>
-        <Image src="/png/login.png" height={816} width={800} alt='LOGIN'></Image>
+      <div className='w-full h-full flex justify-center items-center text-center flex-col max-md:hidden basis-[65%]'>
+        <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold mb-4'>VanGO Rentals</h1>
+        <h3 className='text-lg md:text-xl lg:text-2xl mb-8'>Welcome back, it great to have you here again!</h3>
+        <div className='max-w-full '>
+          <Image 
+            src="/png/login.png" 
+            layout="responsive" 
+            width={800} 
+            height={800} 
+            alt='LOGIN' 
+            className='object-contain'
+          />
+        </div>
       </div>
+
+
     </div>
   )
 }

@@ -13,7 +13,7 @@ const Register = () => {
                 <Image src="/logo.svg" width={80} height={80} alt='logo' className=' max-md:hidden '></Image>
             </Link>
         </div>
-        <div className='flex w-full flex-col  px-[15%]  max-lg:px-0 max-xl:px-[5%] max-md:px-[10%] max-sm:px-2  pt-[10rem] max-sm:pt-[2rem] max-2xl:px-0'>
+        <div className='flex w-full flex-col  px-[15%]  max-lg:px-[3%] max-xl:px-0 max-md:px-[20%] max-sm:px-2  max-sm:pt-[1rem] max-2xl:px-0 pt-[10rem] max-2xl:pt-[4rem]'>
             <div className=' flex justify-center flex-col items-center w-full'>
                 <Image src="/logo.svg" width={80} height={80} alt='logo' className='hidden max-md:block'></Image>
                 <h1 className='text-[25px] font-semibold text-white max-sm:text-[20px]'>CREATE ACCOUNT</h1>
@@ -66,7 +66,16 @@ const Register = () => {
       <div className='basis-[65%] border h-full w-full flex justify-center flex-col items-center max-md:hidden   '>
         <h1 className='text-[45px] font-bold'>VanGO Rentals</h1>
         <h3 className='text-[25px]'>Hello, Start your journey with us!</h3>
-        <Image src="/png/register.png" height={816} width={800} alt='LOGIN'></Image>
+        <div className='max-w-full '>
+          <Image 
+            src="/png/register.png" 
+            layout="responsive" 
+            width={800} 
+            height={800} 
+            alt='LOGIN' 
+            className='object-contain'
+          />
+        </div>
       </div>
     </div>
   )
