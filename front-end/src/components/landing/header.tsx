@@ -20,7 +20,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="w-full h-[70px] bg-primaryColor fixed top-0 px-[10%] max-sm:px-4 max-md:px-[2%] max-lg:px-[3%] flex items-center z-30 drop-shadow-xl">
+    <nav className="w-full h-[70px] bg-primaryColor sticky top-0 px-[10%] max-sm:px-4 max-md:px-[2%] max-lg:px-[3%] flex items-center z-30">
       <div className="flex items-center justify-between w-full">
         <div className="flex-shrink-0">
           <Link href="/">
