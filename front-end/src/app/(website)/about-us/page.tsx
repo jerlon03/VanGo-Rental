@@ -2,7 +2,12 @@ import React from 'react'
 
 const AboutUs = () => {
   return (
-    <div>AboutUs</div>
+    <div className='w-full font-Poppins'>
+      {/* MISSION */}
+      <div className=''>
+          
+      </div>
+    </div>
   )
 }
 

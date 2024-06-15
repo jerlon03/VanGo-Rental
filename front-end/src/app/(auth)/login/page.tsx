@@ -15,9 +15,11 @@ const Login = () => {
            
 
         </div>
-        <div className='flex w-full flex-col  px-[15%]  max-lg:px-[3%] max-xl:px-0 max-md:px-[20%] max-sm:px-2  max-sm:pt-[4rem] max-2xl:pt-[4rem] max-2xl:px-3'>
+        <div className='flex w-full flex-col  px-[15%]  max-lg:px-[3%] max-xl:px-0 max-md:px-[20%] max-sm:px-2  max-sm:pt-[4rem] max-2xl:pt-[4rem] max-2xl:px-3 pt-[10rem]'>
             <div className=' flex justify-center flex-col items-center w-full'>
-                <Image src="/logo.svg" width={80} height={80} alt='logo' className='hidden max-md:block'></Image>
+                <Link href="/"> 
+                  <Image src="/logo.svg" width={80} height={80} alt='logo' className='hidden max-md:block'></Image>
+                </Link>
                 <h1 className='text-[25px] font-semibold text-white max-sm:text-[20px]'>LOGIN</h1>
                 <p className='text-[16px] text-white max-sm:text-[14px]'>Enter your details below to begin</p>
             </div>

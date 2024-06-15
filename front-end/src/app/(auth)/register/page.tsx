@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUnlock, faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-icons';
 
+
 const Register = () => {
   return (
     <div className='w-full  h-screen  flex font-Poppins'>
@@ -15,7 +16,9 @@ const Register = () => {
         </div>
         <div className='flex w-full flex-col  px-[15%]  max-lg:px-[3%] max-xl:px-0 max-md:px-[20%] max-sm:px-2  max-sm:pt-[1rem] max-2xl:px-3 pt-[10rem] max-2xl:pt-[4rem]'>
             <div className=' flex justify-center flex-col items-center w-full'>
-                <Image src="/logo.svg" width={80} height={80} alt='logo' className='hidden max-md:block'></Image>
+                <Link href="/"> 
+                  <Image src="/logo.svg" width={80} height={80} alt='logo' className='hidden max-md:block'></Image>
+                </Link>
                 <h1 className='text-[25px] font-semibold text-white max-sm:text-[20px]'>CREATE ACCOUNT</h1>
                 <p className='text-[16px] text-white max-sm:text-[14px]'>Please fill out the required fields to begin.</p>
             </div>
@@ -50,7 +53,7 @@ const Register = () => {
                 </div>
                 <div className='flex w-full border  bg-white  rounded-md items-center justify-center px-2'>
                     <FontAwesomeIcon icon={faPhone}  className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                    <input type="text" placeholder='Phone Number' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                    <input type="text" placeholder='Phone Number' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]' />
                 </div>
                 
                 <div className='flex w-full gap-2 borde rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button'>
