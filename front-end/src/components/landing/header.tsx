@@ -20,7 +20,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="w-full h-[70px] bg-primaryColor sticky top-0 px-[10%] max-sm:px-4 max-md:px-[2%] max-lg:px-[3%] flex items-center z-30">
+    <nav className="w-full h-[70px] bg-primaryColor fixed top-0 px-[10%] max-sm:px-4 max-md:px-[2%] max-lg:px-[3%] flex items-center z-30 drop-shadow-xl">
       <div className="flex items-center justify-between w-full">
         <div className="flex-shrink-0">
           <Link href="/">
@@ -55,7 +55,7 @@ const Header = () => {
           </li>
         </ul>
         <div className="hidden md:flex flex-shrink-0">
-          <Link href="/(auth)/login">
+          <Link href="/login">
             <button className="font-Poppins text-white p-1 px-6 rounded-[5px] bg-button hover:bg-white hover:text-button hover:font-semibold transition duration-300">
               SIGN IN
             </button>

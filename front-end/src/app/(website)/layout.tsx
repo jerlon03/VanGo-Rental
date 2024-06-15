@@ -12,7 +12,7 @@ export default function LandingLayout({
         <body>
           <Header />
             {children}
-            <Footer />
+          <Footer />
         </body>
       </html>
     );
