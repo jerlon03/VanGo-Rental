@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "VanGO Rental",
   description: "VanGO Rental: Effortless Van Hire at Your Fingertips",
+
+ icons: {
+  icon: ['./logo.svg']
+ }
 };
 
 export default function RootLayout({
