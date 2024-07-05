@@ -43,7 +43,7 @@ const Faqs = () => {
   ];
 
   return (
-    <div className='w-full'>
+    <div className='w-full xl:pt-[4%]'>
       <div className=' bg-opacity-45 flex justify-center items-center gap-[1rem] px-[3%]'>
         <div className='basis-[40%] flex justify-center w-full max-md:hidden'>
           <Image src="/faqs.svg" width={0} height={450} alt='FAQ Image' className='w-full' />
@@ -56,7 +56,7 @@ const Faqs = () => {
             {faqData.map((faq, index) => (
               <div key={index}>
                 <div className='flex justify-between font-Poppins p-1 border-b-[2px] border-primaryColor font-semibold text-[18px] items-center cursor-pointer max-sm:text-[15px] max-sm:gap-[5px]' onClick={() => toggleQuestion(index)}>
-                  <h3 >{faq.question}</h3>
+                  <h3 className='xl:text-[16px]'>{faq.question}</h3>
                   <div className='w-[20px] h-[20px]'>
                     {openQuestion === index ? (
                       <FontAwesomeIcon icon={faX} className='text-[14px] max-sm:text-[12px]'/>
@@ -66,7 +66,7 @@ const Faqs = () => {
                   </div>
                 </div>
                 {openQuestion === index && (
-                  <div className='p-3 text-justify font-Poppins py-5 font-medium bg-primaryColor bg-opacity-50 text-white max-sm:text-[14px]'>
+                  <div className='p-3 text-justify font-Poppins py-5 font-medium bg-primaryColor bg-opacity-50 text-white max-sm:text-[14px] xl:text-[15px]'>
                     <p>{faq.answer}</p>
                   </div>
                 )}

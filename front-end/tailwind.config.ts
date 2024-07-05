@@ -18,6 +18,9 @@ const config: Config = {
         primaryColor: "#003459",
         button: "#00A8E8",
         white: "#ffffff",
+        sucess: '#2ECC71',
+        error: '#FF5733',
+        pending: '#FFD700',
       },
       fontFamily: {
         Poppins: ["Poppins", "sans-serif"],
@@ -32,6 +35,8 @@ const config: Config = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
 };
 export default config;

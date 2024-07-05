@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import Button from '@/components/Button/button';
+import InputField from '@/components/Form/inputfield';
 
 const Login = () => {
   return (
@@ -25,23 +27,22 @@ const Login = () => {
             </div>
             <form action="" className='py-6 flex flex-col gap-4'>
                 <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
-                    <FontAwesomeIcon icon={faCircleUser} className='text-primaryColor size-[25px] max-sm:size-[20px]'/>
-                    <input type="text" placeholder='Enter your Username' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                  <FontAwesomeIcon icon={faCircleUser} className='text-primaryColor size-[25px] max-sm:size-[20px]'/>
+                  <InputField type='text' placeholder='Enter your Username'/>
                 </div>
                 <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
-                    <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                    <input type="text" placeholder='Password' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                  <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
+                  <InputField type='text' placeholder='Password'/>
                 </div>
                 <div className='flex w-full gap-2 borde rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button'>
                     
-                    <input type="submit" value="Login" className='w-full h-[40px] max-sm:h-[30px] outline-none  px-2 text-[20px] font-semibold  text-white max-sm:text-[18px]'/>
+                <Button name='LOGIN'></Button>
                 </div>
             </form>
             <div className='w-full'>
                 <p className='text-button max-sm:text-[14px]'>Forgot Password?</p>
                 <div className='flex w-full gap-2 borde rounded-sm py-4'>
                    <button className='bg-white w-full max-sm:text-[14px]'>Login with Google</button>
-                   <button className='bg-white w-full max-sm:text-[14px]'>Login with Facebook</button>
                 </div>
                 <p className='text-white max-sm:text-[14px]'>Doesnt have account?<Link href="/register"><span  className='text-button'> Sign Up </span></Link> </p>
             </div>

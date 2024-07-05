@@ -1,16 +1,32 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { MdDashboard } from 'react-icons/md';
+import { MdDashboard, FaCar, AiFillBook, CiSettings, FaFileInvoice, FaUserCog, MdOutlineInventory, MdArrowDropDown } from '@/components/icons/index'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
   toggleSidebar: () => void;
 }
 
+
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar }) => {
+
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  const getNavLinkClass = (path: string) => {
+    return pathname === path
+      ? ' text-button font-medium bg-white rounded-md'
+      : '';
+  };
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className={`bg-primaryColor h-screen fixed left-0 transition-width duration-300 ${isCollapsed ? 'w-[60px]' : 'w-[220px]'}`}>
       <div className='flex flex-col justify-between h-full'>
@@ -28,31 +44,75 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </svg>
             </button>
           </div>
-          <div className='w-full text-white py-[50px] flex flex-col gap-[.3rem] px-2 cursor-pointer'>
+          <div className='w-full text-white py-[50px] flex flex-col gap-[.3rem] px-2 cursor-pointer xl:py-[10px] xl:gap-[2px]'>
+            <Link href="/dashboard" className={getNavLinkClass('/dashboard')}>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <MdDashboard size={20} className={`text-white group-hover:text-button ${getNavLinkClass('/dashboard')}`} />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Dashboard</p>}
+              </div>
+            </Link>
+            <Link href="/dashboard">
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+                <FaCar size={20} className='text-white group-hover:text-button' />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Driver</p>}
+              </div>
+            </Link>
+            <Link href="/manage-booking">
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+                <AiFillBook size={20} className='text-white group-hover:text-button' />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Manage Bookings</p>}
+              </div>
+            </Link>
+            <Link href="/invoice">
             <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
-              <MdDashboard size={20} color='white' />
-              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Dashboard</p>}
+              <FaFileInvoice size={20} className='text-white group-hover:text-button' />
+              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Invoice</p>}
             </div>
-            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
-              <MdDashboard size={20} color='white' />
-              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Inventory</p>}
+            </Link>
+            
+            <div className='w-full group-hover:bg-white'>
+              <div className='flex items-center justify-between gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group' onClick={toggleDropdown}>
+                <div className='flex gap-[1rem] items-center' >
+                  <MdOutlineInventory size={20} className='text-white group-hover:text-button' />
+                  {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Content</p>}
+                </div>
+                <MdArrowDropDown size={20} className='text-white group-hover:text-button' />
+              </div>
+              {isOpen && (
+                <div className="w-full flex flex-col justify-center  bg-white rounded-b-md p-1 gap-[2px]">
+                  <Link href="/content">
+                    <div className='flex items-center gap-[1rem] w-full rounded-[5px] p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
+                      <FaFileInvoice size={15} className=' group-hover:text-button  text-white' />
+                      {!isCollapsed && <p className='font-Poppins group-hover:font-medium   text-white text-[15px] group-hover:text-button'>Post</p>}
+                    </div>
+                  </Link>
+                  <Link href="/content">
+                    <div className='flex items-center gap-[1rem] w-full rounded-[5px] p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
+                      <FaFileInvoice size={15} className=' group-hover:text-button  text-white' />
+                      {!isCollapsed && <p className='font-Poppins group-hover:font-medium   text-white text-[15px] group-hover:text-button'>Van Inventory</p>}
+                    </div>
+                  </Link>
+                  <Link href="/content">
+                    <div className='flex items-center gap-[1rem] w-full rounded-[5px] p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
+                      <FaFileInvoice size={15} className=' group-hover:text-button  text-white' />
+                      {!isCollapsed && <p className='font-Poppins group-hover:font-medium   text-white text-[15px] group-hover:text-button'>Contact Info</p>}
+                    </div>
+                  </Link>
+                </div>
+              )}
             </div>
-            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
-              <MdDashboard size={20} color='white' />
-              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Manage Bookings</p>}
-            </div>
-            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
-              <MdDashboard size={20} color='white' />
-              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Posting</p>}
-            </div>
-            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
-              <MdDashboard size={20} color='white' />
-              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Users</p>}
-            </div>
-            <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
-              <MdDashboard size={20} color='white' />
-              {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-black'>Invoice</p>}
-            </div>
+            <Link href="/users">
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+                <FaUserCog size={20} className='text-white group-hover:text-button ' />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Users</p>}
+              </div>
+            </Link>
+            <Link href="/settings">
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+                <CiSettings size={20} className='text-white group-hover:text-button' />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Settings</p>}
+              </div>
+            </Link>
           </div>
         </div>
         <div className='flex flex-col items-center gap-[0.5rem] border-t-2 py-2 px-2'>

@@ -29,7 +29,7 @@ const Footer = () => {
       <div className='border-t w-full  p-[1%]'>
         <div className='flex justify-between items-center text-white font-Poppins text-[14px]  max-sm:flex-col max-sm:text-[12px]'>
           <p>VanGO Rental: Effortless Van Hire at Your Fingertips</p>
-          <p>© 2024 | VanGo Rentals| All Rights Reserved.</p>
+          <p>© 2024 | VanGo Rentals| All Rights Reserved.</p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Faqs from "@/components/landing/faqs";
 import Header from "@/components/landing/header";
 import Footer from "@/components/landing/footer";
+import Button from "@/components/Button/button";
 
 export default function Home() {
   return (
@@ -17,7 +18,8 @@ export default function Home() {
               <h1 className="text-[45px] font-semibold max-lg:text-[43px] max-sm:text-[40px]">VanGO Rentals</h1>
               <h3 className="text-[25px] px-[20px] text-center max-sm: max-sm:text-[20px]">Rent a van, gather your friends, and let the adventure begin</h3>
               <div className="flex justify-center w-full  py-2">
-              <button className=" p-1 rounded-[3px] bg-button text-white max-sm:p-1 text-[16px] font-medium ">BOOK IT NOW</button>
+              {/* <button className=" p-1 rounded-[3px] bg-button text-white max-sm:p-1 text-[16px] font-medium ">BOOK IT NOW</button> */}
+              <Button name="BOOK IT NOW" width="120px"></Button>
             </div>
             </div>
           </div>
@@ -28,17 +30,17 @@ export default function Home() {
         </div>
         {/* why you choose us */}
         <div className="bg-primaryColor w-full">
-          <div className="px-[15%] py-[2%] flex flex-col items-center gap-2 text-white font-Poppins w-full max-lg:px-[8%] max-md:px-[5%] max-sm:px-[3%]">
+          <div className="px-[15%] py-[2%] flex flex-col items-center gap-2 text-white font-Poppins w-full max-lg:px-[8%] max-md:px-[5%] max-sm:px-[3%] xl:px-[4%]">
             <h1 className="text-[25px] font-semibold max-sm:text-[16px] max-sm:font-medium py-2">Why should you choose us?</h1>
             <p className="text-center max-md:text-justify max-sm:text-[13px]">VanGo stands out as your top choice for van rentals for several compelling reasons. Our fleet is renowned for its reliability and comfort, ensuring a safe and enjoyable journey for you and your companions, making your travel plans not only convenient but also budget-friendly. What sets us apart is our commitment to exceptional service. Our dedicated team is always ready to assist you, ensuring a seamless rental experience from start to finish. With VanGo, booking a van is quick and easy, allowing you to focus on the adventure ahead. Whether you need a van for a weekend getaway or a long-term rental, our flexible options cater to your needs. Our 24/7 customer support is always at your service, guaranteeing your satisfaction throughout your rental journey. Choose VanGo for a rental experience that exceeds your expectations and leaves you with unforgettable memories</p>
             <div className="flex justify-end w-full  px-2">
-              <button className=" p-1 rounded-[3px] bg-button text-white max-sm:p-1 text-[14px] max-sm:text-[13px]">Read More</button>
+              <Button name="Read More!" width="120px"></Button>
             </div>
           </div>
          
         </div>
         {/* van details */}
-        <div className="w-full px-[15%] py-[2%] font-Poppins max-md:px-[5%] max-lg:px-[8%]">
+        <div className="w-full px-[15%] py-[2%] font-Poppins max-md:px-[5%] max-lg:px-[8%] xl:px-[5%] xl:py-[4%]">
           <div className="flex justify-center  w-full border p-[1%] items-center max-md:flex-col" >
             <div className="basis-[30%] ">
               <Image src="/van.svg" width={350} height={300} alt="Van"></Image>
@@ -47,7 +49,7 @@ export default function Home() {
               <p className="px-2 max-sm:text-[14px]">You could say that VanGo Rental is one of the best van renting services around which has concentrated on providing dependable and convenient transport solutions. We serve persons as well as commercial entities, valuing our customers highly and aiming at ensuring that renting out vans is not difficult or stress-causing.
               With our expanding coverage and focus on customer satisfaction, VanGo Rental is the go-to choice for all your transportation needs.</p>
               <div className="flex justify-end w-full max-md:justify-center px-2">
-                <button className="border p-2 rounded-[5px] bg-button text-white max-sm:p-1 text-[14px]">View Details</button>
+              <Button name="View Details" width="120px"></Button>
               </div>
             </div>
           </div>

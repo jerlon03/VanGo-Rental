@@ -3,6 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUnlock, faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-icons';
+import Button from '@/components/Button/button';
+import InputField from '@/components/Form/inputfield';
 
 
 const Register = () => {
@@ -25,40 +27,40 @@ const Register = () => {
             <form action="" className='py-6 flex flex-col gap-2'>
                 <div className='flex gap-2 max-lg:flex-col max-md:flex-row max-sm:flex-col  max-xl:flex-col'>
                     <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
-                    <FontAwesomeIcon icon={faUser}  className='text-primaryColor size-[18px] max-sm:size-[20px]'/>
-                        <input type="text" placeholder='First Name' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                      <FontAwesomeIcon icon={faUser}  className='text-primaryColor size-[18px] max-sm:size-[20px]'/>
+                      <InputField type='text' placeholder='Firstname'/>
                     </div>
                     <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
-                    <FontAwesomeIcon icon={faUser}  className='text-primaryColor size-[18px] max-sm:size-[20px]'/>
-                        <input type="text" placeholder='Last Name' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                      <FontAwesomeIcon icon={faUser}  className='text-primaryColor size-[18px] max-sm:size-[20px]'/>
+                      <InputField type='text' placeholder='Lastname'/>
                     </div>
                 </div>
                 <div className='flex w-full border  bg-white  rounded-md items-center justify-center px-2'>
                     <FontAwesomeIcon icon={faEnvelope}  className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                    <input type="text" placeholder='Email Address / Username' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                    <InputField type='text' placeholder='Email Address / Username'/>
                 </div>
                 <div className='flex gap-2 max-lg:flex-col max-md:flex-row max-sm:flex-col max-xl:flex-col'>
                     <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
-                        <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                        <input type="password" placeholder='Password' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                       <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
+                      <InputField type='text' placeholder='Password'/>
                     </div>
                     <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
-                        <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                        <input type="password" placeholder='Confirm Password' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                      <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
+                      <InputField type='text' placeholder='Confirm Password'/>
                     </div>
                 </div>
                 <div className='flex w-full border  bg-white  rounded-md items-center justify-center px-2'>
                     <FontAwesomeIcon icon={faLocationDot} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                    <input type="text" placeholder='Location' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]'/>
+                    <InputField type='text' placeholder='Location'/>
                 </div>
                 <div className='flex w-full border  bg-white  rounded-md items-center justify-center px-2'>
                     <FontAwesomeIcon icon={faPhone}  className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                    <input type="text" placeholder='Phone Number' className='w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]' />
+                    <InputField type='text' placeholder='Phone Number'/>
                 </div>
                 
                 <div className='flex w-full gap-2 borde rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button'>
                     
-                    <input type="submit" value="Sign Up" className='w-full h-[40px] max-sm:h-[30px] outline-none  px-2 text-[20px] font-semibold  text-white max-sm:text-[18px]'/>
+                  <Button name='SIGN UP'></Button>
                 </div>
             </form>
             <div className='w-full'>
