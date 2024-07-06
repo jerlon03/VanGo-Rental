@@ -1,8 +1,6 @@
 'use client'
 import React, { useState, CSSProperties, useEffect } from 'react';
 import Image from 'next/image';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { MdDashboard, FaCar, AiFillBook, CiSettings, FaFileInvoice, FaUserCog, MdOutlineInventory, MdArrowDropDown } from '@/components/icons/index'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,7 +20,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
 
 
   const getNavLinkClass = (path: string): string => {
-    return pathname === path ? 'text-button font-medium bg-white rounded-[5px]' : '';
+    return pathname === path ? 'text-button font-medium bg-white ' : '';
   };
   const getNavLinkStyle = (path: string): CSSProperties => {
     let styles: CSSProperties = {};
@@ -83,9 +81,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </svg>
             </button>
           </div>
-          <div className='w-full text-white py-[50px] flex flex-col gap-[.3rem] px-2 cursor-pointer xl:py-[10px] xl:gap-[2px]'>
+          <div className='w-full text-white py-[50px] flex flex-col gap-[.3rem] cursor-pointer xl:py-[10px] xl:gap-[2px]'>
             <Link href="/dashboard" className={getNavLinkClass('/dashboard')}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <MdDashboard
                   size={20}
                   className={`text-white group-hover:text-button`}
@@ -95,7 +93,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
             </Link>
             <Link href="/driver" className={getNavLinkClass('/driver')}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <FaCar
                   size={20}
                   className={`text-white group-hover:text-button`}
@@ -105,7 +103,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
             </Link>
             <Link href="/manage-booking" className={getNavLinkClass('/manage-booking')}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <AiFillBook
                   size={20}
                   className={`text-white group-hover:text-button`}
@@ -115,7 +113,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
             </Link>
             <Link href="/invoice" className={getNavLinkClass('/invoice')}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <FaFileInvoice size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/invoice')} />
@@ -123,9 +121,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
             </Link>
 
-            <div className={`w-full dropdown-container group ${isOpen ? 'bg-white rounded-[5px]' : ''}`}>
+            <div className={`w-full dropdown-container group ${isOpen ? 'bg-white ' : ''}`}>
               <div
-                className='flex items-center justify-between gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'
+                className='flex items-center justify-between gap-[1rem] w-full hover:bg-white  p-2 group'
                 onClick={toggleDropdown}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
@@ -141,7 +139,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                   </p>
                 </div>
                 <MdArrowDropDown
-                  size={20}
+                  size={20} 
                   className={`${isOpen || isHovering ? 'text-button' : ''}`}
                   style={getNavLinkStyle('/content')}
                 />
@@ -149,13 +147,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               {isOpen && (
                 <div className="w-full flex flex-col justify-center bg-white rounded-b-md p-1 gap-[2px]">
                   <Link href="/content/post">
-                    <div className='flex items-center gap-[1rem] w-full rounded-[5px] p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
+                    <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
                       <FaFileInvoice size={15} className='group-hover:text-button text-white' />
                       <p className={`font-Poppins group-hover:font-medium text-white text-[15px] group-hover:text-button`}>Post</p>
                     </div>
                   </Link>
                   <Link href="/content/van-inventory">
-                    <div className='flex items-center gap-[1rem] w-full rounded-[5px] p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
+                    <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
                       <FaFileInvoice size={15} className={`group-hover:text-button text-white`} />
                       <p className={`font-Poppins group-hover:font-medium text-white text-[15px] group-hover:text-button`}>Van Inventory</p>
                     </div>
@@ -166,7 +164,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
 
 
             <Link href="/users " className={getNavLinkClass("/users")}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <FaUserCog size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/users')} />
@@ -174,23 +172,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
             </Link>
             <Link href="/settings" className={getNavLinkClass("/settings")}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white rounded-[5px] p-2 group'>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <CiSettings size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/settings')} />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Settings</p>}
               </div>
             </Link>
-          </div>
-        </div>
-        <div className='flex flex-col items-center gap-[0.5rem] border-t-2 py-2 px-2'>
-          <div className='flex items-center'>
-            {!isCollapsed && <Image src='/logo.svg' width={45} height={45} alt='profile' className='cursor-pointer' />}
-            {!isCollapsed && <p className='font-Poppins text-white cursor-pointer'>Jerlon Abayon</p>}
-          </div>
-          <div className='flex items-center w-full gap-[1rem] justify-center p-1 transition duration-300 hover:bg-white hover:rounded-[5px] group cursor-pointer'>
-            <FontAwesomeIcon icon={faRightFromBracket} className='w-[20px] h-[20px] text-white group-hover:text-black' />
-            {!isCollapsed && <p className='font-Poppins group-hover:font-semibold text-white group-hover:text-black'>Log Out</p>}
           </div>
         </div>
       </div>
