@@ -3,7 +3,7 @@ import React from "react";
 interface Props {
     height?: string;
     width?: string;
-    type?: "text" | "password" | "number" | "email";
+    type?: "text" | "password" | "number" | "email" | "search";
     onChange?: (e: any) => void;
     placeholder?: string;
     value?: string | number;
@@ -16,7 +16,7 @@ interface Props {
   return (
     <input
       type={type}
-      className=" font-Poppins  w-full h-[40px] outline-none  px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]"
+      className="border font-Poppins text-[15px] w-full h-[40px] outline-none rounded-[3px] px-2 max-sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px]"
       style={{ width, height,border }}
       {...props}
     />

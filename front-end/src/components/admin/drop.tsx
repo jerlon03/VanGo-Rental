@@ -30,7 +30,7 @@ const Drop: React.FC<Props> = ({  onClick, width, children }) => {
 
       {/* Dropdown content */}
       {open && (
-        <div className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 text-[16px]">
+        <div className="origin-top-right absolute right-0 mt-2  rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 text-[16px]">
           <div className="p-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu" >
             {children}
           </div>

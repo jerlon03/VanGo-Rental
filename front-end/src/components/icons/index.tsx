@@ -2,7 +2,7 @@
  import { FaCar,FaFileInvoice,FaUserCog } from "react-icons/fa";
  import { AiFillBook } from "react-icons/ai";
  import { CiSettings } from "react-icons/ci";
- import { IoNotifications } from "react-icons/io5";
+ import { IoNotifications, IoClose  } from "react-icons/io5";
  import { CgProfile } from "react-icons/cg";
  import { IoIosLogOut } from "react-icons/io";
 
@@ -20,5 +20,6 @@ export {
     IoNotifications,
     CgProfile,
     IoIosLogOut,
-    MdArrowDropUp
+    MdArrowDropUp,
+    IoClose
 }

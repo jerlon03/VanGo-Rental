@@ -4,10 +4,11 @@ interface Props {
   name: string;
   onClick?: () => void;
   width?: string;
+  height?: string;
   backgroundColor?: string;
 }
 
-const Button = ({ name, onClick, width, backgroundColor }: Props) => {
+const Button = ({ name, onClick, width, backgroundColor,height }: Props) => {
   // Determine the Tailwind CSS background color class dynamically
   let bgColorClass = '';
 
@@ -23,8 +24,8 @@ const Button = ({ name, onClick, width, backgroundColor }: Props) => {
 
   return (
     <button
-      className={`font-Poppins text-white text-[16px] p-1 w-full rounded-[3px] ${bgColorClass} hover:text-white hover:bg-opacity-75 transition duration-300`}
-      style={{ width }}
+      className={`font-Poppins text-white text-[16px] p-1 w-full rounded-[3px] tracking-[2px] ${bgColorClass} hover:text-white hover:bg-opacity-75 transition duration-300`}
+      style={{ width ,height }}
       onClick={onClick}
     >
       {name}

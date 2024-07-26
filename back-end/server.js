@@ -1,18 +1,29 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const dbConn = require('./config/db.config'); // Adjust path as necessary
+const userRoute = require('./src/routes/user.route');
+// const authRoute = require('./routes/auth.route');
 const app = express();
 
-const userRoute = require('./routes/user')
-app.use('/user', userRoute);
-
-console.log(userRoute);
+// Middleware
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Define your routes
-app.get('/api/home', (req, res) => {
-  res.json({ message: 'Hello from the backend!' });
+// Routes
+app.use('/users', userRoute);
+// app.use('/auth', authRoute);
+
+
+// Error handling middleware
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send({ error: true, message: 'Something broke!' });
 });
 
-app.listen(8080, () => {
-  console.log('Server running on port 8080');
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

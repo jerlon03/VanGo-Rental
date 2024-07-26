@@ -1,9 +1,14 @@
+import AdminHeader from '@/components/admin/adminHeader'
 import React from 'react'
 
 const AdminPost = () => {
   return (
     <div>
-      Post Page
+     <div className='w-full pb-5'>
+          <AdminHeader >
+            <h1 className='text-[18px] border-b-2  border-blackColor text-blackColor'>Posting</h1>
+          </AdminHeader>
+        </div>
     </div>
   )
 }

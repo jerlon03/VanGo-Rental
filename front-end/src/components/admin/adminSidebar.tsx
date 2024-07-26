@@ -92,16 +92,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Dashboard</p>}
               </div>
             </Link>
-            <Link href="/driver" className={getNavLinkClass('/driver')}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
-                <FaCar
-                  size={20}
-                  className={`text-white group-hover:text-button`}
-                  style={getNavLinkStyle('/driver')}
-                />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Driver</p>}
-              </div>
-            </Link>
             <Link href="/manage-booking" className={getNavLinkClass('/manage-booking')}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <AiFillBook
@@ -121,7 +111,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
             </Link>
 
-            <div className={`w-full dropdown-container group ${isOpen ? 'bg-white ' : ''}`}>
+            <div className={`w-full dropdown-container ${isOpen ? 'bg-white ' : ''}`}>
               <div
                 className='flex items-center justify-between gap-[1rem] w-full hover:bg-white  p-2 group'
                 onClick={toggleDropdown}
@@ -134,28 +124,30 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                     className={`${isOpen || isHovering ? 'text-button' : ''}`}
                     style={getNavLinkStyle('')}
                   />
-                  <p className={`font-Poppins ${isOpen || isHovering ? 'font-medium' : ''} text-[16px] ${isOpen || isHovering ? 'text-button' : ''}`}>
+                  {!isCollapsed && <p className={`font-Poppins ${isOpen || isHovering ? 'font-medium' : ''} text-[16px] ${isOpen || isHovering ? 'text-button' : ''}`}>
                     Content
-                  </p>
+                  </p>}
                 </div>
+                {!isCollapsed &&
                 <MdArrowDropDown
                   size={20} 
                   className={`${isOpen || isHovering ? 'text-button' : ''}`}
                   style={getNavLinkStyle('/content')}
                 />
+                }
               </div>
               {isOpen && (
                 <div className="w-full flex flex-col justify-center bg-white rounded-b-md p-1 gap-[2px]">
                   <Link href="/content/post">
                     <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
-                      <FaFileInvoice size={15} className='group-hover:text-button text-white' />
-                      <p className={`font-Poppins group-hover:font-medium text-white text-[15px] group-hover:text-button`}>Post</p>
+                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/content/post' ? 'text-button font-semibold' : 'text-white '}`} />
+                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/content/post' ? 'text-button font-semibold' : 'text-white '}`}>Post</p>}
                     </div>
                   </Link>
                   <Link href="/content/van-inventory">
                     <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
-                      <FaFileInvoice size={15} className={`group-hover:text-button text-white`} />
-                      <p className={`font-Poppins group-hover:font-medium text-white text-[15px] group-hover:text-button`}>Van Inventory</p>
+                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/content/van-inventory' ? 'text-button font-semibold' : 'text-white '}`} />
+                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/content/van-inventory' ? 'text-button font-semibold' : 'text-white '}`}>Van Inventory</p>}
                     </div>
                   </Link>
                 </div>

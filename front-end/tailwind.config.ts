@@ -16,6 +16,7 @@ const config: Config = {
       },
       colors: {
         primaryColor: "#003459",
+        blackColor: "#453D3B",
         button: "#00A8E8",
         white: "#ffffff",
         sucess: '#2ECC71',

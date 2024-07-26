@@ -1,45 +1,42 @@
 import Swal from 'sweetalert2';
 
-
 const SweetAlert = {
   showError: (message: string) => {
     Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: `${message}`,
-        confirmButtonText: 'Try Again'
+      icon: 'error',
+      title: 'ERROR!',
+      text: `${message}`,
+      confirmButtonText: 'Try Again'
     });
   },
-  showSuccess: (message:string) => {
+  showSuccess: (message: string) => {
     Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: `${message}`,
-        confirmButtonText: 'Continue'
-    });   
+      icon: 'success',
+      title: 'SUCCESS!',
+      text: `${message}`,
+      confirmButtonText: 'Continue'
+    });
   },
-  showConfirm: (message:string) => {
-    Swal.fire({
-        title: 'Are you sure?',
+  showConfirm: (message: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      Swal.fire({
         text: `${message}`,
         icon: 'warning',
+        title: 'CONFIRMATION!',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: `${message}`,
-                confirmButtonText: 'Continue'
-            }); 
+          resolve(true);
+        } else {
+          resolve(false);
         }
+      });
     });
-      
   }
- 
 };
 
 export default SweetAlert;
