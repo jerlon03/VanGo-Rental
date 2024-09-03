@@ -22,8 +22,7 @@ const UsersPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const itemPerPage = 3
-  ;
+  const itemPerPage = 10;
 
 
   const openModal = () => {
@@ -37,7 +36,6 @@ const UsersPage: React.FC = () => {
   // API DATA
   const { data: users = [], isLoading, error } = useFetchAllUser();
   const { data: addingUser } = useFetchAddUser();
-  console.log(addingUser , 'akwuduaywv')
 
 
   // actions

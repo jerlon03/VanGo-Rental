@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useLogoutContext } from '@/Provider/context/contextProvider';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button/button';
+import SweetAlert from '../alert/alert';
 
 const LogoutModal: React.FC = () => {
   const { isOpen, setIsOpen } = useLogoutContext();
@@ -31,12 +32,37 @@ const LogoutModal: React.FC = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    // Perform logout logic here (e.g., API call, clear session, etc.)
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-    setIsLoading(false);
-    setIsOpen(false); // Close modal after logout
-    router.push('/login');
+  
+    try {
+      // Make a request to the server to perform any necessary server-side logout operations
+      const res = await fetch(`http://localhost:8080/users/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include any authentication headers if needed
+        },
+      });
+  
+      if (!res.ok) {
+        throw new Error('Logout failed.');
+      }
+  
+      // Remove the token and role from localStorage
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+  
+      SweetAlert.showSuccess('Logged out successfully');
+      router.push('/login'); // Redirect to login page after logout
+    } catch (error) {
+      SweetAlert.showError('Logout failed');
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoading(false);
+      setIsOpen(false); // Close the modal after the operation
+    }
   };
+  
+  
 
   const closeModal = () => {
     setIsOpen(false);

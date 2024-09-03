@@ -44,7 +44,7 @@ export default function RegisterPage() {
         };
     
         try {
-            const res = await fetch('http://localhost:8080/users/', {
+            const res = await fetch('http://localhost:8080/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -30,7 +30,10 @@ User.findAll = function(result) {
 };
 
 User.findByEmailAndPassword = function(email, password, result) {
-    dbConn.query("SELECT * FROM users WHERE email = ? AND password = ?", [email, password], function(err, res) {
+  dbConn.query(
+    "SELECT * FROM users WHERE email = ? AND password = ?", 
+    [email, password], 
+    function(err, res) {
       if (err) {
         console.log("Error fetching user: ", err);
         result(err, null);
@@ -39,7 +42,9 @@ User.findByEmailAndPassword = function(email, password, result) {
       } else {
         result({ message: 'Invalid email or password' }, null);
       }
-    });
-  };
+    }
+  );
+};
+
 
 module.exports = User;

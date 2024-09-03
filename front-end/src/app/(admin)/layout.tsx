@@ -17,7 +17,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        {/* <ProtectedRoute> */}
+        <ProtectedRoute>
           <LogoutProvider>
             <LogoutModal />
             <PrimeReactProvider >
@@ -30,7 +30,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </div>
             </PrimeReactProvider>
           </LogoutProvider>
-        {/* </ProtectedRoute> */}
+        </ProtectedRoute>
       </body>
     </html>
   );

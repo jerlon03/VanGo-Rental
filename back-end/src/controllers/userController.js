@@ -39,3 +39,39 @@ exports.create = function(req, res) {
     });
   });
 };
+
+exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if email and password are provided
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
+
+  // Call the User model's findByEmailAndPassword function
+  User.findByEmailAndPassword(email, password, (err, user) => {
+    if (err) {
+      return res.status(500).json({ message: 'An error occurred', error: err });
+    }
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // User is authenticated, generate a JWT with role
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role }, // Include role in payload
+      process.env.JWT_SECRET, // secret key
+      { expiresIn: '1h' } // token expiration time
+    );
+
+    // Send the token, user data, and role in the response
+    res.status(200).json({ message: 'Login successful', token, user, role: user.role });
+  });
+};
+
+exports.logout = (req, res) => {
+  // Since JWT is stateless, there's no server-side session to destroy
+  // Instead, we can just inform the client to remove the token
+
+  res.status(200).json({ message: 'Logout successful. Please remove the token from client storage.' });
+};
