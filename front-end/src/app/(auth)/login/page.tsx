@@ -28,11 +28,11 @@ const Login = () => {
             <form action="" className='py-6 flex flex-col gap-4'>
                 <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
                   <FontAwesomeIcon icon={faCircleUser} className='text-primaryColor size-[25px] max-sm:size-[20px]'/>
-                  <InputField type='text' placeholder='Enter your Username'/>
+                  <InputField type='text' placeholder='Enter your Username' border='none'/>
                 </div>
                 <div className='flex w-full gap-2 border  bg-white  rounded-md items-center justify-center px-2'>
                   <FontAwesomeIcon icon={faUnlock} className='text-primaryColor size-[23px] max-sm:size-[20px]'/>
-                  <InputField type='text' placeholder='Password'/>
+                  <InputField type='text' placeholder='Password' border='none'/>
                 </div>
                 <div className='flex w-full gap-2 borde rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button'>
                     

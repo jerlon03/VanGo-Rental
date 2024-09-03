@@ -1,31 +1,33 @@
-// components/Table.tsx
-
 import React from 'react';
+import { FaRegEdit } from '@/components/icons/index'; // Adjust paths as necessary
+import { MdDeleteOutline } from '@/components/icons/index'; // Adjust paths as necessary
 
-interface TableProps {
-  data: any[]; // Array of objects for table rows
-  columns: {
-    label: string;
-    key: string;
-  }[]; // Array of column configurations
-  onEdit?: (row: any) => void; // Optional function for edit action
-  onDelete?: (row: any) => void; // Optional function for delete action
+interface Column {
+  label: string;
+  key: string;
 }
 
-const Table: React.FC<TableProps> = ({ data, columns, onEdit, onDelete }) => {
+interface TableProps<T> {
+  data: T[];
+  columns: Column[];
+  onEdit?: (row: T) => void;
+  onDelete?: (row: T) => void;
+}
+
+const Table = <T,>({ data, columns, onEdit, onDelete }: TableProps<T>) => {
   // Add a new column configuration for the Actions column
   const extendedColumns = [...columns, { label: 'Actions', key: 'actions' }];
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white">
-        <thead className='rounded-[10px]'>
+    <div className="overflow-x-auto text-blackColor">
+      <table className="min-w-full bg-white border">
+        <thead className=''>
           <tr className="bg-primaryColor">
-            {extendedColumns.map((column, columnIndex) => (
+            {extendedColumns.map((column) => (
               <th
                 key={column.key}
-                className={`px-6 py-3 text-left text-[14px] font-normal text-white ${
-                  columnIndex === extendedColumns.length - 1 ? 'flex justify-end' : ''
+                className={`px-6 py-2 text-left text-[14px] font-normal text-white ${
+                  column.key === 'actions' ? 'flex justify-end' : ''
                 }`}
               >
                 {column.label}
@@ -36,34 +38,24 @@ const Table: React.FC<TableProps> = ({ data, columns, onEdit, onDelete }) => {
         <tbody className="divide-y divide-gray-200">
           {data.map((row, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-gray-50">
-              {extendedColumns.map((column, columnIndex) => (
+              {extendedColumns.map((column) => (
                 <td
                   key={column.key}
-                  className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${
-                    columnIndex === extendedColumns.length - 1 ? 'flex justify-end' : ''
+                  className={`px-6 py-4 whitespace-nowrap text-sm ${
+                    column.key === 'actions' ? 'flex justify-end' : ''
                   }`}
                 >
                   {column.key === 'actions' ? (
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-1 items-center">
                       {onEdit && (
-                        <button
-                          className="text-blue-600 hover:text-blue-800"
-                          onClick={() => onEdit(row)}
-                        >
-                          Edit
-                        </button>
+                        <FaRegEdit onClick={() => onEdit(row)} className='text-primaryColor cursor-pointer' size={18} />
                       )}
                       {onDelete && (
-                        <button
-                          className="text-red-600 hover:text-red-800"
-                          onClick={() => onDelete(row)}
-                        >
-                          Delete
-                        </button>
+                        <MdDeleteOutline onClick={() => onDelete(row)} className='text-red-400 cursor-pointer' size={22} />
                       )}
                     </div>
                   ) : (
-                    row[column.key]
+                    (row as any)[column.key]
                   )}
                 </td>
               ))}

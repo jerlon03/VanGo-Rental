@@ -11,21 +11,20 @@ export default function Home() {
       <Header />
       <div>
         {/* BANNER */}
-        <div className="font-Poppins w-full">
-          <div className="w-full flex items-center max-md:py-5">
-            <Image src="/banner.svg" width={500} height={500} alt="banner" className="basis-[70%] max-md:hidden"></Image>
-            <div className="flex flex-col justify-center items-center">
-              <h1 className="text-[45px] font-semibold max-lg:text-[43px] max-sm:text-[40px]">VanGO Rentals</h1>
-              <h3 className="text-[25px] px-[20px] text-center max-sm: max-sm:text-[20px]">Rent a van, gather your friends, and let the adventure begin</h3>
-              <div className="flex justify-center w-full  py-2">
-              {/* <button className=" p-1 rounded-[3px] bg-button text-white max-sm:p-1 text-[16px] font-medium ">BOOK IT NOW</button> */}
-              <Button name="BOOK IT NOW" width="120px"></Button>
-            </div>
+        <div className="font-Poppins w-full ">
+          <div className="w-full flex items-center max-md:py-5 2xl:px-[10%] max-sm:px-[1%] ">
+            <Image src="/png/homepage.png" width={500} height={500} alt="banner" className="basis-[40%] max-md:hidden"></Image>
+            <div className="flex flex-col w-full basis-[60%] justify-end h-full sm:basis-[100%] sm:justify-center sm:items-center ">
+              <h1 className="text-[45px] font-semibold max-lg:text-[43px] max-sm:text-[35px] md:text-[37px] ">VanGO Rentals</h1>
+              <h3 className="text-[25px] px-[20px]  max-sm: max-sm:text-[20px] ">Rent a van, gather your friends, and let the adventure begin</h3> 
+              <Button name="BOOK IT NOW" width="150px" className=" hidden sm:block md:hidden lg:hidden xl:hidden 2xl:hidden "></Button>
             </div>
           </div>
-          <div>
-
-            <div></div>
+          <div className="w-full relative sm:hidden  md:block lg:block xl:block 2xl:block">
+            <Image src="/png/homepage-style.png" width={1000} height={200} className="w-full h-[150px] sm:hidden md:block lg:block xl:block 2xl:block" alt="homepage Image"></Image>
+            <div className=" py-2 absolute top-8 2xl:right-52 xl:right-40 lg:right-36 md:right-20 sm:right-10 ">
+              <Button name="BOOK IT NOW" width="150px"></Button>
+            </div>  
           </div>
         </div>
         {/* why you choose us */}
@@ -49,7 +48,7 @@ export default function Home() {
               <p className="px-2 max-sm:text-[14px]">You could say that VanGo Rental is one of the best van renting services around which has concentrated on providing dependable and convenient transport solutions. We serve persons as well as commercial entities, valuing our customers highly and aiming at ensuring that renting out vans is not difficult or stress-causing.
               With our expanding coverage and focus on customer satisfaction, VanGo Rental is the go-to choice for all your transportation needs.</p>
               <div className="flex justify-end w-full max-md:justify-center px-2">
-              <Button name="View Details" width="120px"></Button>
+              <Button name="View Details" width="150px"></Button>
               </div>
             </div>
           </div>

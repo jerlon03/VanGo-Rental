@@ -92,21 +92,21 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Dashboard</p>}
               </div>
             </Link>
-            <Link href="/manage-booking" className={getNavLinkClass('/manage-booking')}>
+            <Link href="/dashboard/manage-booking" className={getNavLinkClass('/dashboard/manage-booking')}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <AiFillBook
                   size={20}
                   className={`text-white group-hover:text-button`}
-                  style={getNavLinkStyle('/manage-booking')}
+                  style={getNavLinkStyle('/dashboard/manage-booking')}
                 />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Manage Booking</p>}
               </div>
             </Link>
-            <Link href="/invoice" className={getNavLinkClass('/invoice')}>
+            <Link href="/dashboard/invoice" className={getNavLinkClass('/dashboard/invoice')}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <FaFileInvoice size={20}
                   className={`text-white group-hover:text-button`}
-                  style={getNavLinkStyle('/invoice')} />
+                  style={getNavLinkStyle('/dashboard/invoice')} />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Invoice</p>}
               </div>
             </Link>
@@ -138,16 +138,16 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
               </div>
               {isOpen && (
                 <div className="w-full flex flex-col justify-center bg-white rounded-b-md p-1 gap-[2px]">
-                  <Link href="/content/post">
+                  <Link href="/dashboard/post">
                     <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
-                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/content/post' ? 'text-button font-semibold' : 'text-white '}`} />
-                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/content/post' ? 'text-button font-semibold' : 'text-white '}`}>Post</p>}
+                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/dashboard/post' ? 'text-button font-semibold' : 'text-white '}`} />
+                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/dashboard/post' ? 'text-button font-semibold' : 'text-white '}`}>Post</p>}
                     </div>
                   </Link>
-                  <Link href="/content/van-inventory">
+                  <Link href="/dashboard/van-inventory">
                     <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
-                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/content/van-inventory' ? 'text-button font-semibold' : 'text-white '}`} />
-                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/content/van-inventory' ? 'text-button font-semibold' : 'text-white '}`}>Van Inventory</p>}
+                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/dashboard/van-inventory' ? 'text-button font-semibold' : 'text-white '}`} />
+                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/dashboard/van-inventory' ? 'text-button font-semibold' : 'text-white '}`}>Van Inventory</p>}
                     </div>
                   </Link>
                 </div>
@@ -155,19 +155,19 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
             </div>
 
 
-            <Link href="/users " className={getNavLinkClass("/users")}>
+            <Link href="/dashboard/users " className={getNavLinkClass("/dashboard/users")}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <FaUserCog size={20}
                   className={`text-white group-hover:text-button`}
-                  style={getNavLinkStyle('/users')} />
+                  style={getNavLinkStyle('/dashboard/users')} />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Users</p>}
               </div>
             </Link>
-            <Link href="/settings" className={getNavLinkClass("/settings")}>
+            <Link href="/dashboard/settings" className={getNavLinkClass("/dashboard/settings")}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <CiSettings size={20}
                   className={`text-white group-hover:text-button`}
-                  style={getNavLinkStyle('/settings')} />
+                  style={getNavLinkStyle('/dashboard/settings')} />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Settings</p>}
               </div>
             </Link>

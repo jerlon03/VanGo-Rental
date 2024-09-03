@@ -9,25 +9,21 @@ const User = function(user) {
     this.role = user.role || 'customer'; // Default role to 'customer'
   };
 
-User.create = function(newUser, result) {
-  dbConn.query("INSERT INTO users SET ?", newUser, function(err, res) {
-    if (err) {
-      console.log("Error inserting user: ", err);
-      result(err, null);
-    } else {
-      console.log("User added successfully with ID: ", res.insertId);
-      result(null, res.insertId);
-    }
-  });
+// Assuming you have dbConn set up elsewhere in your code
+User.create = (newUser, callback) => {
+  dbConn.query('INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)', 
+    [newUser.first_name, newUser.last_name, newUser.email, newUser.password], 
+    (err, results) => {
+      if (err) return callback(err, null);
+      callback(null, results.insertId);
+    });
 };
 
 User.findAll = function(result) {
     dbConn.query("SELECT * FROM users", function(err, res) {
       if (err) {
-        console.log("Error fetching users: ", err);
         result(err, null);
       } else {
-        console.log('Users: ', res);
         result(null, res);
       }
     });

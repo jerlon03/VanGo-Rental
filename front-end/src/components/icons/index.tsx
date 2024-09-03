@@ -1,10 +1,13 @@
- import { MdDashboard ,MdOutlineInventory,MdArrowDropDown,MdArrowDropUp} from "react-icons/md";
- import { FaCar,FaFileInvoice,FaUserCog } from "react-icons/fa";
+ import { MdDashboard ,MdOutlineInventory,MdArrowDropDown,MdArrowDropUp,MdDeleteOutline} from "react-icons/md";
+ import { FaCar,FaFileInvoice,FaUserCog ,FaRegEdit} from "react-icons/fa";
  import { AiFillBook } from "react-icons/ai";
  import { CiSettings } from "react-icons/ci";
  import { IoNotifications, IoClose  } from "react-icons/io5";
  import { CgProfile } from "react-icons/cg";
  import { IoIosLogOut } from "react-icons/io";
+ import { GrFormPrevious } from "react-icons/gr";
+
+
 
  
 
@@ -21,5 +24,8 @@ export {
     CgProfile,
     IoIosLogOut,
     MdArrowDropUp,
-    IoClose
+    IoClose,
+    GrFormPrevious,
+    FaRegEdit,
+    MdDeleteOutline
 }

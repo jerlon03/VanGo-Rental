@@ -7,7 +7,7 @@ const Footer = () => {
     <div className='bg-primaryColor  w-full px-[3%] p-[1%] flex flex-col gap-[10px] '>
       <div className='flex justify-between max-sm:justify-evenly'>
         <div className=' flex items-center gap-[1rem ] max-sm:pt-[1%]'>
-          <Image src="/logo.svg" width={200} height={150} alt="footer image" className='max-sm:hidden'></Image>
+          <Image src="/logo.svg" width={200} height={150} alt="footer image" className='sm:hidden md:block lg:block xl:block 2xl:block'></Image>
           <div className='text-white font-Poppins text-[14px] cursor-pointer'>
             <h2 className='font-semibold text-[18px] max-sm:text-[16px]'>Quick Links</h2>
             <p>Home</p>

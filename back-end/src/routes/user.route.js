@@ -9,6 +9,7 @@ router.get('/', userController.findAll);
 router.post('/', userController.create);
 
 
+
 // router.post('/login', authController.login);
 
 // Example protected route
