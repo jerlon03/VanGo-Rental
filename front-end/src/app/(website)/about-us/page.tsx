@@ -27,7 +27,7 @@ const AboutUs = () => {
           <hr className="border-t-2 border-gray-300 mt-2"/>
         </div>
       </div>
-      <div className="bg-blue-900 text-white py-8 mt-4">
+      <div className="bg-blue-500 text-white py-8 mt-4">
         <div className="max-w-4xl mx-auto px-4">
           <p className="text-center">
             At VanGo Rental, our mission is to provide reliable, convenient, and affordable van rental services that cater to the diverse needs of our customers. We are dedicated to delivering exceptional customer service and ensuring every journey is smooth, comfortable, and hassle-free. Through innovation and a commitment to excellence, we strive to set new standards in the van rental industry, fostering trust and long-lasting relationships with our clients. Our goal is to offer quality vehicles, a seamless booking process, and an unwavering dedication to customer satisfaction.
