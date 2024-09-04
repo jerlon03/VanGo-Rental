@@ -20,7 +20,7 @@ const Blog = () => {
         </h1>
       </div>
 
-      <div className="">'Discover the thrill of adventure where every tale told shows how exploring transforms us, sparking a love for travel and creating memories that stay with us forever'</div>
+      <div className="flex justify-center text-center">'Discover the thrill of adventure where every tale told shows how exploring transforms us, sparking a love for travel and creating memories that stay with us forever'</div>
     </div>
   )
 };
