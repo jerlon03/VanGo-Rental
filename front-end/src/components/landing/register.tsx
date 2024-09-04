@@ -151,7 +151,7 @@ export default function RegisterPage() {
                             onChange={(e) => setPhoneNumber(e.target.value)}
                         />
                     </div>
-                    <div className='flex w-full gap-2 border rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button'>
+                    <div className='flex w-full gap-2  rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button'>
                         <Button type='submit' name='SIGN UP' />
                     </div>
                 </form>

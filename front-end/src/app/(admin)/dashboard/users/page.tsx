@@ -8,7 +8,7 @@ import InputField from '@/components/Form/inputfield'
 import SweetAlert from '@/components/alert/alert'
 import Pagination from '@/components/pagination/pagination'
 import Link from 'next/link'
-import { useFetchAllUser,useFetchAddUser} from '@/lib/hooks/useUser'
+import { useFetchAllUser, useFetchAddUser } from '@/lib/hooks/useUser'
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
@@ -145,67 +145,99 @@ const UsersPage: React.FC = () => {
         </div>
       </div>
       <div className='w-full'>
-      <DataTable
-        value={currentItems}
-        tableStyle={{ minWidth: '50rem' }}
-        pt={{
-          thead: { className: 'bg-primaryColor text-white' },
-          tbody: { className: 'border ' },
-          headerRow: {className: 'h-[40px] '},
-        }}
-      >
-        <Column
-          header="Name"
-          body={(rowData) => `${rowData.first_name} ${rowData.last_name}`}
+        <DataTable
+          value={currentItems}
+          tableStyle={{ minWidth: '50rem' }}
           pt={{
-            bodyCell: { className: 'border text-blackColor p-2' },
-            headerCell: {className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r'}
+            thead: { className: 'bg-primaryColor text-white' },
+            tbody: { className: 'border ' },
+            headerRow: { className: 'h-[40px] ' },
           }}
-        />
-        <Column 
-          field="email" 
-          header="Email"
-          pt={{
-            bodyCell: { className: 'border text-blackColor p-2' },
-            headerCell: {className: 'px-3 font-medium text-[16px] border-r'}
-          }} />
-        <Column 
-          field="role"
-          header="Role" pt={{
-          bodyCell: { className: 'border text-blackColor p-2' },
-          headerCell: {className: 'px-3 font-medium text-[16px] border-r'}
-        }} />
-        <Column 
-          header="Actions" 
-          pt={{
-          bodyCell: { className: 'border-b text-blackColor p-2' },
-          headerCell: {className: 'rounded-tr-[3px] px-3 font-medium text-[16px]'}
-          }} 
-          body={(rowData) => (
-          <div className="flex space-x-2">
-            <FaRegEdit
-              onClick={() => onEditClick(rowData)}
-              className="text-primaryColor cursor-pointer"
-              size={18}
-            />
-            <MdDeleteOutline
-              onClick={() => onDeleteClick(rowData)}
-              className="text-red-400 cursor-pointer"
-              size={22}
+        >
+          <Column
+            header="Full Name"
+            body={(rowData) => `${rowData.first_name} ${rowData.last_name}`}
+            pt={{
+              bodyCell: { className: 'border text-blackColor p-2' },
+              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' }
+            }}
+          />
+          <Column
+            field="email"
+            header="Email"
+            pt={{
+              bodyCell: { className: 'border text-blackColor p-2' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+            }} />
+          <Column
+            field="role"
+            header="Role" pt={{
+              bodyCell: { className: 'border text-blackColor p-2' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+            }} />
+          <Column
+            field="status"
+            header="Status"
+            body={(rowData) => {
+              let statusClass = '';
+
+              // Apply different styles based on the status value
+              switch (rowData.status) {
+                case 'active':
+                  statusClass = 'bg-green-100 text-green-800';
+                  break;
+                case 'inactive':
+                  statusClass = 'bg-red-100 text-red-800';
+                  break;
+                // case 'pending':
+                //   statusClass = 'bg-yellow-100 text-yellow-800';
+                //   break;
+                default:
+                  statusClass = 'bg-gray-100 text-gray-800';
+              }
+
+              return (
+                <span className={`px-2 py-1 rounded ${statusClass}`}>
+                  {rowData.status}
+                </span>
+              );
+            }}
+            pt={{
+              bodyCell: { className: 'border text-blackColor p-2' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+            }}
+          />
+          <Column
+            header="Actions"
+            pt={{
+              bodyCell: { className: 'border-b text-blackColor p-2' },
+              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium text-[16px] border-r' }
+            }}
+            body={(rowData) => (
+              <div className="flex space-x-2">
+                <FaRegEdit
+                  onClick={() => onEditClick(rowData)}
+                  className="text-primaryColor cursor-pointer"
+                  size={18}
+                />
+                <MdDeleteOutline
+                  onClick={() => onDeleteClick(rowData)}
+                  className="text-red-400 cursor-pointer"
+                  size={22}
+                />
+              </div>
+            )} />
+        </DataTable>
+        {totalPages > 1 && (
+          <div className='w-full justify-end flex mt-4'>
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
           </div>
-        )} />
-      </DataTable>
-      {totalPages > 1 && (
-        <div className='w-full justify-end flex mt-4'>
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
-      )}
-      </div> 
+        )}
+      </div>
     </div>
   );
 };
