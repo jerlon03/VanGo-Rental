@@ -27,11 +27,118 @@ const AboutUs = () => {
           <hr className="border-t-2 border-gray-300 mt-2"/>
         </div>
       </div>
-      <div className="bg-blue-500 text-white py-8 mt-4">
+      <div className="bg-primaryColor text-white py-8 mt-4">
         <div className="max-w-4xl mx-auto px-4">
           <p className="text-center">
             At VanGo Rental, our mission is to provide reliable, convenient, and affordable van rental services that cater to the diverse needs of our customers. We are dedicated to delivering exceptional customer service and ensuring every journey is smooth, comfortable, and hassle-free. Through innovation and a commitment to excellence, we strive to set new standards in the van rental industry, fostering trust and long-lasting relationships with our clients. Our goal is to offer quality vehicles, a seamless booking process, and an unwavering dedication to customer satisfaction.
           </p>
+        </div>
+      </div>
+      
+      <div className="max-w-6xl mx-auto py-12">
+        <h2 className="text-center text-2xl font-semibold mb-4">
+          Why Choose Us?
+        </h2>
+        <hr className="border-t-2 border-gray-300 w-24 mx-auto mb-8"/>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Image 
+                src="/png/why_us/Vector1.png"
+                alt="Passenger Insurance Icon"
+                width={64}
+                height={64}
+              />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              Passenger Insurance
+            </h3>
+            <p className="text-gray-600">
+              Our van rental service offers insurance protecting passengers in case of injury or loss during travel.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Image 
+                src="/png/why_us/Vector1.png"
+                alt="Professional and Reliable Driver Icon"
+                width={64}
+                height={64}
+              />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              Professional and Reliable Driver
+            </h3>
+            <p className="text-gray-600">
+              A skilled and trustworthy driver who ensures a safe and reliable travel experience for passengers.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Image 
+                src="/png/why_us/Vector1.png"
+                alt="Comfy, Safe and Free Hassle Travel Icon"
+                width={64}
+                height={64}
+              />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              Comfy, Safe and Free Hassle Travel
+            </h3>
+            <p className="text-gray-600">
+              Providing passengers with a comfortable and secure journey, free from any unnecessary difficulties or inconveniences.
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Image 
+                src="/png/why_us/Vector1.png"
+                alt="Fire Extinguisher Icon"
+                width={64}
+                height={64}
+              />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              Fire Extinguisher
+            </h3>
+            <p className="text-gray-600">
+              Safety device used to extinguish small fires and prevent their spread, providing an added layer of safety during travel.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Image 
+                src="/png/why_us/Vector1.png"
+                alt="Negotiable Rates Icon"
+                width={64}
+                height={64}
+              />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              Negotiable Rates
+            </h3>
+            <p className="text-gray-600">
+              Flexible pricing options that can be adjusted or discussed to accommodate individual needs and circumstances.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Image 
+                src="/png/why_us/Vector1.png"
+                alt="First Aid Kit Icon"
+                width={64}
+                height={64}
+              />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              First Aid Kit
+            </h3>
+            <p className="text-gray-600">
+              Essential medical supplies and equipment for providing initial medical assistance in case of injuries or emergencies during travel.
+            </p>
+          </div>
         </div>
       </div>
     </div>
