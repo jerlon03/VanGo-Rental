@@ -92,18 +92,15 @@ exports.logout = (req, res) => {
   res.status(200).json({ message: 'Logout successful. Please remove the token from client storage.' });
 };
 
-exports.getUserInfo = (req, res) => {
+exports.getUserInfo = async (req, res) => {
   if (!req.user || !req.user.user_id) {
     return res.status(400).json({ status: 'error', message: 'User ID is missing in the request.' });
   }
 
   const userId = req.user.user_id;
 
-  User.findById(userId, (err, user) => {
-    if (err) {
-      console.error('Error fetching user info by ID:', err);
-      return res.status(500).json({ status: 'error', message: 'Error fetching user information.' });
-    }
+  try {
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ status: 'error', message: 'User not found.' });
@@ -111,7 +108,11 @@ exports.getUserInfo = (req, res) => {
 
     const fullName = `${user.first_name} ${user.last_name}`;
     res.status(200).json({ name: fullName, email: user.email, role: user.role });
-  });
+  } catch (err) {
+    console.error('Error fetching user info by ID:', err);
+    res.status(500).json({ status: 'error', message: 'Error fetching user information.' });
+  }
 };
+
 
 

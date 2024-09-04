@@ -79,7 +79,7 @@ const AboutUs = () => {
                 src="/png/why_us/Vector3.png"
                 alt="Comfy, Safe and Free Hassle Travel Icon"
                 width={50}
-                height={50}
+                height={64}
               />
             </div>
             <h3 className="text-lg font-semibold mb-2">
@@ -142,6 +142,7 @@ const AboutUs = () => {
         </div>
       </div>
     </div>
+    
   );
 }
 
