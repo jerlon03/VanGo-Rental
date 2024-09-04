@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface ProtectedRouteProps {
@@ -7,18 +7,28 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const router = useRouter();
-  const token = localStorage.getItem('token');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    // Check for token only on the client side
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
     if (!token) {
-      // Redirect to login page if no token is found
+      // Redirect to the login page if no token is found
       router.push('/login');
+    } else {
+      // Set authentication status to true if token exists
+      setIsAuthenticated(true);
     }
-  }, [token, router]);
+  }, [router]);
+
+  // While checking for authentication, you can optionally return null or a loading spinner
+  if (!isAuthenticated) {
+    return null;
+  }
 
   // If the user is authenticated, render the protected component
-  // While the redirect is in progress, you can optionally return null or a loading spinner
-  return token ? <>{children}</> : null;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
