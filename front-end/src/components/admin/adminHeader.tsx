@@ -23,6 +23,7 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
             try {
                 const data = await getUserInfo();
                 setUserInfo(data);
+                console.log(data, 'dawd')
             } catch (error) {
                console.log('Error fetching user info')
 
@@ -31,6 +32,8 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
 
         fetchUserInfo();
     }, []);
+    
+    console.log(userInfo)
 
     const handleLogoutClick = () => {
         setIsOpen(true);

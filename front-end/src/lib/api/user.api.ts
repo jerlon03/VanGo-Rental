@@ -14,7 +14,7 @@ const addUser = async () => {
 // lib/api.js
 export async function getUserInfo() {
   try {
-    const response = await fetch('localhost:8080/users/me', {
+    const response = await fetch('http://localhost:8080/users/me', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}` // Assume token is stored in localStorage
@@ -32,7 +32,9 @@ export async function getUserInfo() {
   } catch (error) {
     console.error('Network error:', error);
   }
+  console.log(getUserInfo, 'DAWDW')
 }
+
 
 
 
