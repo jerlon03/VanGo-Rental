@@ -1,25 +1,43 @@
 // adminHeader.tsx
 'use client'
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { IoNotifications, CgProfile, IoIosLogOut } from '@/components/icons/index';
 import Drop from '@/components/admin/drop';
-import { useLogoutContext } from '@/Provider/context/contextProvider'; 
+import { useLogoutContext } from '@/Provider/context/contextProvider';
 import Link from 'next/link';
+import { getUserInfo } from '@/lib/api/user.api';
+import { Users } from '@/lib/types/user.type'
+
 
 interface Props {
     children?: React.ReactNode;
 }
 
 const AdminHeader: React.FC<Props> = ({ children }) => {
-    const { setIsOpen ,setIsNotificationOpen} = useLogoutContext();
+    const [userInfo, setUserInfo] = useState<Users | null>(null);
+    const { setIsOpen, setIsNotificationOpen } = useLogoutContext();
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const data = await getUserInfo();
+                setUserInfo(data);
+            } catch (error) {
+               console.log('Error fetching user info')
+
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
 
     const handleLogoutClick = () => {
-        setIsOpen(true); 
+        setIsOpen(true);
     };
 
     const handleNotificationClick = () => {
-        setIsNotificationOpen(true); 
+        setIsNotificationOpen(true);
     };
 
 
@@ -29,10 +47,17 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                 {children}
             </div>
             <div className='flex gap-[5px] items-center'>
-                <IoNotifications size={25} className='text-button cursor-pointer' onClick={handleNotificationClick}/>
+                <IoNotifications size={25} className='text-button cursor-pointer' onClick={handleNotificationClick} />
                 <div className="flex items-center relative">
                     <Image src="/logo.svg" width={30} height={30} alt='Profile' />
-                    <p className='ml-1'>Jerlon Abayon</p>
+
+                    {userInfo ? (
+                        <>
+                            <p>Name:{userInfo.first_name} {userInfo.last_name}</p>
+                        </>
+                    ) : (
+                        <p>No user info available</p>
+                    )}
                     <Drop>
                         <div className='flex flex-col w-[120px]'>
                             <Link href="/dashboard/profile">
