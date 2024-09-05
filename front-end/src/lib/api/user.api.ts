@@ -28,12 +28,14 @@ export async function getUserInfo() {
     } else {
       const errorData = await response.json();
       console.error('Error fetching user info:', errorData.message);
+      return null; // Return null to handle the error case gracefully
     }
   } catch (error) {
     console.error('Network error:', error);
+    return null; // Return null to handle the error case gracefully
   }
-  console.log(getUserInfo, 'DAWDW')
 }
+
 
 
 

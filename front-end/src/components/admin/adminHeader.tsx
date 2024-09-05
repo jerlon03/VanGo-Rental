@@ -1,4 +1,3 @@
-// adminHeader.tsx
 'use client'
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -7,8 +6,7 @@ import Drop from '@/components/admin/drop';
 import { useLogoutContext } from '@/Provider/context/contextProvider';
 import Link from 'next/link';
 import { getUserInfo } from '@/lib/api/user.api';
-import { Users } from '@/lib/types/user.type'
-
+import { Users } from '@/lib/types/user.type';
 
 interface Props {
     children?: React.ReactNode;
@@ -23,18 +21,14 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
             try {
                 const data = await getUserInfo();
                 setUserInfo(data);
-                console.log(data, 'dawd')
             } catch (error) {
-               console.log('Error fetching user info')
-
+                console.error('Error fetching user info:', error);
             }
         };
 
         fetchUserInfo();
     }, []);
     
-    console.log(userInfo)
-
     const handleLogoutClick = () => {
         setIsOpen(true);
     };
@@ -42,7 +36,6 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
     const handleNotificationClick = () => {
         setIsNotificationOpen(true);
     };
-
 
     return (
         <div className='flex justify-between w-full items-center'>
@@ -55,18 +48,15 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                     <Image src="/logo.svg" width={30} height={30} alt='Profile' />
 
                     {userInfo ? (
-                        <>
-                            <p>Name:{userInfo.first_name} {userInfo.last_name}</p>
-                        </>
+                        <p>Name: {userInfo.first_name} {userInfo.last_name}</p>
                     ) : (
                         <p>No user info available</p>
                     )}
+
                     <Drop>
                         <div className='flex flex-col w-[120px]'>
                             <Link href="/dashboard/profile">
-                                <div
-                                    className='flex w-full gap-[5px] hover:bg-button p-1 hover:text-button hover:rounded-md cursor-pointer'
-                                >
+                                <div className='flex w-full gap-[5px] hover:bg-button p-1 hover:text-button hover:rounded-md cursor-pointer'>
                                     <CgProfile size={20} className='text-primaryColor' />
                                     <span className="text-[14px] text-black">Profile</span>
                                 </div>

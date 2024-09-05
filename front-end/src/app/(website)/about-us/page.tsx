@@ -22,7 +22,7 @@ const AboutUs = () => {
         </div>
       </div>
       <div className="flex justify-center mt-4">
-        <div className="w-2/3">
+        <div className="w-1/">
           <h2 className="text-2xl font-bold text-center">Our Mission</h2>
           <hr className="border-t-2 border-gray-300 mt-2"/>
         </div>
@@ -60,10 +60,10 @@ const AboutUs = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <Image 
-                src="/png/why_us/Vector1.png"
+                src="/png/why_us/Vector2.png"
                 alt="Professional and Reliable Driver Icon"
-                width={64}
-                height={64}
+                width={54}
+                height={54}
               />
             </div>
             <h3 className="text-lg font-semibold mb-2">
@@ -76,9 +76,9 @@ const AboutUs = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <Image 
-                src="/png/why_us/Vector1.png"
+                src="/png/why_us/Vector3.png"
                 alt="Comfy, Safe and Free Hassle Travel Icon"
-                width={64}
+                width={50}
                 height={64}
               />
             </div>
@@ -94,10 +94,10 @@ const AboutUs = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <Image 
-                src="/png/why_us/Vector1.png"
+                src="/png/why_us/Vector4.png"
                 alt="Fire Extinguisher Icon"
-                width={64}
-                height={64}
+                width={47}
+                height={50}
               />
             </div>
             <h3 className="text-lg font-semibold mb-2">
@@ -110,7 +110,7 @@ const AboutUs = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <Image 
-                src="/png/why_us/Vector1.png"
+                src="/png/why_us/Vector5.png"
                 alt="Negotiable Rates Icon"
                 width={64}
                 height={64}
@@ -126,7 +126,7 @@ const AboutUs = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <Image 
-                src="/png/why_us/Vector1.png"
+                src="/png/why_us/Vector6.png"
                 alt="First Aid Kit Icon"
                 width={64}
                 height={64}
@@ -142,6 +142,7 @@ const AboutUs = () => {
         </div>
       </div>
     </div>
+    
   );
 }
 
