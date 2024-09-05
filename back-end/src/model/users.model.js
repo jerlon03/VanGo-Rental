@@ -46,22 +46,25 @@ User.findByEmailAndPassword = function(email, password, result) {
   );
 };
 
-User.findById = (userId, result) => {
-  dbConn.query(
-    "SELECT user_id, first_name, last_name, email, role FROM users WHERE user_id = ?",
-    [userId],
-    (err, res) => {
-      if (err) {
-        console.error("Error fetching user by ID: ", err);
-        result(err, null);
-      } else if (res.length) {
-        result(null, res[0]);
-      } else {
-        result({ message: 'User not found' }, null);
+User.findById = (userId) => {
+  return new Promise((resolve, reject) => {
+    dbConn.query(
+      "SELECT user_id, first_name, last_name, email, role FROM users WHERE user_id = ?",
+      [userId],
+      (err, res) => {
+        if (err) {
+          console.error("Error fetching user by ID: ", err);
+          reject(err);
+        } else if (res.length) {
+          resolve(res[0]);
+        } else {
+          resolve(null); // Return null if user not found
+        }
       }
-    }
-  );
+    );
+  });
 };
+
 
 
 module.exports = User;
