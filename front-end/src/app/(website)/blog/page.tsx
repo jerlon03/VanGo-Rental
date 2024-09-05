@@ -20,6 +20,7 @@ const Blog = () => {
           Every Memory Lasts a Lifetime."
         </h1>
       </div>
+      
       {/* 2nd div */}
       <div className="flex justify-center text-center p-[4%] ">
         <p className="px-[20%]">
@@ -28,6 +29,7 @@ const Blog = () => {
           memories that stay with us forever
         </p>
       </div>
+
       {/* Third div */}
       <div className="px-[9%]">
         <h1 className="text-[20px] font-medium ">Featured Articles</h1>
@@ -52,7 +54,7 @@ const Blog = () => {
             </p>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-[1rem]">
             <Image
               src="/png/blog_img.png"
               width={300}
@@ -72,7 +74,7 @@ const Blog = () => {
             </p>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-[1rem]">
             <Image
               src="/png/blog_img.png"
               width={300}
@@ -80,10 +82,12 @@ const Blog = () => {
               alt="image"
               className="w-full"
             ></Image>
-            <h1>Family Escapades: Bonding Beyond Borders</h1>
-            <p className="text-[12px] text-primaryColor font-semibold">
-              April 05, 2024
-            </p>
+            <div>
+              <h1>Family Escapades: Bonding Beyond Borders</h1>
+              <p className="text-[12px] text-primaryColor font-semibold">
+                April 05, 2024
+              </p>
+            </div>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Distinctio, ipsa velit eaque temporibus sint incidunt est porro
@@ -138,13 +142,69 @@ const Blog = () => {
           </div>
         </div>
       </div>
+
       {/* 5th div */}
-      <div className="h-[300px] pt-[2rem] w-full px-[9%]">
-        <div className="flex justify-center items-center">
-          <div className="border size-[200px]">1</div>
-          <div className="border size-[200px]">2</div>
+      <div className="h-[400px] pt-[2rem] w-full px-[9%] mt-20 mb-10">
+        <div className="flex justify-center items-center space-x-6">
+          {/* Card 1 */}
+          <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
+            {/* Triangle Shape at the Top */}
+            <div className="absolute top-[-30px] left-[50%] transform -translate-x-[50%]">
+              <img
+                src="/path-to-image1.jpg"
+                alt="Customer"
+                className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
+              />
+            </div>
+            <div className="absolute top-[-20px] left-0 right-0 h-0 w-0 mx-auto border-l-[50px] border-r-[50px] border-b-[30px] border-l-transparent border-r-transparent border-b-gray-200"></div>
+
+            <div className="mt-16">
+              <h3 className="font-semibold">Menjolen Bentolan</h3>
+              <p className="text-gray-500">Customer</p>
+              <p className="text-gray-500 text-sm">25th of May, 2024</p>
+              <p className="mt-4 text-gray-600">
+                "The van provided excellent comfort and space for our group's
+                trip around Cebu. Its smooth ride and reliable performance made
+                our journey enjoyable and stress-free."
+              </p>
+              <p className="mt-4 text-gray-500">Review Rates</p>
+              <div className="flex justify-center mt-2">
+                <span className="text-yellow-500">★ ★ ★ ★ ★</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2 */}
+          <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
+            {/* Triangle Shape at the Top */}
+            <div className="absolute top-[-30px] left-[50%] transform -translate-x-[50%]">
+              <img
+                src="/path-to-image2.jpg"
+                alt="Customer"
+                className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
+              />
+            </div>
+            <div className="absolute top-[-20px] left-0 right-0 h-0 w-0 mx-auto border-l-[50px] border-r-[50px] border-b-[30px] border-l-transparent border-r-transparent border-b-gray-200"></div>
+
+            <div className="mt-16">
+              <h3 className="font-semibold">Shaira Shane Gonzaga</h3>
+              <p className="text-gray-500">Customer</p>
+              <p className="text-gray-500 text-sm">25th of May, 2024</p>
+              <p className="mt-4 text-gray-600">
+                "The van provided excellent comfort and space for our group's
+                trip around Cebu. Its smooth ride and reliable performance made
+                our journey enjoyable and stress-free."
+              </p>
+              <p className="mt-4 text-gray-500">Review Rates</p>
+              <div className="flex justify-center mt-2">
+                <span className="text-yellow-500">★ ★ ★ ★ ★</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div></div>
     </div>
   );
 };
