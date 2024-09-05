@@ -4,6 +4,7 @@ import Image from 'next/image';
 const AboutUs = () => {
   return (
     <div className="bg-white font-sans">
+      {/* About Us Section */}
       <div className="relative">
         <Image 
           src="/png/about.png" 
@@ -22,7 +23,7 @@ const AboutUs = () => {
         </div>
       </div>
       <div className="flex justify-center mt-4">
-        <div className="w-1/">
+        <div className="w-1/2">
           <h2 className="text-2xl font-bold text-center">Our Mission</h2>
           <hr className="border-t-2 border-gray-300 mt-2"/>
         </div>
@@ -34,7 +35,8 @@ const AboutUs = () => {
           </p>
         </div>
       </div>
-      
+
+      {/* Why Choose Us Section */}
       <div className="max-w-6xl mx-auto py-12">
         <h2 className="text-center text-2xl font-semibold mb-4">
           Why Choose Us?
@@ -141,8 +143,118 @@ const AboutUs = () => {
           </div>
         </div>
       </div>
+
+      {/* Our Services Section */}
+      <div className="max-w-4xl mx-auto py-12 px-4">
+        <h1 className="text-3xl font-bold text-center">Our Services</h1>
+        <p className="text-center text-lg mt-2">We provide complete van rental solutions</p>
+        <hr className="my-4 border-t-2 border-gray-300 w-1/4 mx-auto"/>
+        
+        <div className="space-y-8">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="bg-blue-100 p-4 rounded-full">
+                <Image 
+                  src="/png/why_us/Service1.png" 
+                  alt="Company Services Icon"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Company Services</h2>
+              <p className="mt-2 text-gray-600">Our company provides a suite of tailored solutions to meet your diverse needs. From personalized private tours to seamless airport transfers, heartfelt Balik Probinsya assistance, stress-free hotel pickups and drop-offs, and comprehensive wedding services, we're dedicated to making every journey memorable and every occasion extraordinary.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="bg-blue-100 p-4 rounded-full">
+                <Image 
+                  src="/png/why_us/Service2.png" 
+                  alt="Private Tours Icon"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Private Tours</h2>
+              <p className="mt-2 text-gray-600">Embark on a personalized adventure with our private tours. Discover the beauty of your chosen destinations with knowledgeable guides who cater to your interests and preferences, ensuring an unforgettable experience every step of the way.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="bg-blue-100 p-4 rounded-full">
+                <Image 
+                  src="/png/why_us/Service3.png" 
+                  alt="Airport Transfer Icon"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Airport Transfer</h2>
+              <p className="mt-2 text-gray-600">Start or end your travels with ease with our reliable airport transfer service. Enjoy punctual pickups and drop-offs, allowing you to travel stress-free and focus on enjoying your journey to or from the airport.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="bg-blue-100 p-4 rounded-full">
+                <Image 
+                  src="/png/why_us/Service4.png" 
+                  alt="Balik Probinsya Icon"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Balik Probinsya</h2>
+              <p className="mt-2 text-gray-600">Let us assist you in reconnecting with your roots with our Balik Probinsya service. Whether you're returning to your hometown or exploring a new province, we provide seamless support to ensure a smooth transition and a warm welcome back home.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="bg-blue-100 p-4 rounded-full">
+                <Image 
+                  src="/png/why_us/Service5.png" 
+                  alt="Hotel Pickup/DropOff Icon"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Hotel Pickup/DropOff</h2>
+              <p className="mt-2 text-gray-600">Make your hotel stays hassle-free with our convenient pickup and drop-off service. Arrive and depart in comfort and style, with our reliable transportation ensuring a seamless transition to or from your accommodation.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="bg-blue-100 p-4 rounded-full">
+                <Image 
+                  src="/png/why_us/Service6.png" 
+                  alt="Wedding Services Icon"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Wedding Services</h2>
+              <p className="mt-2 text-gray-600">Turn your dream wedding into reality with our comprehensive wedding services. From elegant transportation for the bridal party to meticulous planning and coordination, we're here to make your special day unforgettable and stress-free.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
   );
 }
 
