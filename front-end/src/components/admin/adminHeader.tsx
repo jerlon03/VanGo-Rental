@@ -5,30 +5,46 @@ import { IoNotifications, CgProfile, IoIosLogOut } from '@/components/icons/inde
 import Drop from '@/components/admin/drop';
 import { useLogoutContext } from '@/Provider/context/contextProvider';
 import Link from 'next/link';
-import { getUserInfo } from '@/lib/api/user.api';
-import { Users } from '@/lib/types/user.type';
+
 
 interface Props {
     children?: React.ReactNode;
 }
+interface User {
+    name: string;
+    email: string;
+    role: string;
+  }
 
 const AdminHeader: React.FC<Props> = ({ children }) => {
-    const [userInfo, setUserInfo] = useState<Users | null>(null);
     const { setIsOpen, setIsNotificationOpen } = useLogoutContext();
+    const [user, setUser] = useState<User | null>(null); 
+    
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
+        const fetchUser = async () => {
             try {
-                const data = await getUserInfo();
-                setUserInfo(data);
-            } catch (error) {
-                console.error('Error fetching user info:', error);
+                const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
+                const res = await fetch('http://localhost:8080/users/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.status === 200) {
+                    const data = await res.json();
+                    setUser(data);
+                } else {
+                    console.log('Failed to fetch user data.')
+                }
+            } catch (err) {
+                console.log('Error fetching user data.')
             }
         };
 
-        fetchUserInfo();
+        fetchUser();
     }, []);
-    
+
     const handleLogoutClick = () => {
         setIsOpen(true);
     };
@@ -47,11 +63,12 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                 <div className="flex items-center relative">
                     <Image src="/logo.svg" width={30} height={30} alt='Profile' />
 
-                    {userInfo ? (
-                        <p>Name: {userInfo.first_name} {userInfo.last_name}</p>
-                    ) : (
-                        <p>No user info available</p>
-                    )}
+                    <div>
+                        <h1>Profile</h1>
+                        <p>Name: {user?.name}</p>
+                        <p>Email: {user?.email}</p>
+                        <p>Role: {user?.role}</p>
+                    </div>
 
                     <Drop>
                         <div className='flex flex-col w-[120px]'>

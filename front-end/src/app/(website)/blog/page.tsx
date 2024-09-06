@@ -20,7 +20,7 @@ const Blog = () => {
           Every Memory Lasts a Lifetime."
         </h1>
       </div>
-      
+
       {/* 2nd div */}
       <div className="flex justify-center text-center p-[4%] ">
         <p className="px-[20%]">
@@ -145,22 +145,19 @@ const Blog = () => {
 
       {/* 5th div */}
       <div className="h-[400px] pt-[2rem] w-full px-[9%] mt-20 mb-10">
-        <div className="flex justify-center items-center space-x-6">
+        <div className="flex justify-center items-center space-x-20">
           {/* Card 1 */}
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
-            {/* Triangle Shape at the Top */}
-            <div className="absolute top-[-30px] left-[50%] transform -translate-x-[50%]">
+            <div className="absolute top-[-50px] left-[35%]">
               <img
                 src="/path-to-image1.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
               />
             </div>
-            <div className="absolute top-[-20px] left-0 right-0 h-0 w-0 mx-auto border-l-[50px] border-r-[50px] border-b-[30px] border-l-transparent border-r-transparent border-b-gray-200"></div>
 
             <div className="mt-16">
               <h3 className="font-semibold">Menjolen Bentolan</h3>
-              <p className="text-gray-500">Customer</p>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
                 "The van provided excellent comfort and space for our group's
@@ -176,19 +173,16 @@ const Blog = () => {
 
           {/* Card 2 */}
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
-            {/* Triangle Shape at the Top */}
-            <div className="absolute top-[-30px] left-[50%] transform -translate-x-[50%]">
+            <div className="absolute top-[-50px] left-[35%] ">
               <img
                 src="/path-to-image2.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
               />
             </div>
-            <div className="absolute top-[-20px] left-0 right-0 h-0 w-0 mx-auto border-l-[50px] border-r-[50px] border-b-[30px] border-l-transparent border-r-transparent border-b-gray-200"></div>
 
             <div className="mt-16">
               <h3 className="font-semibold">Shaira Shane Gonzaga</h3>
-              <p className="text-gray-500">Customer</p>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
                 "The van provided excellent comfort and space for our group's
@@ -202,6 +196,54 @@ const Blog = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="flex items-center justify-center space-x-2 mt-8 bottom-[-10]">
+        {/* Left Arrow */}
+        <button className="p-2 bg-gray-300 hover:bg-gray-400 text-gray-600 rounded-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+
+        {/* Pagination Dots */}
+        <div className="flex space-x-2">
+          <button className="w-3 h-3 bg-gray-500 rounded-full"></button>{" "}
+          {/* Active dot */}
+          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+        </div>
+
+        {/* Right Arrow */}
+        <button className="p-2 bg-gray-300 hover:bg-gray-400 text-gray-600 rounded-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
       </div>
 
       <div></div>

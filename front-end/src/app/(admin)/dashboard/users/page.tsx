@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { useFetchAllUser, useFetchAddUser } from '@/lib/hooks/useUser'
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { formatDateRange } from '@/components/date/formatDate'
 
 const UsersPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -172,6 +173,13 @@ const UsersPage: React.FC = () => {
           <Column
             field="role"
             header="Role" pt={{
+              bodyCell: { className: 'border text-blackColor p-2' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+            }} />
+            <Column
+            body={(rowData) => `${formatDateRange(rowData.createdAt)}`}
+            header="Date Created" 
+            pt={{
               bodyCell: { className: 'border text-blackColor p-2' },
               headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
             }} />
