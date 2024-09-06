@@ -62,10 +62,12 @@ const Blog = () => {
               alt="image"
               className="w-full"
             ></Image>
-            <h1>Family Escapades: Bonding Beyond Borders</h1>
-            <p className="text-[12px] text-primaryColor font-semibold">
-              April 05, 2024
-            </p>
+            <div>
+              <h1>Family Escapades: Bonding Beyond Borders</h1>
+              <p className="text-[12px] text-primaryColor font-semibold">
+                April 05, 2024
+              </p>
+            </div>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Distinctio, ipsa velit eaque temporibus sint incidunt est porro
@@ -128,7 +130,7 @@ const Blog = () => {
             <div className="border-t-2 w-[90%] "></div>
           </div>
 
-          <div className="absolute top-0 right-[16rem]">
+          <div className="absolute top-[-20px] right-[16rem]">
             <div className="flex flex-col justify-center items-center  border-2 h-[150px] bg-white w-[720px] ">
               <h2 className="font-semibold text-[19px] ">Testimonial</h2>
               <h1 className="font-semibold text-[20px]">
@@ -150,7 +152,7 @@ const Blog = () => {
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%]">
               <img
-                src="/path-to-image1.jpg"
+                src="png/blog_us/blog2.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
               />
@@ -175,7 +177,7 @@ const Blog = () => {
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%] ">
               <img
-                src="/path-to-image2.jpg"
+                src="png/blog_us/blog2.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
               />
@@ -198,53 +200,52 @@ const Blog = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center space-x-2 mt-8 bottom-[-10]">
-        {/* Left Arrow */}
-        <button className="p-2 bg-gray-300 hover:bg-gray-400 text-gray-600 rounded-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
+      <div className="mb-4 flex items-center justify-center">
+  {/* Left Arrow */}
+  <button className="p-2 bg-gray-300 hover:bg-gray-400 text-gray-600 rounded-full">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      className="w-4 h-4"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 19l-7-7 7-7"
+      />
+    </svg>
+  </button>
 
-        {/* Pagination Dots */}
-        <div className="flex space-x-2">
-          <button className="w-3 h-3 bg-gray-500 rounded-full"></button>{" "}
-          {/* Active dot */}
-          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
-          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
-          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
-          <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
-        </div>
+  {/* Pagination Dots */}
+  <div className="flex space-x-2 mx-4">
+    <button className="w-3 h-3 bg-gray-500 rounded-full"></button> {/* Active dot */}
+    <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+    <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+    <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+    <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
+  </div>
 
-        {/* Right Arrow */}
-        <button className="p-2 bg-gray-300 hover:bg-gray-400 text-gray-600 rounded-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-      </div>
+  {/* Right Arrow */}
+  <button className="p-2 bg-gray-300 hover:bg-gray-400 text-gray-600 rounded-full">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      className="w-4 h-4"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 5l7 7-7 7"
+      />
+    </svg>
+  </button>
+</div>
 
       <div></div>
     </div>
