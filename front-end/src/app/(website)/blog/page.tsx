@@ -152,7 +152,7 @@ const Blog = () => {
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%]">
               <img
-                src="png/blog_us/blog2.jpg"
+                src="png/blog_us/blog1.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
               />
