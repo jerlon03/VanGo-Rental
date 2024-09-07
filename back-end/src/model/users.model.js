@@ -5,14 +5,16 @@ const User = function(user) {
   this.first_name = user.first_name;
   this.last_name = user.last_name;
   this.email = user.email;
+  this.phoneNumber = user.phoneNumber;
+  this.Location = user.Location;
   this.password = user.password;
   this.role = user.role || 'customer'; // Default role to 'customer'
 };
 
 // Assuming you have dbConn set up elsewhere in your code
 User.create = (newUser, callback) => {
-  dbConn.query('INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)', 
-    [newUser.first_name, newUser.last_name, newUser.email, newUser.password], 
+  dbConn.query('INSERT INTO users (first_name, last_name, email, password, phoneNumber, Location) VALUES (?, ?, ?, ?, ?, ?)', 
+    [newUser.first_name, newUser.last_name, newUser.email, newUser.password , newUser.phoneNumber, newUser.Location], 
     (err, results) => {
       if (err) return callback(err, null);
       callback(null, results.insertId);
@@ -46,24 +48,22 @@ User.findByEmailAndPassword = function(email, password, result) {
   );
 };
 
-User.findById = (userId) => {
-  return new Promise((resolve, reject) => {
-    dbConn.query(
-      "SELECT user_id, first_name, last_name, email, role FROM users WHERE user_id = ?",
-      [userId],
-      (err, res) => {
-        if (err) {
-          console.error("Error fetching user by ID: ", err);
-          reject(err);
-        } else if (res.length) {
-          resolve(res[0]);
-        } else {
-          resolve(null); // Return null if user not found
-        }
-      }
-    );
+// model/users.model.js
+User.findById = function(id, result) {
+  dbConn.query('SELECT * FROM users WHERE user_id = ?', [id], function(err, res) {
+    if (err) {
+      console.error('Database error:', err);
+      result(err, null);
+    } else if (res.length) {
+      result(null, res[0]);
+    } else {
+      result({ message: 'User not found' }, null);
+    }
   });
 };
+
+
+
 
 
 

@@ -3,10 +3,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const pool = require('./config/db.config'); // Adjust path if necessary
 const userRoute = require('./src/routes/user.route');
-// const authRoute = require('./src/routes/auth.route');  // Uncomment if needed
+const authRoutes = require('./src/routes/auth.route')
+const { verifyToken } = require('./middleware/auth');
 
 const app = express();
-
 // Middleware
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -18,7 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use('/users', userRoute);
-// app.use('/auth', authRoute);  // Uncomment if you have auth routes
+// app.use('api/van',)
+
+app.use('/api', verifyToken, authRoutes);
 
 // Catch-all route for undefined routes (404)
 app.use((req, res, next) => {

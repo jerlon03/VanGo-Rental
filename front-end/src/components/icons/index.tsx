@@ -1,17 +1,24 @@
- import { MdDashboard ,MdOutlineInventory,MdArrowDropDown,MdArrowDropUp,MdDeleteOutline} from "react-icons/md";
+ import { MdDashboard ,MdOutlineInventory,MdArrowDropDown,MdArrowDropUp,MdDeleteOutline, MdEmail } from "react-icons/md";
  import { FaCar,FaFileInvoice,FaUserCog ,FaRegEdit} from "react-icons/fa";
  import { AiFillBook } from "react-icons/ai";
- import { CiSettings } from "react-icons/ci";
- import { IoNotifications, IoClose  } from "react-icons/io5";
+ import { CiSettings, CiCalendarDate ,CiLocationOn ,CiPhone } from "react-icons/ci";
+ import { IoNotifications, IoClose, IoLocationSharp  } from "react-icons/io5";
  import { CgProfile } from "react-icons/cg";
  import { IoIosLogOut } from "react-icons/io";
  import { GrFormPrevious } from "react-icons/gr";
+ import { FaVanShuttle ,FaPhone} from "react-icons/fa6";
+ import { IoPerson } from "react-icons/io5";
+
+ 
+ 
 
 
 
  
 
 export {
+    CiLocationOn,
+    CiPhone,
     MdDashboard,
     FaCar,
     AiFillBook,
@@ -27,5 +34,11 @@ export {
     IoClose,
     GrFormPrevious,
     FaRegEdit,
-    MdDeleteOutline
+    MdDeleteOutline,
+    FaVanShuttle,
+    IoPerson,
+    MdEmail,
+    FaPhone,
+    IoLocationSharp,
+    CiCalendarDate,
 }

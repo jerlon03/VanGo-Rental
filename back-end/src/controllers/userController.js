@@ -59,12 +59,10 @@ exports.create = function(req, res) {
 exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  // Check if email and password are provided
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
-  // Call the User model's findByEmailAndPassword function
   User.findByEmailAndPassword(email, password, (err, user) => {
     if (err) {
       return res.status(500).json({ message: 'An error occurred', error: err });
@@ -73,17 +71,17 @@ exports.login = (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // User is authenticated, generate a JWT with role
+    // Ensure user.id is included in the token
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role }, // Include role in payload
-      process.env.JWT_SECRET, // secret key
-      { expiresIn: '1h' } // token expiration time
+      { id: user.user_id, email: user.email, role: user.role }, // Adjust `user.user_id` if necessary
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
     );
 
-    // Send the token, user data, and role in the response
     res.status(200).json({ message: 'Login successful', token, user, role: user.role });
   });
 };
+
 exports.logout = (req, res) => {
   // Since JWT is stateless, there's no server-side session to destroy
   // Instead, we can just inform the client to remove the token
@@ -91,44 +89,45 @@ exports.logout = (req, res) => {
   res.status(200).json({ message: 'Logout successful. Please remove the token from client storage.' });
 };
 
-exports.getUserInfo = async (req, res) => {
-  // Check if user is authenticated and user_id exists
-  if (!req.user || !req.user.user_id) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'User ID is missing in the request.'
-    });
+// controller/users.controller.js
+exports.getProfile = (req, res) => {
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Authorization header missing or incorrect format' });
   }
 
-  const userId = req.user.user_id;
+  const token = authHeader.split(' ')[1];
 
-  try {
-    // Fetch user information from the database
-    const user = await User.findById(userId);
+  if (!token) {
+    return res.status(401).json({ message: 'Token missing' });
+  }
 
-    if (!user) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'User not found.'
-      });
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.error('Failed to authenticate token:', err);
+      return res.status(403).json({ message: 'Failed to authenticate token' });
     }
 
-    // Prepare full name and send response
-    const fullName = `${user.first_name} ${user.last_name}`;
-    res.status(200).json({
-      status: 'success',
-      name: fullName,
-      email: user.email,
-      role: user.role
+    console.log('Decoded token:', decoded); // Log the entire decoded token
+    const userId = decoded.id;
+    console.log('User ID from token:', userId);
+
+    // Proceed with user lookup
+    User.findById(userId, (err, user) => {
+      if (err) {
+        console.error('Error fetching user by ID:', err);
+        return res.status(500).json({ message: 'Error fetching profile', error: err });
+      }
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json({ user });
     });
-  } catch (err) {
-    console.error('Error fetching user info by ID:', err);
-    res.status(500).json({
-      status: 'error',
-      message: 'Error fetching user information.'
-    });
-  }
+  });
 };
+
 
 
 

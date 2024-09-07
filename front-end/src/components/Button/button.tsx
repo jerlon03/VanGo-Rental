@@ -1,4 +1,5 @@
 import React from "react";
+import { IconType } from "react-icons";
 
 interface Props {
   name: string;
@@ -9,7 +10,11 @@ interface Props {
   disabled?: boolean;
   className?: string;
   type?: 'button' | 'submit' | 'reset';
-  border?: string; // Add border to Props
+  border?: string;
+  icon?: IconType; // Optional icon
+  iconPosition?: 'left' | 'right'; // Icon position
+  iconSize?: string; // Optional icon size
+  iconColor?: string; // Optional icon color
 }
 
 const Button: React.FC<Props> = ({
@@ -21,7 +26,11 @@ const Button: React.FC<Props> = ({
   disabled,
   className = '',
   type = 'button',
-  border = 'border-none', // Default to no border if not provided
+  border = 'border-none',
+  icon: Icon,
+  iconPosition = 'left',
+  iconSize = '20px', // Default icon size
+  iconColor = 'white', // Default icon color
 }) => {
   let bgColorClass = '';
 
@@ -35,8 +44,8 @@ const Button: React.FC<Props> = ({
     bgColorClass = 'bg-[#00A8E8]';
   }
 
-  const buttonClass = `font-Poppins text-white text-[16px] p-1 w-full rounded-[3px] tracking-[2px] ${bgColorClass} ${border} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-white hover:bg-opacity-75'} transition duration-300 ${className}`;
-
+  const buttonClass = `flex justify-center items-center font-Poppins text-white text-[16px] p-1 w-full rounded-[3px] tracking-[2px] ${bgColorClass} ${border} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-white hover:bg-opacity-75'} transition duration-300 ${className}`;
+  
   return (
     <button
       className={buttonClass}
@@ -45,7 +54,13 @@ const Button: React.FC<Props> = ({
       disabled={disabled}
       type={type}
     >
+      {iconPosition === 'left' && Icon && (
+        <Icon className="mr-2" size={iconSize} color={iconColor} />
+      )}
       {name}
+      {iconPosition === 'right' && Icon && (
+        <Icon className="ml-2" size={iconSize} color={iconColor} />
+      )}
     </button>
   );
 };

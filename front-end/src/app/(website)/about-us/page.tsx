@@ -43,8 +43,8 @@ const AboutUs = () => {
         </h2>
         <hr className="border-t-2 border-gray-300 w-24 mx-auto mb-8"/>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <div className="bg-gray-200 p-6 rounded-lg shadow-lg max-w-sm text-center">
+            <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
               <Image 
                 src="/png/why_us/Vector1.png"
                 alt="Passenger Insurance Icon"
@@ -59,13 +59,13 @@ const AboutUs = () => {
               Our van rental service offers insurance protecting passengers in case of injury or loss during travel.
             </p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">
+          <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
               <Image 
                 src="/png/why_us/Vector2.png"
                 alt="Professional and Reliable Driver Icon"
-                width={54}
-                height={54}
+                width={64}
+                height={64}
               />
             </div>
             <h3 className="text-lg font-semibold mb-2">
@@ -76,11 +76,11 @@ const AboutUs = () => {
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
               <Image 
                 src="/png/why_us/Vector3.png"
                 alt="Comfy, Safe and Free Hassle Travel Icon"
-                width={50}
+                width={64}
                 height={64}
               />
             </div>
@@ -94,12 +94,12 @@ const AboutUs = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
               <Image 
                 src="/png/why_us/Vector4.png"
                 alt="Fire Extinguisher Icon"
-                width={47}
-                height={50}
+                width={54}
+                height={64}
               />
             </div>
             <h3 className="text-lg font-semibold mb-2">
@@ -110,7 +110,7 @@ const AboutUs = () => {
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
               <Image 
                 src="/png/why_us/Vector5.png"
                 alt="Negotiable Rates Icon"
@@ -126,7 +126,7 @@ const AboutUs = () => {
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
               <Image 
                 src="/png/why_us/Vector6.png"
                 alt="First Aid Kit Icon"
@@ -148,17 +148,17 @@ const AboutUs = () => {
       <div className="max-w-4xl mx-auto py-12 px-4">
         <h1 className="text-3xl font-bold text-center">Our Services</h1>
         <p className="text-center text-lg mt-2">We provide complete van rental solutions</p>
-        <hr className="my-4 border-t-2 border-gray-300 w-1/4 mx-auto"/>
+        <hr className="my-4 border-t-2 border-gray-300 w-1/3 mx-auto"/>
         
         <div className="space-y-8">
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="bg-blue-100 p-4 rounded-full">
+            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
                 <Image 
                   src="/png/why_us/Service1.png" 
                   alt="Company Services Icon"
-                  width={32}
-                  height={32}
+                  width={65}
+                  height={65}
                 />
               </div>
             </div>
@@ -170,12 +170,12 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="bg-blue-100 p-4 rounded-full">
+            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
                 <Image 
                   src="/png/why_us/Service2.png" 
                   alt="Private Tours Icon"
-                  width={32}
-                  height={32}
+                  width={65}
+                  height={65}
                 />
               </div>
             </div>
@@ -187,12 +187,12 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="bg-blue-100 p-4 rounded-full">
+            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
                 <Image 
                   src="/png/why_us/Service3.png" 
                   alt="Airport Transfer Icon"
-                  width={32}
-                  height={32}
+                  width={65}
+                  height={65}
                 />
               </div>
             </div>
@@ -204,12 +204,12 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="bg-blue-100 p-4 rounded-full">
+            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
                 <Image 
                   src="/png/why_us/Service4.png" 
                   alt="Balik Probinsya Icon"
-                  width={32}
-                  height={32}
+                  width={65}
+                  height={65}
                 />
               </div>
             </div>
@@ -221,12 +221,12 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="bg-blue-100 p-4 rounded-full">
+            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
                 <Image 
                   src="/png/why_us/Service5.png" 
                   alt="Hotel Pickup/DropOff Icon"
-                  width={32}
-                  height={32}
+                  width={65}
+                  height={65}
                 />
               </div>
             </div>
@@ -238,12 +238,12 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="bg-blue-100 p-4 rounded-full">
+            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
                 <Image 
                   src="/png/why_us/Service6.png" 
                   alt="Wedding Services Icon"
-                  width={32}
-                  height={32}
+                  width={65}
+                  height={65}
                 />
               </div>
             </div>
