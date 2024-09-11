@@ -221,7 +221,7 @@ const Blog = () => {
 
   {/* Pagination Dots */}
   <div className="flex space-x-2 mx-4">
-    <button className="w-3 h-3 bg-gray-500 rounded-full"></button> {/* Active dot */}
+    <button className="w-3 h-3 bg-gray-500 rounded-full"></button> 
     <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
     <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
     <button className="w-3 h-3 bg-gray-300 rounded-full"></button>
