@@ -18,8 +18,10 @@ const config: Config = {
         primaryColor: "#003459",
         blackColor: "#453D3B",
         button: "#00A8E8",
+        'button-light': '#66CCF5',   // Lighter shade
+        'button-dark': '#0077CC',    // Darker shade
         white: "#ffffff",
-        sucess: '#2ECC71',
+        success: '#2ECC71',
         error: '#FF5733',
         pending: '#FFD700',
       },
@@ -32,10 +34,10 @@ const config: Config = {
         'lg': '1024px',
         'xl': '1280px',
         '2xl': '1536px',
-
       }
     },
   },
   plugins: [],
 };
+
 export default config;
