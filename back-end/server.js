@@ -1,18 +1,46 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const pool = require('./config/db.config'); // Adjust path if necessary
+const userRoute = require('./src/routes/user.route');
+const authRoutes = require('./src/routes/auth.route')
+const vanRoutes = require('./src/routes/van.route')
+const bookingRoutes = require('./src/routes/booking.route')
+const postingRoutes = require('./src/routes/posts.route')
+const { verifyToken } = require('./middleware/auth');
+
 const app = express();
+// Middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Authorization', 'Content-Type']
+}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const userRoute = require('./routes/user')
-app.use('/user', userRoute);
+// Routes
+app.use('/users', userRoute);
 
-console.log(userRoute);
-app.use(cors());
+// private routes
+app.use('/api', verifyToken, authRoutes);
+app.use('/api/van',verifyToken, vanRoutes)
+app.use('/api/booking',verifyToken, bookingRoutes)
+app.use('/api/posting',verifyToken, postingRoutes)
 
-// Define your routes
-app.get('/api/home', (req, res) => {
-  res.json({ message: 'Hello from the backend!' });
+// Catch-all route for undefined routes (404)
+app.use((req, res, next) => {
+  res.status(404).json({ error: true, message: 'Route not found' });
 });
 
-app.listen(8080, () => {
-  console.log('Server running on port 8080');
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({ error: true, message: 'Something went wrong!' });
+});
+
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

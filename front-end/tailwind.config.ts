@@ -16,11 +16,23 @@ const config: Config = {
       },
       colors: {
         primaryColor: "#003459",
+        blackColor: "#453D3B",
         button: "#00A8E8",
         white: "#ffffff",
+        sucess: '#2ECC71',
+        error: '#FF5733',
+        pending: '#FFD700',
       },
       fontFamily: {
         Poppins: ["Poppins", "sans-serif"],
+      },
+      screens: {
+        'sm': '320px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+
       }
     },
   },
