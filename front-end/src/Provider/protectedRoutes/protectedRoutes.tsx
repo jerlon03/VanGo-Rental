@@ -1,33 +1,48 @@
+// components/ProtectedRoute.tsx
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  allowedRoles: string[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for token only on the client side
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
     if (!token) {
-      // Redirect to the login page if no token is found
+      localStorage.removeItem('token');
       router.push('/login');
-    } else {
-      // Set authentication status to true if token exists
-      setIsAuthenticated(true);
+      return;
     }
-  }, [router]);
 
-  // While checking for authentication, you can optionally return null or a loading spinner
+    try {
+      const decodedToken = jwtDecode<{ role: string }>(token);
+      const { role } = decodedToken;
+      if (!allowedRoles.includes(role)) {
+        router.push('/not-found');
+        return;
+      }
+
+      setUserRole(role);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Token decoding failed:', error);
+      localStorage.removeItem('token');
+      router.push('/login');
+    }
+  }, [router, allowedRoles]);
+
   if (!isAuthenticated) {
     return null;
   }
 
-  // If the user is authenticated, render the protected component
   return <>{children}</>;
 };
 

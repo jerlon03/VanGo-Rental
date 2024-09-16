@@ -3,10 +3,13 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const pool = require('./config/db.config'); // Adjust path if necessary
 const userRoute = require('./src/routes/user.route');
-// const authRoute = require('./src/routes/auth.route');  // Uncomment if needed
+const authRoutes = require('./src/routes/auth.route')
+const vanRoutes = require('./src/routes/van.route')
+const bookingRoutes = require('./src/routes/booking.route')
+const postingRoutes = require('./src/routes/posts.route')
+const { verifyToken } = require('./middleware/auth');
 
 const app = express();
-
 // Middleware
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -18,7 +21,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use('/users', userRoute);
-// app.use('/auth', authRoute);  // Uncomment if you have auth routes
+
+// private routes
+app.use('/api', verifyToken, authRoutes);
+app.use('/api/van',verifyToken, vanRoutes)
+app.use('/api/booking', bookingRoutes)
+app.use('/api/posting',verifyToken, postingRoutes)
 
 // Catch-all route for undefined routes (404)
 app.use((req, res, next) => {

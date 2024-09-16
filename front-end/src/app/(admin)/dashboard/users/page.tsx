@@ -73,12 +73,12 @@ const UsersPage: React.FC = () => {
 
   return (
     <div className='w-full'>
-      <div className='w-full pb-5'>
+      <div className='w-full pb-3'>
         <AdminHeader>
-          <h1 className='text-[16px] border-b-2 border-gray-300 text-blackColor/70 tracking-[2px]'><Link href="/dashboard">Dashboard</Link> / Users</h1>
+          <h1 className='text-[14px] flex h-full items-end text-blackColor/70 tracking-[2px]'><Link href="/dashboard">Dashboard</Link> / Users</h1>
         </AdminHeader>
       </div>
-      <div className='w-full'>
+      <div className='w-full p-[2%]'>
         <div className='w-full flex gap-2 py-5'>
           <Button name='ADD USER' onClick={openModal} width='180px' height='35px'></Button>
           <Button name='Filter By : ' width='150px' height='35px'></Button>
@@ -144,8 +144,7 @@ const UsersPage: React.FC = () => {
           </Modal>
           <InputField placeholder="Search ..." height='35px' />
         </div>
-      </div>
-      <div className='w-full'>
+        <div className='w-full'>
         <DataTable
           value={currentItems}
           tableStyle={{ minWidth: '50rem' }}
@@ -246,6 +245,8 @@ const UsersPage: React.FC = () => {
           </div>
         )}
       </div>
+      </div>
+      
     </div>
   );
 };

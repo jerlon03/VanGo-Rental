@@ -110,49 +110,22 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Invoice</p>}
               </div>
             </Link>
-
-            <div className={`w-full dropdown-container ${isOpen ? 'bg-white ' : ''}`}>
-              <div
-                className='flex items-center justify-between gap-[1rem] w-full hover:bg-white  p-2 group'
-                onClick={toggleDropdown}
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-              >
-                <div className='flex gap-[1rem] items-center'>
-                  <MdOutlineInventory
-                    size={20}
-                    className={`${isOpen || isHovering ? 'text-button' : ''}`}
-                    style={getNavLinkStyle('')}
-                  />
-                  {!isCollapsed && <p className={`font-Poppins ${isOpen || isHovering ? 'font-medium' : ''} text-[16px] ${isOpen || isHovering ? 'text-button' : ''}`}>
-                    Content
-                  </p>}
-                </div>
-                {!isCollapsed &&
-                <MdArrowDropDown
-                  size={20} 
-                  className={`${isOpen || isHovering ? 'text-button' : ''}`}
-                  style={getNavLinkStyle('/content')}
-                />
-                }
+            <Link href="/dashboard/post" className={getNavLinkClass("/dashboard/post")}>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
+                <FaUserCog size={20}
+                  className={`text-white group-hover:text-button`}
+                  style={getNavLinkStyle('/dashboard/post')} />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Post</p>}
               </div>
-              {isOpen && (
-                <div className="w-full flex flex-col justify-center bg-white rounded-b-md p-1 gap-[2px]">
-                  <Link href="/dashboard/post">
-                    <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
-                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/dashboard/post' ? 'text-button font-semibold' : 'text-white '}`} />
-                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/dashboard/post' ? 'text-button font-semibold' : 'text-white '}`}>Post</p>}
-                    </div>
-                  </Link>
-                  <Link href="/dashboard/van-inventory">
-                    <div className='flex items-center gap-[1rem] w-full  p-2 group bg-primaryColor ps-[1rem] xl:p-1'>
-                      <FaFileInvoice size={15} className={`group-hover:text-button ${pathname === '/dashboard/van-inventory' ? 'text-button font-semibold' : 'text-white '}`} />
-                      {!isCollapsed &&<p className={`font-Poppins group-hover:font-medium text-[15px] group-hover:text-button ${pathname === '/dashboard/van-inventory' ? 'text-button font-semibold' : 'text-white '}`}>Van Inventory</p>}
-                    </div>
-                  </Link>
-                </div>
-              )}
-            </div>
+            </Link>
+            <Link href="/dashboard/van-inventory " className={getNavLinkClass("/dashboard/van-inventory")}>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
+                <FaUserCog size={20}
+                  className={`text-white group-hover:text-button`}
+                  style={getNavLinkStyle('/dashboard/van-inventory')} />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Van Inventory</p>}
+              </div>
+            </Link>
 
 
             <Link href="/dashboard/users " className={getNavLinkClass("/dashboard/users")}>

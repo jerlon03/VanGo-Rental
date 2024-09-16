@@ -85,7 +85,7 @@ const ContactUs = () => {
         <div id="embed-ded-map-canvas" className="h-full w-full max-w-full">
           <iframe
             className="h-full w-full border border-black rounded-md"
-            src="https://www.google.com/maps/embed/v1/place?q=Metro+Manila&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+            src="https://www.google.c om/maps/embed/v1/place?q=Metro+Manila&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
           ></iframe>
         </div>
         </div>
@@ -95,3 +95,4 @@ const ContactUs = () => {
 };
 
 export default ContactUs;
+

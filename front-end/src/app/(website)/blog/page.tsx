@@ -20,6 +20,38 @@ const Blog = () => {
           Every Memory Lasts a Lifetime."
         </h1>
       </div>
+      {/* 2nd div */}
+      <div className="flex justify-center text-center p-[4%] ">
+        <p className="px-[20%]">
+          Discover the thrill of adventure where every tale told shows how
+          exploring transforms us, sparking a love for travel and creating
+          memories that stay with us forever
+        </p>
+      </div>
+      {/* Third div */}
+      <div className="px-[9%]">
+        <h1 className="text-[20px] font-medium ">Featured Articles</h1>
+        <div className="grid grid-cols-2 gap-7 text-justify">
+          <div>
+            <Image
+              src="/png/blog_img.png"
+              width={300}
+              height={300}
+              alt="image"
+              className="w-full"
+            ></Image>
+            <h1>Family Escapades: Bonding Beyond Borders</h1>
+            <p className="text-[12px] text-primaryColor font-semibold">
+              April 05, 2024
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Distinctio, ipsa velit eaque temporibus sint incidunt est porro
+              nostrum blanditiis maiores quasi, aut tempore nam eligendi
+              adipisci quo possimus quam deserunt.
+            </p>
+          </div>
+          </div>
 
       {/* 2nd div */}
       <div className="flex justify-center text-center p-[4%] ">
@@ -247,7 +279,7 @@ const Blog = () => {
   </button>
 </div>
 
-      <div></div>
+    </div>
     </div>
   );
 };
