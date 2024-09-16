@@ -18,8 +18,8 @@ const config: Config = {
         primaryColor: "#003459",
         blackColor: "#453D3B",
         button: "#00A8E8",
-        'button-light': '#66CCF5',   // Lighter shade
-        'button-dark': '#0077CC',    // Darker shade
+        'button-light': '#66CCF5',  
+        'button-dark': '#0077CC',    
         white: "#ffffff",
         success: '#2ECC71',
         error: '#FF5733',
