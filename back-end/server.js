@@ -29,8 +29,9 @@ app.use('/api/booking',verifyToken, bookingRoutes)
 app.use('/api/posting',verifyToken, postingRoutes)
 
 // Catch-all route for undefined routes (404)
-app.use((req, res, next) => {
-  res.status(404).json({ error: true, message: 'Route not found' });
+app.use('*', (req, res) => {
+  console.log(`Attempted to access non-existent route: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ error: true, message: "Route not found" });
 });
 
 // Error handling middleware

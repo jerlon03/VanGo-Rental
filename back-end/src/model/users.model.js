@@ -1,4 +1,6 @@
 const dbConn = require('../../config/db.config');
+const bcrypt = require('bcrypt');
+
 
 const User = function(user) {
   this.user_id = user.user_id;
@@ -12,13 +14,17 @@ const User = function(user) {
 };
 
 // Assuming you have dbConn set up elsewhere in your code
-User.create = (newUser, callback) => {
-  dbConn.query('INSERT INTO users (first_name, last_name, email, password, phoneNumber, Location) VALUES (?, ?, ?, ?, ?, ?)', 
-    [newUser.first_name, newUser.last_name, newUser.email, newUser.password , newUser.phoneNumber, newUser.Location], 
-    (err, results) => {
-      if (err) return callback(err, null);
-      callback(null, results.insertId);
-    });
+User.create = function(newUser, result) {
+  dbConn.query("INSERT INTO users set ?", newUser, function(err, res) {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+    } else {
+      console.log("User created with id: ", res.insertId);
+      console.log("Stored hashed password length: ", newUser.password.length);
+      result(null, res.insertId);
+    }
+  });
 };
 
 User.findAll = function(result) {
@@ -33,19 +39,57 @@ User.findAll = function(result) {
 
 User.findByEmailAndPassword = function(email, password, result) {
   dbConn.query(
-    "SELECT * FROM users WHERE email = ? AND password = ?", 
-    [email, password], 
-    function(err, res) {
+    "SELECT * FROM users WHERE email = ?", 
+    [email], 
+    async function(err, res) {
       if (err) {
         console.log("Error fetching user: ", err);
-        result(err, null);
-      } else if (res.length) {
-        result(null, res[0]);
+        return result({ message: "Database error", details: err }, null);
+      }
+
+      if (res.length) {
+        const user = res[0];
+        console.log('User found:', email);
+        console.log('Stored password hash length:', user.password.length);
+
+        try {
+          // Compare the hashed password with the provided one
+          console.log('Attempting to compare passwords');
+          const passwordMatch = await bcrypt.compare(password, user.password);
+          console.log('Password match result:', passwordMatch);
+          
+          if (!passwordMatch) {
+            console.log("Password mismatch for user:", email);
+            return result({ message: 'Invalid email or password' }, null);
+          } else {
+            console.log('Login successful for user:', email);
+            // Remove password before returning user object
+            delete user.password;
+            return result(null, user);
+          }
+        } catch (bcryptError) {
+          console.log("Bcrypt comparison error:", bcryptError);
+          return result({ message: "Error verifying password", details: bcryptError }, null);
+        }
       } else {
-        result({ message: 'Invalid email or password' }, null);
+        console.log("No user found with email:", email);
+        return result({ message: 'Invalid email or password' }, null);
       }
     }
   );
+};
+
+User.verifyPassword = (plainPassword, hashedPassword) => {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(plainPassword, hashedPassword, (err, isMatch) => {
+      if (err) {
+        console.error("Bcrypt comparison error:", err);
+        reject(err);
+      } else {
+        resolve(isMatch);
+      }
+    });
+  });
 };
 
 // model/users.model.js

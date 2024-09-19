@@ -37,7 +37,7 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                     <div>
                         {user ? (
                             <div>
-                                <h1 className=''>  {user.first_name} {user.last_name}  </h1>
+                                <h1 className=''>{user.first_name} {user.last_name}  </h1>
                             </div>
                         ) : (
                             <p>No user data available</p>
