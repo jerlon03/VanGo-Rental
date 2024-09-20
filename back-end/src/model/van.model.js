@@ -8,38 +8,20 @@ const Van = function(van) {
   this.people_capacity = van.people_capacity;
   this.transmission_type = van.transmission_type;
   this.things_capacity = van.things_capacity;
+  this.status = van.status || 'available';
 };
 
 Van.create = (newVan, result) => {
-    // Validate van_name
-    if (!newVan.van_name) {
-        result({ message: "Van name is required" }, null);
-        return;
+  dbConn.query("INSERT INTO van SET ?", newVan, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
     }
-
-    const query = 'INSERT INTO van (van_name, van_description, van_image, people_capacity, transmission_type, things_capacity, status) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    
-    dbConn.query(query, 
-      [
-        newVan.van_name,
-        newVan.van_description || '',
-        newVan.van_image || '',
-        newVan.people_capacity || 0,
-        newVan.transmission_type || '',
-        newVan.things_capacity || 0,
-        'available'  // Default status
-      ], 
-      (err, res) => {
-        if (err) {
-          console.log("Error: ", err);
-          result(err, null);
-          return;
-        }
-  
-        console.log("Van created: ", { van_id: res.insertId, ...newVan, status: 'available' });
-        result(null, { van_id: res.insertId, ...newVan, status: 'available' });
-      });
-  };
+    console.log("created van: ", { id: res.insertId, ...newVan });
+    result(null, { id: res.insertId, ...newVan });
+  });
+};
 
 Van.findById = (van_id, result) => {
   dbConn.query(`SELECT * FROM vans WHERE van_id = ${van_id}`, (err, res) => {

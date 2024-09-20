@@ -28,9 +28,12 @@ const VanCard: React.FC<VanCardProps> = ({
           <span>Transmission: {transmission_type}</span>
         </div>
         <p className="mb-4">Things Capacity: {things_capacity}</p>
-        <button className="w-full bg-[#00A8E8] text-white font-bold py-2 px-4 rounded hover:bg-[#007ba7] transition-colors duration-300 ease-in-out">
-          Book Now
-        </button>
+        <div className='w-full h-full flex items-end'>
+          <button className="w-full bg-[#00A8E8] text-white font-bold py-2 px-4 rounded hover:bg-[#007ba7] transition-colors duration-300 ease-in-out h-full">
+            Book Now
+          </button>
+        </div>
+       
       </div>
     </div>
   );
