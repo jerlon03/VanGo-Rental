@@ -4,3 +4,7 @@
 @tailwind utilities;
 .map-generator{@apply max-w-full max-h-full bg-none;}
 
+*{
+    font-family: Poppins;
+}
+

@@ -34,7 +34,7 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                 <IoNotifications size={25} className='text-button cursor-pointer' onClick={handleNotificationClick} />
                 <div className="flex items-center relative">
                     <Image src="/logo.svg" width={30} height={30} alt='Profile' />
-                    <div>
+                    <div className='font-Poppins'>
                         {user ? (
                             <div>
                                 <h1 className=''>{user.first_name} {user.last_name}  </h1>
