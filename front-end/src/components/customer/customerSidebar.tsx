@@ -100,24 +100,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
 
                     </div>
                 </div>
-                <div className='w-full text-white py-[50px] flex flex-col gap-[.3rem] cursor-pointer xl:py-[10px] xl:gap-[2px] border-t-2 '>
-                    <Link href="/customer/profile" className={getNavLinkClass("/customer/profile")}>
-                        <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
-                            <IoPerson size={20}
-                                className={`text-white group-hover:text-button`}
-                                style={getNavLinkStyle('/customer/profile')} />
-                            {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>{user?.first_name} {user?.last_name}</p>}
-                        </div>
-                    </Link>
-                    <div  onClick={handleLogoutClick}>
-                        <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-1 group'>
-                            <IoIosLogOut size={20}
-                                className={`text-white group-hover:text-button`}/>
-                            {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Log Out</p>}
-                        </div>
-                    </div>
-
-                </div>
             </div>
         </div>
     );
