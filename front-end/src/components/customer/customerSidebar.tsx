@@ -4,8 +4,7 @@ import Image from 'next/image';
 import { MdDashboard, AiFillBook, FaFileInvoice, FaVanShuttle, IoIosLogOut, IoPerson } from '@/components/icons/index'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useLogoutContext } from '@/Provider/context/contextProvider';
-import { useAuth } from '@/Provider/context/authContext';
+
 
 interface AdminSidebarProps {
     isCollapsed: boolean;
@@ -14,9 +13,8 @@ interface AdminSidebarProps {
 
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar }) => {
-    const { user, loading } = useAuth();
     const pathname = usePathname();
-    const { setIsOpen } = useLogoutContext();
+
 
 
     const getNavLinkClass = (path: string): string => {
@@ -34,11 +32,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
 
         return styles;
     };
-
-    const handleLogoutClick = () => {
-        setIsOpen(true);
-    };
-
 
     return (
         <div className={`bg-primaryColor h-screen fixed left-0 transition-width duration-300 ${isCollapsed ? 'w-[60px]' : 'w-[220px]'}`}>

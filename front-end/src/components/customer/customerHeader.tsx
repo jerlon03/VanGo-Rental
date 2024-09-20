@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { IoNotifications, IoPerson, IoChevronDown, IoChevronUp, FaSignOutAlt } from '@/components/icons/index'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useLogoutContext } from '@/Provider/context/contextProvider';
-
+import { useAuth } from '@/Provider/context/authContext';
 interface Props {
     children?: React.ReactNode;
 }
@@ -11,7 +10,7 @@ interface Props {
 
 
 const CustomerHeader: React.FC<Props> = ({ children }) => {
-    const pathname = usePathname();
+    const { user, loading } = useAuth();
     const { setIsOpen, setIsNotificationOpen } = useLogoutContext();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -33,7 +32,14 @@ const CustomerHeader: React.FC<Props> = ({ children }) => {
                 </div>
                 <div className='flex gap-[.5rem] relative'>
                     <IoPerson size={20} className='text-white' />
-                    <p className='font-Poppins text-[16px] text-white'>Jerlon Abayon</p>
+                    {user ? (
+                            <div>
+                                <p className='font-Poppins text-[16px] text-white'>{user.first_name} {user.last_name}</p>
+                            </div>
+                        ) : (
+                            <p>No user data available</p>
+                        )}
+                    
                     <button onClick={toggleDropdown}>
                         {isDropdownOpen ? <IoChevronUp className="text-white" /> : <IoChevronDown className="text-white" />}
                     </button>
