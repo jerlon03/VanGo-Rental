@@ -37,6 +37,7 @@ User.findAll = function(result) {
     });
 };
 
+
 User.findByEmailAndPassword = function(email, password, result) {
   dbConn.query(
     "SELECT * FROM users WHERE email = ?", 

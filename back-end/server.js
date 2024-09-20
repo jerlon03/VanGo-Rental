@@ -25,7 +25,7 @@ app.use('/users', userRoute);
 // private routes
 app.use('/api', verifyToken, authRoutes);
 app.use('/api/van',verifyToken, vanRoutes)
-app.use('/api/booking',verifyToken, bookingRoutes)
+app.use('/api/booking', bookingRoutes)
 app.use('/api/posting',verifyToken, postingRoutes)
 
 // Catch-all route for undefined routes (404)
