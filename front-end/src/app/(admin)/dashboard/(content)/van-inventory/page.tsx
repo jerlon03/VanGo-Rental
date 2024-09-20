@@ -146,7 +146,7 @@ const VanInventory = () => {
           <h1 className='text-[14px] flex items-end  text-blackColor/70 tracking-[2px]'><Link href="/dashboard">Dashboard</Link> / Van Inventory</h1>
         </AdminHeader>
       </div>
-      <div className='w-full p-[2%]'>
+      <div className='w-full px-[2%]'>
         <div className='flex justify-end py-[1rem]'>
           <Button name='ADD VAN' onClick={openModal} width='180px' height='35px'></Button>
         </div>
