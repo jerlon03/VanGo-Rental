@@ -152,8 +152,7 @@ const AboutUs = () => {
         <div className="space-y-8">
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
-            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                <Image 
+            <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">            <Image 
                   src="/png/why_us/Service1.png" 
                   alt="Company Services Icon"
                   width={65}
@@ -169,8 +168,8 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
-            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                <Image 
+<div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">             
+                  <Image 
                   src="/png/why_us/Service2.png" 
                   alt="Private Tours Icon"
                   width={65}
@@ -186,8 +185,8 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
-            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                <Image 
+            <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">             
+            <Image 
                   src="/png/why_us/Service3.png" 
                   alt="Airport Transfer Icon"
                   width={65}
@@ -203,8 +202,8 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
-            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                <Image 
+            <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">             
+            <Image 
                   src="/png/why_us/Service4.png" 
                   alt="Balik Probinsya Icon"
                   width={65}
@@ -220,8 +219,8 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
-            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                <Image 
+            <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">             
+            <Image 
                   src="/png/why_us/Service5.png" 
                   alt="Hotel Pickup/DropOff Icon"
                   width={65}
@@ -237,8 +236,8 @@ const AboutUs = () => {
           
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
-            <div className="bg-blue-100 p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                <Image 
+            <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">             
+            <Image 
                   src="/png/why_us/Service6.png" 
                   alt="Wedding Services Icon"
                   width={65}
