@@ -1,6 +1,32 @@
 import React from "react";
 import Image from "next/image";
-
+import PostCard from '@/components/Card/postCard';
+const samplePosts = [
+  {
+    post_id: '1', // Add ID
+    title: 'Understanding React Hooks',
+    createdAt: '2023-10-01',
+    imageUrl: 'https://example.com/react-hooks.jpg',
+  },
+  {
+    post_id: '2', // Add ID
+    title: 'A Guide to TypeScript in React',
+    createdAt: '2023-09-28',
+    imageUrl: 'https://example.com/typescript-react.jpg',
+  },
+  {
+    post_id: '3', // Add ID
+    title: 'Building Responsive UIs with Tailwind CSS',
+    createdAt: '2023-09-25',
+    imageUrl: 'https://example.com/tailwind-css.jpg', // Add image URL
+  },
+  {
+    post_id: '4', // Add ID
+    title: 'State Management with Redux',
+    createdAt: '2023-09-20',
+    imageUrl: 'https://example.com/redux.jpg', // Add image URL
+  },
+];
 const Blog = () => {
   return (
     <div>
@@ -30,6 +56,20 @@ const Blog = () => {
       </div>
 
       {/* Featured Articles */}
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-6">Blog Posts</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {samplePosts.map((post) => (
+            <PostCard
+              key={post.post_id} // Use post_id as the key
+              id={post.post_id} // Pass the post ID to PostCard
+              title={post.title}
+              createdAt={post.createdAt}
+              imageUrl={post.imageUrl}
+            />
+          ))}
+        </div>
+      </div>
       <div className="px-[9%]">
         <h1 className="text-[20px] font-medium">Featured Articles</h1>
         <div className="grid grid-cols-2 gap-7 text-justify">

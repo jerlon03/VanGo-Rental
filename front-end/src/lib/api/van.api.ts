@@ -11,9 +11,15 @@ const fetchAddVan = async (data: Van) => {
     const response = await Instance.post<DataRes<Van[]>>('/api/van/create');
     return response.data;
 }
+
+const fetchAllPublicVan = async () => {
+    const response = await Instance.get<DataRes<Van[]>>('/public/van/');
+    return response.data;
+}
   
 
 export {
     fetchAllVan,
     fetchAddVan,
+    fetchAllPublicVan
   }
