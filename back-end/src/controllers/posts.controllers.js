@@ -28,8 +28,15 @@ exports.updatePost = (req, res) => {
     const postId = req.params.id;
     const { title, description, post_image, status } = req.body;
 
+    // Create an object to hold the fields to update
+    const updates = {};
+    if (title !== undefined) updates.title = title;
+    if (description !== undefined) updates.description = description;
+    if (post_image !== undefined) updates.post_image = post_image;
+    if (status !== undefined) updates.status = status;
 
-    Posts.updatePost(postId, title, description, post_image, status, (err, affectedRows) => {
+    // Call the database update function with the updates object
+    Posts.updatePost(postId, updates, (err, affectedRows) => {
         if (err) {
             if (err.message === 'Post not found') {
                 return res.status(404).json({
@@ -49,7 +56,6 @@ exports.updatePost = (req, res) => {
         });
     });
 };
-
 exports.getAllPosts = (req, res) => {
     Posts.getAllPosts((err, posts) => {
         if (err) {

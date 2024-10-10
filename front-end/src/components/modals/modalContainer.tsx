@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, width, height }) => {
         style={{
           width,
           height,
-          marginTop: '5rem',
+          marginTop: '3rem',
         }}
       >
         {children}

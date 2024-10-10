@@ -44,7 +44,7 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                         )}
                     </div>
                     <Drop>
-                        <div className='flex flex-col w-[120px]'>
+                        <div className='flex flex-col w-[120px] z-80'>
                             <Link href="/dashboard/profile">
                                 <div className='flex w-full gap-[5px] hover:bg-button p-1 hover:text-button hover:rounded-md cursor-pointer'>
                                     <CgProfile size={20} className='text-primaryColor' />

@@ -81,13 +81,18 @@ const ContactUs = () => {
       </div>
       <div className="w-full px-[200px] pb-[30px] mb-12">
         <div className="w-full h-[400px]">
-        <h1 className="text-center font- font-medium text-[20px] p-2">We are here</h1>
-        <div id="embed-ded-map-canvas" className="h-full w-full max-w-full">
-          <iframe
-            className="h-full w-full border border-black rounded-md"
-            src="https://www.google.c om/maps/embed/v1/place?q=Metro+Manila&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-          ></iframe>
-        </div>
+          <h1 className="text-center font- font-medium text-[20px] p-2">We are here</h1>
+          <div id="embed-ded-map-canvas" className="h-full w-full max-w-full">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61779.126284402606!2d120.95586963858878!3d14.587939294821581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca03571ec38b%3A0x69d1d5751069c11f!2sManila%2C%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1728554911436!5m2!1sen!2sph"
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
         </div>
       </div>
     </div>
