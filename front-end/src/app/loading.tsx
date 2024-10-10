@@ -1,13 +1,15 @@
+import React from 'react'
+import Image from 'next/image'
 
-import React from 'react';
-
-const LoadingComponent: React.FC = () => {
+const LoadingComponents = () => {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-[#003459]">
-      <div className="w-16 h-16 border-4 border-[#453D3B] border-t-white rounded-full animate-spin"></div>
-      <p className="text-white mt-4 text-lg">Loading...</p>
+    <div className=' flex h-screen w-full justify-center items-center flex-col'>
+      <Image src='/van_gif.gif' width={200} height={50} alt='Loading Components' />
+      <p className='text-primaryColor text-[24px]  mt-[-2rem] animate-loading font-semibold'>
+        Van<span className=' font-bold'>GO</span> Rental <span className=''>.....</span>
+      </p>
     </div>
-  );
-};
+  )
+}
 
-export default LoadingComponent;
+export default LoadingComponents

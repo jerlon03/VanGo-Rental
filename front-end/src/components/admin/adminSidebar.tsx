@@ -136,14 +136,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Users</p>}
               </div>
             </Link>
-            <Link href="/dashboard/settings" className={getNavLinkClass("/dashboard/settings")}>
-              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
-                <CiSettings size={20}
-                  className={`text-white group-hover:text-button`}
-                  style={getNavLinkStyle('/dashboard/settings')} />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Settings</p>}
-              </div>
-            </Link>
           </div>
         </div>
       </div>

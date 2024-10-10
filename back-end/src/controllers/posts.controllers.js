@@ -24,6 +24,32 @@ exports.createPost = (req, res) => {
     });
 };
 
+exports.updatePost = (req, res) => {
+    const postId = req.params.id;
+    const { title, description, post_image, status } = req.body;
+
+
+    Posts.updatePost(postId, title, description, post_image, status, (err, affectedRows) => {
+        if (err) {
+            if (err.message === 'Post not found') {
+                return res.status(404).json({
+                    message: 'Post not found',
+                    error: err.message
+                });
+            }
+            return res.status(500).json({
+                message: 'Error updating post',
+                error: err.message
+            });
+        }
+
+        res.status(200).json({
+            message: 'Post updated successfully',
+            affectedRows: affectedRows
+        });
+    });
+};
+
 exports.getAllPosts = (req, res) => {
     Posts.getAllPosts((err, posts) => {
         if (err) {
@@ -35,6 +61,29 @@ exports.getAllPosts = (req, res) => {
         res.status(200).json({
             message: 'Posts retrieved successfully',
             posts: posts
+        });
+    });
+};
+exports.getPostById = (req, res) => {
+    const postId = req.params.id;
+
+    Posts.getPostById(postId, (err, post) => {
+        if (err) {
+            if (err.message === 'Post not found') {
+                return res.status(404).json({
+                    message: 'Post not found',
+                    error: err.message
+                });
+            }
+            return res.status(500).json({
+                message: 'Error retrieving post',
+                error: err.message
+            });
+        }
+
+        res.status(200).json({
+            message: 'Post retrieved successfully',
+            post: post
         });
     });
 };

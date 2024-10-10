@@ -15,12 +15,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, width, height }) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center bg-black bg-opacity-50 z-50">
       <div
-        className="bg-white p-4 rounded shadow-lg"
+        className="bg-white shadow-lg rounded-[5px]"
         style={{
           width,
           height,
           marginTop: '5rem',
-          boxSizing: 'border-box',
         }}
       >
         {children}

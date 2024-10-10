@@ -22,14 +22,14 @@ const config: Config = {
         'button-dark': '#0077CC',    
         white: "#ffffff",
         success: '#2ECC71',
-        error: '#FF5733',
+        error: '#FF0000',
         pending: '#FFD700',
       },
       fontFamily: {
         Poppins: ["Poppins", "sans-serif"],
       },
       screens: {
-        'sm': '320px',
+        'sm': '767px',
         'md': '768px',
         'lg': '1024px',
         'xl': '1280px',

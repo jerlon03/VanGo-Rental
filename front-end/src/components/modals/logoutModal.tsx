@@ -81,7 +81,7 @@ const LogoutModal: React.FC = () => {
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:text-left">
-                <h3 className="text-lg leading-6 font-medium text-blackColor">LOG OUT</h3>
+                <h3 className="text-lg leading-6 font-semibold text-primaryColor">LOG OUT</h3>
                 <div className="mt-2">
                   <p className="text-[16px] text-gray-500">Are you sure you want to logout?</p>
                 </div>
@@ -89,8 +89,8 @@ const LogoutModal: React.FC = () => {
             </div>
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-5">
-            <Button name={isLoading ? 'Logging out...' : 'LOG OUT'} onClick={handleLogout} backgroundColor="error"></Button>
-            <Button onClick={closeModal} name="CANCEL"></Button>
+            <Button name={isLoading ? 'Logging out...' : 'LOG OUT'} onClick={handleLogout} backgroundColor='alert' ></Button>
+            <Button onClick={closeModal} name="CANCEL" backgroundColor='error'></Button>
           </div>
         </div>
       </div>

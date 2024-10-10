@@ -59,13 +59,6 @@ const Header = () => {
             </Link>
           </li>
         </ul>
-        <div className="hidden md:flex flex-shrink-0">
-          <Link href="/login">
-            <button className="font-Poppins text-white p-1 px-6 rounded-[5px] bg-button hover:bg-white hover:text-button hover:font-semibold transition duration-300">
-              SIGN IN
-            </button>
-          </Link>
-        </div>
         <div className="md:hidden flex items-center">
           <button className="text-white focus:outline-none" onClick={toggleMenu}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -84,14 +77,7 @@ const Header = () => {
                 </Link>
               </li>
             ))}
-          </ul>
-          <div className="w-full px-2 flex justify-center">
-            <Link href="/login" className="w-full">
-              <button className="font-Poppins text-white w-full p-1 my-4 rounded-[5px] bg-button hover:bg-white hover:text-button hover:font-semibold transition duration-300">
-                SIGN IN
-              </button>
-            </Link>
-          </div>
+          </ul>       
         </div>
       )}
     </div>

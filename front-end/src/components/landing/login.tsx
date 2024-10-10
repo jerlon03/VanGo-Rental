@@ -1,15 +1,15 @@
 'use client'
-import React, { useState } from 'react'
 import Image from 'next/image';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser, faUnlock } from '@fortawesome/free-solid-svg-icons';
-import Link from 'next/link';
-import Button from '@/components/Button/button';
+import React, { useState, useEffect } from 'react';
 import InputField from '@/components/Form/inputfield';
-import SweetAlert from '@/components/alert/alert';
+import { MdEmail, IoMdLock } from "@/components/icons/index";
+import Button from '@/components/Button/button';
+import SweetAlert from '@/components/alert/alert'
 import { useRouter } from 'next/navigation';
 
-const LoginComponent = () => {
+
+const LoginPage = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -56,10 +56,6 @@ const LoginComponent = () => {
       // Store the token and role in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
-
-      SweetAlert.showSuccess('Login Successfully');
-      console.log('Login successful:', data);
-
       // Redirect based on role
       if (role === 'admin') {
         router.push(`/dashboard?${token}`);
@@ -74,66 +70,58 @@ const LoginComponent = () => {
       setLoading(false);
     }
   };
-
+  // Trigger modal visibility with a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsModalVisible(true);
+    }, 300); // Delay for the animation, adjust as needed
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
 
   return (
-    <div className="basis-[35%] h-full w-full bg-primaryColor p-2 max-md:basis-[100%] max-lg:basis-[45%] max-sm:justify-center max-sm:items-center max-sm:h-screen">
-      <div className="cursor-pointer">
-        <Link href="/">
-          <Image src="/logo.svg" width={80} height={80} alt="logo" className="max-md:hidden" />
-        </Link>
-      </div>
-      <div className="flex w-full flex-col px-[15%] max-lg:px-[3%] max-xl:px-0 max-md:px-[20%] max-sm:px-2 max-sm:pt-[4rem] max-2xl:pt-[4rem] max-2xl:px-3 pt-[10rem]">
-        <div className="flex justify-center flex-col items-center w-full">
-          <Link href="/">
-            <Image src="/logo.svg" width={80} height={80} alt="logo" className="hidden max-md:block" />
-          </Link>
-          <h1 className="text-[25px] font-semibold text-white max-sm:text-[20px]">LOGIN</h1>
-          <p className="text-[16px] text-white max-sm:text-[14px]">Enter your details below to begin</p>
-        </div>
-        <form onSubmit={handleSubmit} className="py-6 flex flex-col gap-4">
-          {error && <p style={{ color: '#D0342C' }} className='text-[14px]'>{error}</p>}
-          <div className="flex w-full gap-2 border bg-white rounded-md items-center justify-center px-2">
-            <FontAwesomeIcon icon={faCircleUser} className="text-primaryColor size-[25px] max-sm:size-[20px]" />
-            <InputField
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={email}
-              border="none"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="flex w-full gap-2 border bg-white rounded-md items-center justify-center px-2">
-            <FontAwesomeIcon icon={faUnlock} className="text-primaryColor size-[23px] max-sm:size-[20px]" />
-            <InputField
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              border="none"
-            />
-          </div>
-          <div className="flex w-full gap-2  rounded-md max-sm:rounded-[2px] items-center justify-center px-2 bg-button">
-            <Button type='submit' name={loading ? 'Logging in...' : 'Login'} />
-          </div>
-        </form>
-        <div className="w-full">
-          <p className="text-button max-sm:text-[14px]">Forgot Password?</p>
-          <div className="flex w-full gap-2  rounded-sm py-4">
-            <button className="bg-white w-full max-sm:text-[14px]">Login with Google</button>
-          </div>
-          <p className="text-white max-sm:text-[14px]">
-            Doesn't have an account?
-            <Link href="/register">
-              <span className="text-button"> Sign Up </span>
-            </Link>
-          </p>
+    <div className="relative w-full h-screen bg-blackColor/50 flex justify-center pt-[6%] text-blackColor">
+      {/* Modal container */}
+      <div
+        className={`absolute z-10  h-auto bg-white px-6 pb-6 rounded-[5px] shadow-lg transition-transform duration-500 ease-in-out transform ${isModalVisible ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+          } `}
+      >
+        <div className="w-full flex justify-center flex-col items-center">
+          <Image src='/van_gif.gif' width={180} height={50} alt='Van Gif'></Image>
+          <h1 className="text-[24px] font-medium mb-1 text-primaryColor">Hello, Welcome!</h1>
+          <p className="mb-2 text-primaryColor">Enter your credentials to access your account</p>
+          <form action="" onSubmit={handleSubmit} className='w-full'>
+            <div className='w-full flex flex-col gap-4'>
+              <div className='w-full'>
+                {error && <p style={{ color: '#D0342C' }} className='text-[14px] h-[35px] bg-red-300 pl-4 flex items-center rounded-[3px]'>{error}</p>}
+              </div>
+              <InputField
+                id="email"
+                type="email"
+                placeholder="Enter your Email / Username"
+                icon={<MdEmail className={`${email ? 'text-primaryColor' : 'text-[#CCCCCC]'} size-[20px]`} />}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} // Update email state on input change
+              />
+              <InputField
+                id="password"
+                type="password"
+                placeholder="Enter your Password"
+                icon={<IoMdLock className={`${password ? 'text-primaryColor' : 'text-[#CCCCCC]'} size-[20px]`} />}
+                onChange={(e) => setPassword(e.target.value)}
+                value={password} // Update email state on input change
+              />
+              <p className='text-[14px]'>Forgot your password ? <span className='text-button'>reset password</span></p>
+              <div className="flex w-full gap-2  items-center justify-center px-2 bg-button">
+                <Button type='submit' name={loading ? 'Logging in...' : 'Login'} />
+              </div>
+            </div>
+          </form>
+
+
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginComponent
+export default LoginPage;

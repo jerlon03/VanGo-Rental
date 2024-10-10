@@ -28,6 +28,10 @@ app.use('/api/van',verifyToken, vanRoutes)
 app.use('/api/booking', bookingRoutes)
 app.use('/api/posting',verifyToken, postingRoutes)
 
+//public routes
+app.use('/public/van', vanRoutes)
+app.use('/public/posts', postingRoutes)
+
 // Catch-all route for undefined routes (404)
 app.use('*', (req, res) => {
   console.log(`Attempted to access non-existent route: ${req.method} ${req.originalUrl}`);
