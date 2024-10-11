@@ -14,13 +14,15 @@ const checkUserExists = (user_id, callback) => {
 
 
 // Create a booking
-const createBooking = (user_id, van_id, status, callback) => {
-    const query = `
-        INSERT INTO bookings (user_id, van_id, status) 
-        VALUES (?, ?, ?)
-    `;
+const createBooking = (data, callback) => {
+    const { first_name, last_name, email, phone_number, date_of_birth, drop_off_location, pickup_location, city_or_municipality, pickup_date_time, barangay, proof_of_payment, van_id } = data;
     
-    dbConn.query(query, [user_id, van_id, status || 'pending'], (err, result) => {
+    const query = `
+        INSERT INTO bookings (first_name, last_name, email, phone_number, date_of_birth, province, pickup_location, city_or_municipality, pickup_date_time, barangay, proof_of_payment, van_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    dbConn.query(query, [first_name, last_name, email, phone_number, date_of_birth, drop_off_location, pickup_location, city_or_municipality, pickup_date_time, barangay, proof_of_payment, van_id], (err, result) => {
         if (err) {
             return callback(err, null);
         }
@@ -28,25 +30,8 @@ const createBooking = (user_id, van_id, status, callback) => {
     });
 };
 
-const getBookingsWithDetails = (callback) => {
-    const query = `
-        SELECT 
-            b.book_id, 
-            u.user_id, 
-            u.first_name AS user_first_name, 
-            u.last_name AS user_last_name, 
-            v.van_id, 
-            v.van_name, 
-            v.van_image, 
-            b.status, 
-            b.createdAt
-        FROM 
-            bookings b
-        JOIN 
-            users u ON b.user_id = u.user_id
-        JOIN 
-            van v ON b.van_id = v.van_id;
-    `;
+const getAllBookings = (callback) => {
+    const query = `SELECT * FROM bookings`;
 
     dbConn.query(query, (err, results) => {
         if (err) {
@@ -56,8 +41,24 @@ const getBookingsWithDetails = (callback) => {
     });
 };
 
+const getBookingById = (bookingId, callback) => {
+    const query = `SELECT * FROM bookings WHERE booking_id = ? LIMIT 1`;
+
+    dbConn.query(query, [bookingId], (err, results) => {
+        if (err) {
+            return callback(err, null);
+        }
+        // Check if a booking was found
+        if (results.length === 0) {
+            return callback(new Error('Booking not found'), null);
+        }
+        callback(null, results[0]);
+    });
+};
+
 module.exports = {
     checkUserExists,
     createBooking,
-    getBookingsWithDetails
+    getAllBookings,
+    getBookingById
 };

@@ -11,6 +11,8 @@ import { DatePicker, DatePickerWithTime } from '@/components/date/calendar';
 import ImagesUploader from '../Uplooad/ImagesUploader';
 import Select from '@/components/Form/select';
 import {cebuData} from '@/components/sampledata/sampleData'; // Import the cebuData
+import { fetchAddBooking } from '@/lib/api/booking.api'; // Import the fetchAddBooking function
+import { Booking } from '@/lib/types/booking.type';
 
 interface VanCardProps {
   
@@ -34,6 +36,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   // State for selected municipality
   const [municipality, setMunicipality] = useState('');
+  
 
   // Get the list of municipalities from cebuData
   const municipalities = Object.keys(cebuData.CEBU.municipality_list);
@@ -60,7 +63,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
     } 
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => { // Make this function async
     // Array to hold names of empty fields
     const missingFields: string[] = [];
     const proofOfPayment = reservationImage; // Check if an image is uploaded
@@ -84,8 +87,31 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
         return; // Exit the function if validation fails
     }
 
-    // Show success message
-    SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
+    // Prepare booking details to send
+    const bookingDetails: Booking = {
+      first_name: firstname,
+      last_name: lastname,
+      email,
+      phone_number: phoneNumber,
+      province,
+      city_or_municipality: municipality,
+      barangay,
+      pickup_location: pickupLocation,
+      pickup_date_time: pickupDateTime || new Date(),
+      proof_of_payment: reservationImage ? await uploadFile(reservationImage) : '',
+      booking_id: 0,
+      date_of_birth: new Date(),
+      van_id: van.van_id,
+      created_at: new Date(),
+    };
+
+    try {
+        const response = await fetchAddBooking(bookingDetails); // Call fetchAddBooking with booking details
+        SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
+        console.log(response); // Log the response if needed
+    } catch (error) {
+        SweetAlert.showError('Failed to submit booking. Please try again.');
+    }
 
     // Reset form fields
     setFirstname('');
@@ -93,7 +119,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
     setEmail('');
     setPhoneNumber('');
     setProvince('');
-    setMunicipality ('');
+    setMunicipality('');
     setBarangay('');
     setPickupLocation('');
     setPickupDateTime(null);
@@ -105,6 +131,18 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   const handleImageUpload = (file: File) => {
     setReservationImage(file);
+  };
+
+  // Function to handle file upload and return a string (e.g., URL)
+  const uploadFile = async (file: File): Promise<string> => {
+    // Implement your file upload logic here
+    // For example, you might upload the file to a server and return the URL
+    // This is a placeholder implementation
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve('uploaded_file_url'); // Replace with actual uploaded file URL
+        }, 1000);
+    });
   };
 
   return (
@@ -156,8 +194,8 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
         </div>
 
         {/* Modal Logic */}
-        <Modal isOpen={currentModal === 'terms'} width="800px" height="530px">
-          <div className='w-full flex flex-col gap-[10px] '>
+        <Modal onClose={handleCloseModal}  isOpen={currentModal === 'terms'} width="800px" height="530px">
+          <div className='w-full flex flex-col gap-[10px] bg-white rounded-[5px]'>
             <div className='w-full bg-primaryColor h-[80px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]'>
               <h1 className='text-[20px] font-medium'>TERMS AND CONDITION</h1>
               <p className='text-[15px] font-light'>Please read these terms and condition carefully before using Our Service.</p>
@@ -192,8 +230,8 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
           </div>
         </Modal>
 
-        <Modal isOpen={currentModal === 'booking'} width="850px" height="530px">
-          <div className='w-full h-full flex flex-col justify-between'>
+        <Modal onClose={handleCloseModal}  isOpen={currentModal === 'booking'} width="850px" height="530px">
+          <div className='w-full h-full flex flex-col justify-between bg-white rounded-[5px]'>
             <div className='w-full bg-primaryColor h-[110px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]'>
               <h1 className='text-[20px] font-medium'>BOOKING DETAILS</h1>
               <p className='text-[15px] font-light'>Please fill out the form to apply for VANGO Rental services. </p>

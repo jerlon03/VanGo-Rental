@@ -31,6 +31,7 @@ app.use('/api/posting',verifyToken, postingRoutes)
 //public routes
 app.use('/public/van', vanRoutes)
 app.use('/public/posts', postingRoutes)
+app.use('/public/booking',bookingRoutes )
 
 // Catch-all route for undefined routes (404)
 app.use('*', (req, res) => {

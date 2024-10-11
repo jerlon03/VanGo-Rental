@@ -288,7 +288,7 @@ const VanInventory = () => {
         </DataTable>
       </div>
       {/* ADD MODAL */}
-      <Modal isOpen={isModalOpen} width='500px' height='600px' >
+      <Modal isOpen={isModalOpen} width='500px' height='600px' onClose={() => setIsModalOpen(false)}>
         <div className="h-full flex flex-col">
           <h2 className="text-[20px] font-medium p-3 pb-2">Add New Van</h2>
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 pt-2">

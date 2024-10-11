@@ -134,14 +134,35 @@ const AdminPost = () => {
   return (
     <div>
       {/* modal */}
-      <Modal isOpen={isModalOpen} width='500px' height='460px'>
-        <div>
+      <Modal isOpen={isModalOpen} width='500px' height='460px' onClose={closeModal}>
+        <div className='bg-white rounded-[5px]'>
           {selectedPost ? ( // Only show header if a post is selected
-            <div className='w-full flex justify-between items-center bg-primaryColor'>
-
-              <h2 className="text-[18px] font-semibold text-blackColor">POST DETAILS</h2>
-              <IoClose onClick={closeModal} className='cursor-pointer font-medium' size={25} />
+            <div className="bg-white rounded-[5px] shadow-lg">
+              <div className="flex justify-between items-center bg-primaryColor rounded-t-[5px] p-4">
+                <h2 className="text-[20px] font-semibold text-white">POST DETAILS</h2>
+                <IoClose
+                  onClick={closeModal}
+                  className='cursor-pointer text-white hover:text-red-300 transition duration-200'
+                  size={25}
+                />
+              </div>
+              {selectedPost && (
+                <div className="p-4">
+                  {/* Image Section */}
+                  {selectedPost.post_image && (
+                    <img
+                      src={selectedPost.post_image}
+                      alt={selectedPost.title}
+                      className="w-full h-auto rounded-lg mb-4 shadow-md"
+                    />
+                  )}
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{selectedPost.title}</h3>
+                  <p className="text-gray-600 mb-4">{selectedPost.description}</p>
+                  <p className="text-gray-500 text-sm">{formatDateRange(selectedPost.createdAt as any)}</p>
+                </div>
+              )}
             </div>
+
           ) : isAddPostModalOpen && ( // Show header for adding post
             <div className='w-full flex justify-between items-center flex-col'>
               <div className='w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]'>
@@ -181,15 +202,6 @@ const AdminPost = () => {
               </div>
 
 
-            </div>
-          )}
-
-          {selectedPost && ( // Display post details if selectedPost is not null
-            <div>
-              <h3>{selectedPost.title}</h3>
-              <p>{selectedPost.description}</p>
-              <p>{formatDateRange(selectedPost.createdAt as any)}</p>
-              {/* Add more fields as necessary */}
             </div>
           )}
         </div>

@@ -1,47 +1,37 @@
 // src/controllers/booking.controller.js
 const Booking = require('../model/booking.model');
 
-const createBooking = (req, res) => {
-    const { user_id, van_id, status } = req.body;
+exports.createBooking = (req, res) => {
+    const bookingData = req.body;
 
-    if (!user_id || !van_id) {
-        return res.status(400).send('user_id and van_id are required');
-    }
-
-    // Check if user exists before creating a booking
-    Booking.checkUserExists(user_id, (err, userExists) => {
+    Booking.createBooking(bookingData, (err, bookingId) => {
         if (err) {
-            console.error('Error checking user existence:', err);
-            return res.status(500).send('Internal server error');
+            return res.status(400).json({ error: err.message });
         }
-
-        if (!userExists) {
-            return res.status(400).send('Invalid user_id');
-        }
-
-        // Proceed to create the booking
-        Booking.createBooking(user_id, van_id, status, (err, bookingId) => {
-            if (err) {
-                console.error('Error creating booking:', err);
-                return res.status(500).send('Error booking van');
-            }
-            res.status(201).send({ message: 'Van booked successfully!', bookingId });
-        });
+        res.status(201).json({ bookingId });
     });
 };
 
-const getBookings = (req, res) => {
-    Booking.getBookingsWithDetails((err, bookings) => {
+exports.getAllBookings = (req, res) => {
+    Booking.getAllBookings((err, bookings) => {
         if (err) {
-            console.error('Error fetching bookings:', err);
-            return res.status(500).send('Internal server error');
+            return res.status(500).json({ error: err.message });
         }
         res.status(200).json(bookings);
     });
 };
 
+exports.getBookingById = (req, res) => {
+    const bookingId = req.params.id;
 
-module.exports = {
-    createBooking,
-    getBookings
-};
+    Booking.getBookingById(bookingId, (err, booking) => {
+        if (err) {
+            if (err.message === 'Booking not found') {
+                return res.status(404).json({ error: err.message });
+            }
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(booking);
+    });
+}
+

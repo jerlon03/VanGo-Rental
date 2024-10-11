@@ -82,8 +82,8 @@ const UsersPage: React.FC = () => {
         <div className='w-full flex gap-2 py-5'>
           <Button name='ADD USER' onClick={openModal} width='180px' height='35px'></Button>
           <Button name='Filter By : ' width='150px' height='35px'></Button>
-          <Modal isOpen={isModalOpen} width='500px' height='300px'>
-            <form onSubmit={handleSubmit}>
+          <Modal isOpen={isModalOpen} width='500px' height='300px' onClose={closeModal}>
+            <form onSubmit={handleSubmit} className='bg-white'>
               <div className='w-full flex justify-between items-center'>
                 <h2 className="text-[18px] font-semibold text-blackColor">ADD USER</h2>
                 <IoClose onClick={closeModal} className='cursor-pointer font-medium' size={25} />

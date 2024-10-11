@@ -1,13 +1,22 @@
 
 
-export interface Booking {
-    book_id: number; // Primary key, auto-incremented
-    user_id: number; // Foreign key referring to a user
-    van_id: number; // Foreign key referring to a van
-    status: 'pending' | 'confirmed' | 'cancelled'; // Enum for the status of the booking
-    createdAt: string; // Timestamps for creation date
-    updatedAt: string; // Timestamps for last update
-  }
+ export interface Booking {
+  booking_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  date_of_birth: Date;
+  province: string;
+  pickup_location: string;
+  city_or_municipality: string;
+  pickup_date_time: Date;
+  barangay: string;
+  proof_of_payment: string;
+  van_id: number;
+  created_at: Date;
+}
+
   
 
   // interfaces/BookingDetails.ts

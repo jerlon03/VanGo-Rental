@@ -4,7 +4,10 @@ const router = express.Router();
 const bookingController = require('../controllers/booking.controller');
 
 // Route to create a booking
-router.post('/create', bookingController.createBooking);
-router.get('/',bookingController.getBookings)
+router.post('/', bookingController.createBooking);
+router.get('/', bookingController.getAllBookings);
+router.get('/:id', bookingController.getBookingById);
+// router.put('/:id', bookingController.updateBooking);
+// router.delete('/:id', bookingController.deleteBooking);
 
 module.exports = router;
