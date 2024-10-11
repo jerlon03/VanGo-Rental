@@ -8,14 +8,37 @@ import SweetAlert from '@/components/alert/alert';
 import { termsAndCons } from '@/components/sampledata/sampleData';
 import InputField from '@/components/Form/inputfield';
 import { DatePicker, DatePickerWithTime } from '@/components/date/calendar';
+import ImagesUploader from '../Uplooad/ImagesUploader';
+import Select from '@/components/Form/select';
+import {cebuData} from '@/components/sampledata/sampleData'; // Import the cebuData
 
 interface VanCardProps {
+  
   van: Van; // Expecting a prop named 'van' of type 'Van'
 }
 
 const VanCard: React.FC<VanCardProps> = ({ van }) => {
-  const [currentModal, setCurrentModal] = useState<null | 'terms' | 'personal' | 'confirmation'>(null);
+  const [currentModal, setCurrentModal] = useState<null | 'terms' | 'booking' >(null);
   const [isAgreed, setIsAgreed] = useState(false);
+  const [reservationImage, setReservationImage] = useState<File | null>(null);
+
+  // State variables for form fields
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [province, setProvince] = useState('CEBU');
+  const [barangay, setBarangay] = useState('');
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [pickupDateTime, setPickupDateTime] = useState<Date | null>(null);
+
+  // State for selected municipality
+  const [municipality, setMunicipality] = useState('');
+
+  // Get the list of municipalities from cebuData
+  const municipalities = Object.keys(cebuData.CEBU.municipality_list);
+  // Get the barangays based on the selected municipality
+  const barangays = municipality ? cebuData.CEBU.municipality_list[municipality as keyof typeof cebuData.CEBU.municipality_list].barangay_list : [];
 
   const handleRentNowClick = () => {
     setCurrentModal('terms');
@@ -27,23 +50,61 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   const handleNextClick = () => {
     if (currentModal === 'terms') {
-      setCurrentModal('personal');
-    } else if (currentModal === 'personal') {
-      setCurrentModal('confirmation');
-    }
+      setCurrentModal('booking');
+    } 
   };
 
   const handleBackClick = () => {
-    if (currentModal === 'personal') {
+    if (currentModal === 'booking') {
       setCurrentModal('terms');
-    } else if (currentModal === 'confirmation') {
-      setCurrentModal('personal');
-    }
+    } 
   };
 
   const handleSubmit = () => {
+    // Array to hold names of empty fields
+    const missingFields: string[] = [];
+    const proofOfPayment = reservationImage; // Check if an image is uploaded
+
+    // Check each field and push to missingFields if empty
+    if (!firstname) missingFields.push('Firstname');
+    if (!lastname) missingFields.push('Lastname');
+    if (!email) missingFields.push('Email Address');
+    if (!phoneNumber) missingFields.push('Phone Number');
+    if (!province) missingFields.push('Province');
+    if (!municipality) missingFields.push('City/Municipality');
+    if (!barangay) missingFields.push('Barangay');
+    if (!pickupLocation) missingFields.push('Pick-up Location');
+    if (!pickupDateTime) missingFields.push('Pick-up Date & Time');
+    if (!proofOfPayment) missingFields.push('Proof of Payment');
+
+    // If there are missing fields, show an error message
+    if (missingFields.length > 0) {
+        const fieldsList = missingFields.join(', ');
+        SweetAlert.showError(`Please fill up the following fields: ${fieldsList}`);
+        return; // Exit the function if validation fails
+    }
+
+    // Show success message
     SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
+
+    // Reset form fields
+    setFirstname('');
+    setLastname('');
+    setEmail('');
+    setPhoneNumber('');
+    setProvince('');
+    setMunicipality ('');
+    setBarangay('');
+    setPickupLocation('');
+    setPickupDateTime(null);
+    setReservationImage(null); // Reset the uploaded image
+
+    // Optionally close the modal
     setCurrentModal(null); // Close the modal
+  };
+
+  const handleImageUpload = (file: File) => {
+    setReservationImage(file);
   };
 
   return (
@@ -123,102 +184,167 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                 <p className='text-[14px]'> I agree that I have read and accept the terms and conditions and privacy policy.</p>
               </div>
               <div className='flex gap-[1rem] p-5 w-full justify-end'>
-                <Button name='CANCEL' onClick={handleCloseModal} width='120px' />
-                <Button name='NEXT' onClick={handleNextClick} width='120px' disabled={!isAgreed} /> {/* Disable if not agreed */}
+                <Button name='CANCEL' onClick={handleCloseModal} width='120px' className="bg-red-500 hover:bg-red-700 text-white" /> 
+                <Button name='NEXT' onClick={handleNextClick} width='120px' disabled={!isAgreed} className="bg-primaryColor hover:bg-blue-700 text-white" /> 
               </div>
             </div>
 
           </div>
         </Modal>
 
-        <Modal isOpen={currentModal === 'personal'} width="850px" height="530px">
+        <Modal isOpen={currentModal === 'booking'} width="850px" height="530px">
           <div className='w-full h-full flex flex-col justify-between'>
             <div className='w-full bg-primaryColor h-[110px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]'>
               <h1 className='text-[20px] font-medium'>BOOKING DETAILS</h1>
               <p className='text-[15px] font-light'>Please fill out the form to apply for VANGO Rental services. </p>
             </div>
-            <div className='w-full grid grid-cols-3 gap-[30px] p-2 px-[5%] text-[15px] justify-evenly h-full pt-8'>
+            <div className='w-full pt-4  p-2 px-[5%]  h-full flex flex-col gap-4  overflow-y-auto max-h-[430px] scrollbar-custom'>
+              <h1 className='text-[16px] font-medium  p-2 bg-gray-500 text-white rounded-[3px]'>Personal Details</h1>
+              <div className='w-full grid grid-cols-3 gap-[30px] text-[15px]  '>
 
-              <div className='flex flex-col gap-4'>
-                <div>
-                  <label htmlFor="">Firstname <span className='text-red-700 font-bold'>*</span></label>
-                  <InputField placeholder='Enter your firstname' />
+                <div className='flex flex-col gap-4'>
+                  <div>
+                    <label htmlFor="">Firstname <span className='text-red-700 font-bold'>*</span></label>
+                    <InputField 
+                      placeholder='Enter your firstname' 
+                      value={firstname} 
+                      onChange={(e) => setFirstname(e.target.value)} 
+                      className={firstname ? '' : 'border-red-500'} // Change border color if empty
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Email Address <span className='text-red-700 font-bold'>*</span></label>
+                    <InputField 
+                      placeholder='Enter your Email Address' 
+                      value={email} 
+                      onChange={(e) => setEmail(e.target.value)} 
+                      className={email ? '' : 'border-red-500'} // Change border color if empty
+                    />
+                  </div>
+
                 </div>
-                <div>
-                  <label htmlFor="">Email Address <span className='text-red-700 font-bold'>*</span></label>
-                  <InputField placeholder='Enter your Email Address' />
+
+                <div className='flex flex-col gap-4'>
+                  <div>
+                    <label htmlFor="">Lastname <span className='text-red-700 font-bold'>*</span></label>
+                    <InputField 
+                      placeholder='Enter your Lastname' 
+                      value={lastname} 
+                      onChange={(e) => setLastname(e.target.value)} 
+                      className={lastname ? '' : 'border-red-500'} // Change border color if empty
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Phone Number <span className='text-red-700 font-bold'>*</span></label>
+                    <InputField 
+                      placeholder='Enter your Phonenumber' 
+                      value={phoneNumber} 
+                      onChange={(e) => setPhoneNumber(e.target.value)} 
+                      className={phoneNumber ? '' : 'border-red-500'} // Change border color if empty
+                    />
+                  </div>
+
+                </div>
+                <div className='flex flex-col gap-4'>
+                  <div>
+                    <label htmlFor="">Date of Birth</label>
+                    <DatePicker />
+                  </div>
                 </div>
 
               </div>
+              <h1 className='text-[16px] font-medium  p-2 bg-gray-500 text-white rounded-[3px]'>Drop-Off Location</h1>
+              <div className='w-full grid grid-cols-3 gap-[30px] text-[15px]'>
+                <div className='flex flex-col gap-4'>
+                  <div>
+                    <label htmlFor="">Province  <span className='text-red-700 font-bold'>*</span></label>
+                    <Select 
+                      options={[
+                        { value: 'CEBU', label: 'CEBU' }, // Fixed value for the select
+                      ]}
+                      onChange={(value) => setProvince(value)} 
+                      defaultValue={province} 
+                      className={province ? '' : 'border-red-500'} // Change border color if empty
+                      disabled={true} // Set to true if you want to disable the select
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Pick-up Location/ LandMark<span className='text-red-700 font-bold'>*</span> </label>
+                    <InputField 
+                      placeholder='Enter Pick-up Location' 
+                      value={pickupLocation} 
+                      onChange={(e) => setPickupLocation(e.target.value)} 
+                      className={pickupLocation ? '' : 'border-red-500'} // Change border color if empty
+                    />
+                  </div>
 
-              <div className='flex flex-col gap-4'>
-                <div>
-                  <label htmlFor="">Lastname <span className='text-red-700 font-bold'>*</span></label>
-                  <InputField placeholder='Enter your Lastname' />
                 </div>
+                <div className='flex flex-col gap-4'>
+                  <div>
+                    <label htmlFor="">City/Municipality  <span className='text-red-700 font-bold'>*</span>  </label>
+                    <Select 
+                      options={municipalities.map(muni => ({ value: muni, label: muni }))} // Populate municipalities
+                      onChange={(value) => {
+                        setMunicipality(value);
+                        setBarangay(''); // Reset barangay when municipality changes
+                      }} 
+                      defaultValue={municipality} 
+                      className={municipality ? '' : 'border-red-500'} // Change border color if empty
+                      disabled={false} // Set to true if you want to disable the select
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Pick-up Date & Time <span className='text-red-700 font-bold'>*</span> </label>
+                    <DatePickerWithTime 
+                      value={pickupDateTime} 
+                      onChange={(date) => setPickupDateTime(date as any)} 
+                      className={pickupDateTime ? '' : 'border-red-500'} // Change border color if empty
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label htmlFor="">Date of Birth</label>
-                  <DatePicker />
+                  <label htmlFor="">Barangay  <span className='text-red-700 font-bold'>*</span> </label>
+                  <Select 
+                    options={barangays.map(bgy => ({ value: bgy, label: bgy }))} // Populate barangays based on selected municipality
+                    onChange={(value) => setBarangay(value)} 
+                    defaultValue={barangay} 
+                    className={barangay ? '' : 'border-red-500'} // Change border color if empty
+                    disabled={false} // Disable if no municipality is selected
+                  />
                 </div>
 
               </div>
-              <div className='flex flex-col gap-4'>
-                <div>
-                  <label htmlFor="">Phone Number <span className='text-red-700 font-bold'>*</span></label>
-                  <InputField placeholder='Enter your Phonenumber' />
+              <h1 className='text-[16px] font-medium  p-2 bg-gray-500 text-white rounded-[3px]'>Reservation Payment</h1>
+              <div className='w-full'>
+                <p>Reservation Free Via</p>
+                <div className='w-full flex p-2 gap-6 items-center'>
+                  <div className='w-[30%] h-[180px] border rounded-md p-2 flex items-center justify-center flex-col '>
+                    <Image src='/gcash-logo.svg' width={80} height={20} alt='Gcash Logo'></Image>
+                    <Image src='/gcash-qr.png' width={110} height={20} alt='Gcash Logo'></Image>
+                    <p className='text-[14px] font-medium'>09-12345-6789</p>
+                  </div>
+                  <div className='w-[30%] h-[180px] border rounded-md p-2 flex items-center justify-center flex-col '>
+                    <Image src='/paypal-logo.png' width={80} height={20} alt='Gcash Logo'></Image>
+                    <Image src='/gcash-qr.png' width={110} height={20} alt='Gcash Logo'></Image>
+                    <p className='text-[14px] font-medium'>09-12345-6789</p>
+                  </div>
+                  <div className='flex flex-col w-[40%] gap-2'>
+                    <h2>Proof of Payment <span className='text-red-700 font-bold'>*</span></h2>
+                    <ImagesUploader onUpload={handleImageUpload} />
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="">Age</label>
-                  <InputField placeholder='Enter your firstname' />
-                </div>
               </div>
-
-              <div>
-                <label htmlFor="">State/Province  <span className='text-red-700 font-bold'>*</span></label>
-                <InputField placeholder='Enter your firstname' />
-              </div>
-
-              <div>
-                <label htmlFor="">City/Municipality  <span className='text-red-700 font-bold'>*</span>  </label>
-                <InputField placeholder='Enter your firstname' />
-              </div>
-              <div>
-                <label htmlFor="">Barangay  <span className='text-red-700 font-bold'>*</span> </label>
-                <InputField placeholder='Enter your firstname' />
-              </div>
-              <div>
-                <label htmlFor="">Pick-up Date & Time <span className='text-red-700 font-bold'>*</span> </label>
-                <DatePickerWithTime />
-              </div>
-              <div>
-                <label htmlFor="">Pick-up Location<span className='text-red-700 font-bold'>*</span> </label>
-                <InputField />
-              </div><div>
-                <label htmlFor="">Drop off Location<span className='text-red-700 font-bold'>*</span> </label>
-                <InputField />
-              </div>
-
             </div>
+
             <div className='flex gap-[1rem] p-5 w-full justify-end'>
-              <Button name='BACK' onClick={handleBackClick} width='120px' />
-              <Button name='NEXT' onClick={handleNextClick} width='120px' />
+              <Button name='BACK' onClick={handleBackClick} width='120px' className="bg-gray-500 hover:bg-gray-700 text-white" /> 
+              <Button name='SUBMIT' onClick={handleSubmit} width='120px' className="bg-green-500 hover:bg-green-700 text-white" /> 
             </div>
           </div>
         </Modal>
 
-        <Modal isOpen={currentModal === 'confirmation'} width="850px" height="530px">
-          <div className='w-full h-full flex flex-col justify-between'>
-            <div className='w-full bg-primaryColor h-[80px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]'>
-              <h1 className='text-[20px] font-medium'>PAYMENT RESERVATION FORM</h1>
-              <p className='text-[15px] font-light'>Please fill out the form to apply for reservation.</p>
-            </div>
-            <div className='flex gap-[1rem] p-5 w-full justify-end'>
-              <Button name='BACK' onClick={handleBackClick} width='120px'/>
-              <Button name='SUBMIT' onClick={handleSubmit} width='120px'/>
-            </div>
-          </div>
-        </Modal>
-
+      
       </div>
     </>
   );

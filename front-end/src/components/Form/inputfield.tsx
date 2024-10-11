@@ -13,6 +13,7 @@ interface Props {
   readOnly?: boolean; // Add readOnly prop to the interface
   onClick?: React.MouseEventHandler<HTMLInputElement>; // Add onClick prop to the interface
   icon?: React.ReactNode; // Add icon prop to the interface
+  className?: string; // Add className prop to the interface
 }
 
 const InputField: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const InputField: React.FC<Props> = ({
   readOnly = false,
   onClick,
   icon, // Destructure icon prop
+  className, // Destructure className prop
   ...rest
 }) => {
   return (
@@ -59,7 +61,7 @@ const InputField: React.FC<Props> = ({
           border,
           paddingLeft: icon ? "40px" : "10px", // Adjust padding for icon
         }}
-        className=" w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor"
+        className={`${className} w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor`}
         {...rest}
       />
     </div>

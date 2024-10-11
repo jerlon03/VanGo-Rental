@@ -37,13 +37,13 @@ const Drop: React.FC<Props> = ({ onClick, width, children }) => {
   return (
     <div className={`relative inline-block font-Poppins`} style={{ width }} ref={dropdownRef}>
       {/* Dropdown toggle button with conditional icon */}
-      <button onClick={toggleDropdown}>
+      <button onClick={toggleDropdown} style={{ zIndex: 10 }}>
         {open ? <MdArrowDropUp size={20} className='text-button' /> : <MdArrowDropDown size={20} className='text-button' />}
       </button>
 
       {/* Dropdown content */}
       {open && (
-        <div className="origin-top-right absolute right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 text-[16px]">
+        <div className="absolute z-20 origin-top-right right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 text-[16px]">
           <div className="p-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
             {children}
           </div>

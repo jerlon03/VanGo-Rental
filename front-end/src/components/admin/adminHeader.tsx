@@ -32,7 +32,7 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
             </div>
             <div className='flex gap-[5px] items-center'>
                 <IoNotifications size={25} className='text-button cursor-pointer' onClick={handleNotificationClick} />
-                <div className="flex items-center relative">
+                <div className="flex items-center relative z-90"> {/* Added z-90 to ensure it is above other elements */}
                     <Image src="/logo.svg" width={30} height={30} alt='Profile' />
                     <div className='font-Poppins'>
                         {user ? (
@@ -44,7 +44,7 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
                         )}
                     </div>
                     <Drop>
-                        <div className='flex flex-col w-[120px] z-80'>
+                        <div className='flex flex-col w-[120px] z-80'> {/* Ensure z-80 is applied here */}
                             <Link href="/dashboard/profile">
                                 <div className='flex w-full gap-[5px] hover:bg-button p-1 hover:text-button hover:rounded-md cursor-pointer'>
                                     <CgProfile size={20} className='text-primaryColor' />
