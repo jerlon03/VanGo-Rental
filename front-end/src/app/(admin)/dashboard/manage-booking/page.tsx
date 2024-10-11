@@ -71,6 +71,8 @@ const ManageBookings = () => {
             tbody: { className: 'border' },
             headerRow: { className: 'h-[40px]' },
           }}
+          sortField="booking_id" // Add this line to specify the field to sort by
+          sortOrder={-1} // Add this line to specify descending order
         >
           <Column
             header="Booking ID"

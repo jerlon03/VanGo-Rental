@@ -33,7 +33,6 @@ const AdminDashboard = () => {
               <p className='font-semibold text-white 2xl:text-[20px] xl:text-[18px] lg:text-[16px]'>10 <span>Pending Booking</span></p>
 
             </div>
-            <div>1</div>
             <div className='p-2 rounded-lg  h-[100px]  bg-primaryColor flex items-center gap-4'>
               <div className='rounded-full bg-white p-1 flex justify-center items-center 2xl:h-[70px] lg:h-[50px] xl:h-[60px] 2xl:w-[70px] xl:w-[60px] lg:w-[50px]'>
                 {/* <Image src='/complete_booking-removebg-preview.png' width={50} height={30} alt='Complete Booking' className='w-full ' ></Image> */}

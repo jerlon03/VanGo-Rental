@@ -15,7 +15,7 @@ const Blog = () => {
       try {
         const data = await fetchAllPublicPosts();
         console.log(data, 'datahgyuf'); // Logs the entire response
-  
+
         // Assuming the structure is { message: '...', posts: [...] }
         setPosts(data.posts || []); // Set posts to an empty array if data.posts is undefined
       } catch (err) {
@@ -24,10 +24,10 @@ const Blog = () => {
         setLoading(false);
       }
     };
-  
+
     fetchPosts();
   }, []);
-  
+
 
   console.log(posts, 'test again data')
 
@@ -59,114 +59,33 @@ const Blog = () => {
       </div>
 
       {/* Featured Articles */}
-      <div>
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          posts.map(post => {
-            console.log(post , 'test'); // Log each post to ensure it's being passed correctly
-            return <ArticleCard key={post.post_id} posts={post} />; // Pass each post to ArticleCard
-          })
-        )}
-      </div>
-      <div className="px-[9%]">
-        <h1 className="text-[20px] font-medium">Featured Articles</h1>
-        <div className="grid grid-cols-2 gap-7 text-justify">
-          {/* Article 1 */}
-          <div className="flex flex-col gap-[1rem]">
-            <Image
-              src="/png/blog_img.png"
-              width={300}
-              height={300}
-              alt="Article Image"
-              className="w-full"
-            />
-            <div>
-              <h1>Family Escapades: Bonding Beyond Borders</h1>
-              <p className="text-[12px] text-primaryColor font-semibold">
-                April 05, 2024
+      <div className="px-[9%] py-10">
+        <h1 className="text-3xl font-bold mb-6 text-primaryColor">Featured Articles</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Article Loop */}
+          {posts.length > 0 && posts.map((post, index) => (
+            <div key={index} className="flex flex-col gap-5 bg-white shadow-md p-5 rounded-lg transition-transform transform hover:-translate-y-2 hover:shadow-xl">
+              <Image
+                src="/png/blog_img.png"
+                width={300}
+                height={200}
+                alt="Article Image"
+                className="w-full h-48 object-cover rounded-md"
+              />
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">{post.title}</h2>
+                <p className="text-xs text-gray-500 mt-1">
+                  {new Date(post.createdAt).toLocaleDateString()} {/* Formatting the date */}
+                </p>
+              </div>
+              <p className="text-gray-700 leading-relaxed line-clamp-3">
+                {post.description}
               </p>
             </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Distinctio, ipsa velit eaque temporibus sint incidunt est porro
-              nostrum blanditiis maiores quasi, aut tempore nam eligendi
-              adipisci quo possimus quam deserunt.
-            </p>
-          </div>
-
-          {/* Article 2 */}
-          <div className="flex flex-col gap-[1rem]">
-            <Image
-              src="/png/blog_img.png"
-              width={300}
-              height={300}
-              alt="Article Image"
-              className="w-full"
-            />
-            <div>
-              <h1>Family Escapades: Bonding Beyond Borders</h1>
-              <p className="text-[12px] text-primaryColor font-semibold">
-                April 05, 2024
-              </p>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Distinctio, ipsa velit eaque temporibus sint incidunt est porro
-              nostrum blanditiis maiores quasi, aut tempore nam eligendi
-              adipisci quo possimus quam deserunt.
-            </p>
-          </div>
-
-          {/* Article 3 */}
-          <div className="flex flex-col gap-[1rem]">
-            <Image
-              src="/png/blog_img.png"
-              width={300}
-              height={300}
-              alt="Article Image"
-              className="w-full"
-            />
-            <div>
-              <h1>Family Escapades: Bonding Beyond Borders</h1>
-              <p className="text-[12px] text-primaryColor font-semibold">
-                April 05, 2024
-              </p>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Distinctio, ipsa velit eaque temporibus sint incidunt est porro
-              nostrum blanditiis maiores quasi, aut tempore nam eligendi
-              adipisci quo possimus quam deserunt.
-            </p>
-          </div>
-
-          {/* Article 4 */}
-          <div className="flex flex-col gap-[1rem]">
-            <Image
-              src="/png/blog_img.png"
-              width={300}
-              height={300}
-              alt="Article Image"
-              className="w-full"
-            />
-            <div>
-              <h1>Family Escapades: Bonding Beyond Borders</h1>
-              <p className="text-[12px] text-primaryColor font-semibold">
-                April 05, 2024
-              </p>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Distinctio, ipsa velit eaque temporibus sint incidunt est porro
-              nostrum blanditiis maiores quasi, aut tempore nam eligendi
-              adipisci quo possimus quam deserunt.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
+
 
       {/* Testimonial Section */}
       <div className="w-full py-[4rem] flex justify-center">
@@ -288,7 +207,7 @@ const Blog = () => {
           </svg>
         </button>
       </div>
-    </div>
+    </div >
   );
 };
 
