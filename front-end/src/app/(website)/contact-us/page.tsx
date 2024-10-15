@@ -80,7 +80,7 @@ const ContactUs = () => {
         </div>
       </div>
       <div className="w-full px-[200px] pb-[30px] mb-12">
-        <div className="w-full h-[400px]">
+        <div className="w-full ">
           <h1 className="text-center font- font-medium text-[20px] p-2">We are here</h1>
           <div id="embed-ded-map-canvas" className="h-full w-full max-w-full">
             <iframe

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { fetchAllPublicPosts } from "@/lib/api/posts.api";
 import { BlogPost } from "@/lib/types/posts.type";
-import ArticleCard from "@/components/Card/postCard";
+import { formatDatePublicRange, formatDateRange } from "@/components/date/formatDate";
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]); // Ensure posts is initialized as an empty array
@@ -63,7 +63,7 @@ const Blog = () => {
         <h1 className="text-3xl font-bold mb-6 text-primaryColor">Featured Articles</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Article Loop */}
-          {posts.length > 0 && posts.map((post, index) => (
+          {posts.length > 0 && posts.filter(post => post.status === 'PUBLISH').map((post, index) => ( // Filter for 'PUBLISH' status
             <div key={index} className="flex flex-col gap-5 bg-white shadow-md p-5 rounded-lg transition-transform transform hover:-translate-y-2 hover:shadow-xl">
               <Image
                 src="/png/blog_img.png"
@@ -73,16 +73,16 @@ const Blog = () => {
                 className="w-full h-48 object-cover rounded-md"
               />
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">{post.title}</h2>
-                <p className="text-xs text-gray-500 mt-1">
-                  {new Date(post.createdAt).toLocaleDateString()} {/* Formatting the date */}
+                <h2 className="text-xl font-medium text-blackColor">{post.title}</h2>
+                <p className="text-[14px] font-semibold text-primaryColor mt-1">
+                  {formatDatePublicRange(post.createdAt as any)} 
                 </p>
               </div>
               <p className="text-gray-700 leading-relaxed line-clamp-3">
                 {post.description}
               </p>
             </div>
-          ))}
+          ))} 
         </div>
       </div>
 
@@ -212,5 +212,6 @@ const Blog = () => {
 };
 
 export default Blog;
+
 
 

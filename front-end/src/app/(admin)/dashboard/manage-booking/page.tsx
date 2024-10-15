@@ -6,7 +6,7 @@ import { MdDeleteOutline } from 'react-icons/md';
 import { fetchAllBookings } from '@/lib/api/booking.api';
 import { Booking, BookingDetails } from '@/lib/types/booking.type';
 import { Column } from 'primereact/column';
-import { formatDateRange } from '@/components/date/formatDate';
+import { formatDateRange, formatDatePublicRange } from '@/components/date/formatDate';
 import AdminHeader from '@/components/admin/adminHeader';
 import Link from 'next/link';
 import Button from '@/components/Button/button';
@@ -39,17 +39,7 @@ const ManageBookings = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  function onEditClick(rowData: any): void {
-    throw new Error('Function not implemented.');
-  }
-  function onDeleteClick(rowData: BookingDetails): void {
-    SweetAlert.showConfirm('Do you want to decline this booking?').then((isConfirmed) => {
-      if (isConfirmed) {
-        // Add your decline booking logic here
-        SweetAlert.showSuccess('The booking has been declined.');
-      }
-    });
-  }
+
   const handleViewClick = (rowData: BookingDetails) => {
     setSelectedBooking(rowData as any); // Cast BookingDetails to Booking
     setModalVisible(true); // Show the modal
@@ -115,8 +105,16 @@ const ManageBookings = () => {
             }}
           />
           <Column
+            header="Pick up Date "
+            body={(rowData) => formatDatePublicRange(rowData.pickup_date_time)} // Format the date
+            pt={{
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r' },
+            }}
+          />
+          <Column
             header="Book Created : "
-            body={(rowData) => formatDateRange(rowData.created_at)} // Format the date
+            body={(rowData) => formatDatePublicRange(rowData.created_at)} // Format the date
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] border-r' },
@@ -174,41 +172,20 @@ const ManageBookings = () => {
             body={(rowData) => (
               <div className="flex space-x-2 justify-center items-center">
                 {rowData.status === 'confirmed' ? (
-                   <FaEye
-                     onClick={() => handleViewClick(rowData)}
-                     className="text-primaryColor cursor-pointer"
-                     size={30}
-                     title="View Post" // Tooltip for view icon
-                   />
+                  <FaEye
+                    onClick={() => handleViewClick(rowData)}
+                    className="text-primaryColor cursor-pointer"
+                    size={30}
+                    title="View Post" // Tooltip for view icon
+                  />
                 ) : rowData.status === 'pending' ? (
                   <>
-                    {/* <Button name='View' backgroundColor='alert' onClick={() => handleViewClick(rowData)}></Button> */}
-                    <IoCloseCircle
-                      onClick={() => onDeleteClick(rowData)} // Call onDeleteClick on decline icon click
-                      className="text-red-400 cursor-pointer"
-                      size={30}
-                      title="Decline" // Tooltip for delete icon
-                    />
-                    <FaCheckCircle
-                      onClick={() => {
-                        SweetAlert.showConfirm('Do you want to accept this booking?').then((isConfirmed) => {
-                          if (isConfirmed) {
-                            // Add your accept booking logic here
-                            SweetAlert.showSuccess('The booking has been accepted.');
-                          }
-                        });
-                      }}
-                      className="text-green-400 cursor-pointer"
-                      size={25}
-                      title="Accept" // Tooltip for accept icon
-                    />
                     <FaEye
                       onClick={() => handleViewClick(rowData)}
                       className="text-primaryColor cursor-pointer"
                       size={30}
                       title="View Post" // Tooltip for view icon
                     />
-                    {/* <Button name='Decline' backgroundColor='error'></Button> */}
                   </>
                 ) : null}
               </div>
@@ -220,7 +197,6 @@ const ManageBookings = () => {
           />
         </DataTable>
       </div>
-      {/* Modal for booking details */}
       {isModalVisible && (
         <BookingDetailsModal
           booking={selectedBooking} // Ensure selectedBooking is of type Booking

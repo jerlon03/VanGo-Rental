@@ -3,6 +3,9 @@ import React, { useEffect, useRef } from 'react'; // Added useEffect and useRef
 import ModalContainer from '@/components/modals/modalContainer'; // Import the ModalContainer component
 import { Booking } from '@/lib/types/booking.type';
 import { formatDateRange } from '@/components/date/formatDate';
+import Button from '@/components/Button/button';
+import SweetAlert from '@/components/alert/alert'; // Import SweetAlert
+
 
 interface BookingDetailsModalProps {
     booking: Booking | null;
@@ -39,7 +42,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
                     <div className="col-span-2 text-center">
                         <p className="text-lg font-medium">Booking ID: <span className="font-semibold">{booking.booking_id}</span></p>
                     </div>
-                    
+
                     <div>
                         <h3 className="text-xl font-semibold mb-2">Personal Information</h3>
                         <p><span className="font-medium">Name:</span> {booking.first_name} {booking.last_name}</p>
@@ -60,17 +63,45 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
                     </div>
 
                     <div className="col-span-2 text-center">
+                        <p className="text-lg"><span className="font-medium">Booking Status:</span> {booking.status}</p>
                         <p className="text-lg"><span className="font-medium">Booking Created:</span> {formatDateRange(booking.created_at as any)}</p>
                     </div>
                 </div>
 
-                <div className="flex justify-end mt-6">
-                    <button
-                        onClick={onClose}
-                        className="px-6 py-2 bg-primaryColor text-white rounded-lg hover:bg-primaryDark"
-                    >
-                        Close
-                    </button>
+                <div className="flex justify-end mt-6 gap-4">
+                    {booking.status === 'pending' && ( // Show buttons only if status is pending
+                        <>
+                            <Button 
+                                name='Decline' 
+                                width='120px' 
+                                backgroundColor='error' 
+                                onClick={() => {
+                                    // Add decline logic here
+                                    SweetAlert.showConfirm('Do you want to decline this booking?').then((isConfirmed) => {
+                                        if (isConfirmed) {
+                                            SweetAlert.showSuccess('The booking has been declined.');
+                                            onClose(); // Close the modal after action
+                                        }
+                                    });
+                                }} 
+                            />
+                            <Button 
+                                name='Accept' 
+                                width='120px' 
+                                backgroundColor='success' 
+                                onClick={() => {
+                                    // Add accept logic here
+                                    SweetAlert.showConfirm('Do you want to accept this booking?').then((isConfirmed) => {
+                                        if (isConfirmed) {
+                                            SweetAlert.showSuccess('The booking has been accepted.');
+                                            onClose(); // Close the modal after action
+                                        }
+                                    });
+                                }} 
+                            />
+                        </>
+                    )}
+                    <Button name='Close' onClick={onClose} width='120px' backgroundColor='alert'></Button>
                 </div>
             </div>
         </ModalContainer>
