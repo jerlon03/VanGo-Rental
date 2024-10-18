@@ -140,17 +140,20 @@ const AdminPost = () => {
   };
 
 
+  // Event handler for clicking outside the dropdown
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setIsDropdownOpen(false);
     }
   };
+
+  // Effect to handle outside click
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, []); // This effect runs only once on mount
 
   // Filter posts based on selected status
   const filteredPosts = selectedStatus ? posts.filter(post => post.status === selectedStatus) : posts; // Show all posts if selectedStatus is empty
