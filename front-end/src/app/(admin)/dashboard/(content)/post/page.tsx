@@ -14,7 +14,7 @@ import { BlogPost } from '@/lib/types/posts.type'
 import Link from 'next/link'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const AdminPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,10 +22,13 @@ const AdminPost = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null); // State to hold the selected post details
-  const [isAddPostModalOpen, setIsAddPostModalOpen] = useState(false); // State for modal
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [isAddPostModalOpen, setIsAddPostModalOpen] = useState(false);
   const [description, setDescription] = useState('');
   const [postImage, setPostsImage] = useState<File | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<string>('ALL'); // Default to 'ALL'
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // Ref for the dropdown
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -39,11 +42,16 @@ const AdminPost = () => {
 
   const addPost = () => {
     setSelectedPost(null); // Reset selected post when adding a new post
-    setIsAddPostModalOpen(true); // Correctly set the state to open the add post modal
+    setIsAddPostModalOpen(true); // Open the add post modal
     openModal(); // Open the modal
-  }
+  };
+
   const handleImageUpload = (file: File) => {
     setPostsImage(file);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(prev => !prev); // Toggle dropdown visibility
   };
 
   useEffect(() => {
@@ -60,16 +68,14 @@ const AdminPost = () => {
 
     loadPosts();
   }, []);
-  console.log(posts, 'testing posting')
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   // actions
   const handleEdit = (row: any) => {
-    // Handle edit action
     console.log('Edit:', row);
-    SweetAlert.showConfirm('Are you sure you want to Edit?')
+    SweetAlert.showConfirm('Are you sure you want to Edit?');
   };
 
   const handleDelete = async (row: any) => {
@@ -83,32 +89,27 @@ const AdminPost = () => {
   };
 
   // pagination
-  const totalPages = 10;
+  const totalPages = 10; // Adjust this based on your data
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
-
 
   const onPublishClick = async (rowData: BlogPost): Promise<void> => {
     const confirmed = await SweetAlert.showConfirm(`Are you sure you want to Publish Post [${rowData.post_id}]?`);
     if (confirmed) {
       try {
-        // Check if the post is already published
         if (rowData.status === 'PUBLISH') {
           SweetAlert.showError('Post is already published.'); // Show error message
           return; // Exit the function if already published
         }
 
-        // Call the API to update only the post status to 'publish'
-        await fetchUpdatePosts(rowData.post_id, { status: 'PUBLISH' }); // Ensure only status is sent
-
-        // Refetch posts after publishing
+        await fetchUpdatePosts(rowData.post_id, { status: 'PUBLISH' }); // Update post status
         const data = await fetchAllPosts(); // Refetch posts
         setPosts(data.posts || []); // Update state with new posts
-
         SweetAlert.showSuccess('You successfully Published.');
       } catch (error) {
         console.error('Error updating post:', error);
@@ -119,7 +120,6 @@ const AdminPost = () => {
     }
   };
 
-  // Function to open the modal with post details
   const viewPostDetails = (rowData: BlogPost) => {
     setSelectedPost(rowData); // Set the selected post
     openModal(); // Open the modal
@@ -130,12 +130,37 @@ const AdminPost = () => {
     closeModal(); // This will also clear the data
   };
 
+  const statuses = ['ALL', 'PUBLISH', 'DRAFT', 'CLOSED']; // Updated array of statuses to include 'ALL'
+
+  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    console.log("Selected Status:", value); // Debugging log
+    setSelectedStatus(value); // Set the selected status
+    setIsDropdownOpen(false); // Close the dropdown when a status is selected
+  };
+
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Filter posts based on selected status
+  const filteredPosts = selectedStatus ? posts.filter(post => post.status === selectedStatus) : posts; // Show all posts if selectedStatus is empty
+
   return (
     <div>
       {/* modal */}
       <Modal isOpen={isModalOpen} width='500px' height='460px' onClose={closeModal}>
         <div className='bg-white rounded-[5px]'>
-          {selectedPost ? ( // Only show header if a post is selected
+          {selectedPost ? (
             <div className="bg-white rounded-[5px] shadow-lg">
               <div className="flex justify-between items-center bg-primaryColor rounded-t-[5px] p-4">
                 <h2 className="text-[20px] font-semibold text-white">POST DETAILS</h2>
@@ -161,13 +186,12 @@ const AdminPost = () => {
                 </div>
               )}
             </div>
-
-          ) : isAddPostModalOpen && ( // Show header for adding post
+          ) : isAddPostModalOpen && (
             <div className='w-full flex justify-between items-center flex-col'>
               <div className='w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]'>
-                <h2 className="text-[20px] text-white font-medium  ">CREATE BLOG POST</h2>
+                <h2 className="text-[20px] text-white font-medium">CREATE BLOG POST</h2>
               </div>
-              <div className='w-full px-4 p-4 '>
+              <div className='w-full px-4 p-4'>
                 <div className='flex flex-col gap-4'>
                   <div>
                     <label htmlFor="">Title <span className='text-red-700 font-bold'>*</span></label>
@@ -176,8 +200,8 @@ const AdminPost = () => {
                   <div className='w-full'>
                     <h2>Description <span className='text-red-700 font-bold'>*</span></h2>
                     <TextArea
-                      value={description}  // Pass the value here
-                      onChange={handleTextChange}  // Pass the onChange handler here
+                      value={description}
+                      onChange={handleTextChange}
                       placeholder="Enter your description here"
                       rows={4}
                       cols={60}
@@ -186,7 +210,6 @@ const AdminPost = () => {
                     <p className='flex w-full justify-end text-[12px] font-medium text-[#cccccc]'>{description.length}/300</p>
                   </div>
                 </div>
-
                 <div className='w-full flex gap-8 justify-center items-center'>
                   <div className='flex flex-col w-[60%]'>
                     <h2>Post Image <span className='text-red-700 font-bold'>*</span></h2>
@@ -197,29 +220,47 @@ const AdminPost = () => {
                     <Button name='SAVE' backgroundColor='success' onClick={handleSave}></Button>
                   </div>
                 </div>
-
               </div>
-
-
             </div>
           )}
         </div>
-
       </Modal>
 
       <div className='w-full pb-5'>
         <AdminHeader>
-          <h1 className='text-[14px] flex items-end  text-blackColor/70 tracking-[2px]'><Link href="/dashboard">Dashboard</Link> / Posting</h1>
+          <h1 className='text-[14px] flex items-end text-blackColor/70 tracking-[2px]'>
+            <Link href="/dashboard">Dashboard</Link> / Posting
+          </h1>
         </AdminHeader>
       </div>
       <div className='w-full px-[2%]'>
         <div className='w-full flex gap-2 py-5 justify-end'>
-          <Button name='ADD POST' onClick={addPost} width='180px' height='35px'></Button>
-          <Button name='Filter By : ' width='150px' height='35px'></Button>
           <InputField placeholder="Search ..." height='35px' width='220px' />
+          <Button name='ADD POST' onClick={addPost} width='180px' height='35px'></Button>
+          <Button name='Filter By : ' width='150px' height='35px' onClick={toggleDropdown}></Button>
+          {isDropdownOpen && (
+            <div ref={dropdownRef} className="absolute bg-white border rounded shadow-lg z-10 mt-6 w-[120px]">
+              <div className="p-2">
+                {statuses.map((status) => (
+                  <div key={status} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={status}
+                      name="status"
+                      value={status}
+                      checked={selectedStatus === status} // Check if this status is selected
+                      onChange={handleStatusChange}
+                      className="mr-2 custom-radio"
+                    />
+                    <label htmlFor={status}>{status}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <DataTable
-          value={posts}
+          value={filteredPosts} // Use filtered posts here
           tableStyle={{ minWidth: '50rem' }}
           pt={{
             thead: { className: 'bg-primaryColor text-white ' },
@@ -250,7 +291,7 @@ const AdminPost = () => {
             }} />
           <Column
             field="description"
-            header=" Descrtiption" pt={{
+            header="Description" pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
             }} />
@@ -272,6 +313,9 @@ const AdminPost = () => {
                   statusClass = 'bg-green-500 text-white';
                   break;
                 case 'DRAFT':
+                  statusClass = 'bg-yellow-400 text-white';
+                  break;
+                case 'CLOSED':
                   statusClass = 'bg-yellow-400 text-white';
                   break;
                 default:
@@ -297,46 +341,46 @@ const AdminPost = () => {
             }}
             body={(rowData) => (
               <div className="flex space-x-2 justify-center">
-                {rowData.status === 'DRAFT' && ( // Check if status is 'unpublish'
+                {rowData.status === 'DRAFT' && (
                   <>
                     <FaRegEdit
                       onClick={() => handleEdit(rowData)}
                       className="text-primaryColor cursor-pointer"
                       size={18}
-                      title="Edit Post" // Tooltip for edit icon
+                      title="Edit Post"
                     />
                     <MdDeleteOutline
                       onClick={() => handleDelete(rowData)}
                       className="text-red-400 cursor-pointer"
                       size={22}
-                      title="Delete Post" // Tooltip for delete icon
+                      title="Delete Post"
                     />
                   </>
                 )}
-                {rowData.status === 'PUBLISH' && ( // Show eye icon only for published posts
+                {rowData.status === 'PUBLISH' && (
                   <FaEye
-                    onClick={() => viewPostDetails(rowData)} // Update to call the new function
+                    onClick={() => viewPostDetails(rowData)}
                     className="text-green-400 cursor-pointer"
                     size={22}
-                    title="View Post" // Tooltip for view icon
+                    title="View Post"
                   />
                 )}
-                {rowData.status === 'DRAFT' && ( // Check if status is 'unpublish'
+                {rowData.status === 'DRAFT' && (
                   <MdPublish
                     onClick={() => onPublishClick(rowData)}
                     className="text-green-400 cursor-pointer"
                     size={22}
-                    title="Publish Post" // Tooltip for publish icon
+                    title="Publish Post"
                   />
                 )}
               </div>
-            )} />
+            )}
+          />
         </DataTable>
         <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default AdminPost
+export default AdminPost;

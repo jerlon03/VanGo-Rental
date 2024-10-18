@@ -113,7 +113,7 @@ const ManageBookings = () => {
             }}
           />
           <Column
-            header="Book Created : "
+            header="Book Created "
             body={(rowData) => formatDatePublicRange(rowData.created_at)} // Format the date
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
@@ -164,7 +164,7 @@ const ManageBookings = () => {
             }}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r lg:text-[14px]' }
             }}
           />
           <Column
@@ -174,7 +174,7 @@ const ManageBookings = () => {
                 {rowData.status === 'confirmed' ? (
                   <FaEye
                     onClick={() => handleViewClick(rowData)}
-                    className="text-primaryColor cursor-pointer"
+                    className="text-primaryColor cursor-pointer lg:size-[25px]"
                     size={30}
                     title="View Post" // Tooltip for view icon
                   />
@@ -182,7 +182,7 @@ const ManageBookings = () => {
                   <>
                     <FaEye
                       onClick={() => handleViewClick(rowData)}
-                      className="text-primaryColor cursor-pointer"
+                      className="text-primaryColor cursor-pointer lg:size-[25px]"
                       size={30}
                       title="View Post" // Tooltip for view icon
                     />
@@ -192,7 +192,7 @@ const ManageBookings = () => {
             )}
             pt={{
               bodyCell: { className: 'border-b text-blackColor p-2' },
-              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium text-[16px] border-r' },
+              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium text-[16px] border-r lg:text-[14px]' },
             }}
           />
         </DataTable>
