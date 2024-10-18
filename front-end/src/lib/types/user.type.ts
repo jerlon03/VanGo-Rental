@@ -7,8 +7,6 @@ export interface Users {
     role: string;
     password: string;
     status:string;
-    phoneNumber:string;
-    Location:string;
     createdAt: string;
   }
 

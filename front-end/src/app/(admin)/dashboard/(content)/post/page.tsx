@@ -93,18 +93,17 @@ const AdminPost = () => {
 
 
   const onPublishClick = async (rowData: BlogPost): Promise<void> => {
-    console.log('Publish:', rowData);
     const confirmed = await SweetAlert.showConfirm(`Are you sure you want to Publish Post [${rowData.post_id}]?`);
     if (confirmed) {
       try {
         // Check if the post is already published
-        if (rowData.status === 'publish') {
+        if (rowData.status === 'PUBLISH') {
           SweetAlert.showError('Post is already published.'); // Show error message
           return; // Exit the function if already published
         }
 
         // Call the API to update only the post status to 'publish'
-        await fetchUpdatePosts(rowData.post_id, { status: 'publish' }); // Ensure only status is sent
+        await fetchUpdatePosts(rowData.post_id, { status: 'PUBLISH' }); // Ensure only status is sent
 
         // Refetch posts after publishing
         const data = await fetchAllPosts(); // Refetch posts

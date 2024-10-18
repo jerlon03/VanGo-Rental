@@ -68,56 +68,56 @@ const ManageBookings = () => {
             header="Booking ID"
             field="booking_id" // Ensure this matches the field in your data
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
             header="Booked By" // Changed header to "Name"
             body={(rowData) => `${rowData.first_name} ${rowData.last_name}`} // Combine first and last name
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
             header="Email Account"
             field="email" // Ensure this matches the field in your data
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
             header=" Phone Number"
             field="phone_number" // Ensure this matches the field in your data
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
             header="Pick up Location "
             body={(rowData) => `${rowData.province} , ${rowData.city_or_municipality}, ${rowData.barangay}, ${rowData.pickup_location} `} // Combine first and last name
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
             header="Pick up Date "
             body={(rowData) => formatDatePublicRange(rowData.pickup_date_time)} // Format the date
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] border-r' },
             }}
           />
           <Column
             header="Book Created : "
             body={(rowData) => formatDatePublicRange(rowData.created_at)} // Format the date
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] border-r' },
             }}
           />
           <Column
@@ -134,8 +134,8 @@ const ManageBookings = () => {
               </div>
             )}
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' },
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
@@ -147,13 +147,13 @@ const ManageBookings = () => {
               // Apply different styles based on the status value
               switch (rowData.status) {
                 case 'confirmed':
-                  statusClass = 'bg-green-500 text-white';
+                  statusClass = 'bg-green-500 text-white lg:text-[14px]';
                   break;
                 case 'pending':
-                  statusClass = 'bg-yellow-400 text-white';
+                  statusClass = 'bg-yellow-400 text-white lg:text-[14px]';
                   break;
                 default:
-                  statusClass = 'bg-gray-100 text-gray-800';
+                  statusClass = 'bg-gray-100 text-gray-800 lg:text-[14px]';
               }
 
               return (

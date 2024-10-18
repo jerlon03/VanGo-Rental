@@ -16,10 +16,16 @@ const fetchAllPublicVan = async () => {
     const response = await Instance.get<DataRes<Van[]>>('/public/van/');
     return response.data;
 }
+
+const fetchUpdateVan = async (id: number, data: Van) => {
+    const response = await Instance.put<DataRes<Van>>(`/api/van/update/${id}`, data);
+    return response.data;
+}
   
 
 export {
     fetchAllVan,
     fetchAddVan,
-    fetchAllPublicVan
+    fetchAllPublicVan,
+    fetchUpdateVan
   }

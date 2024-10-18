@@ -11,14 +11,6 @@ export function useFetchAllUser() {
     });
   }
 
-  export function useFetchAddUser() {
-    return useQuery({
-      queryKey: ['add_users'],
-      queryFn: async () => {
-        const addingUser = await addUser();
-        return addingUser;
-      }
-    });
-  }
+
 
   

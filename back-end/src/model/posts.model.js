@@ -1,12 +1,12 @@
 const dbConn = require('../../config/db.config');
 
-const createPost = (title, description, post_image, status, user_id, callback) => {
+const createPost = (title, description, post_image, status, admin_id, callback) => {
     const query = `
-        INSERT INTO posts (title, description, post_image, status, user_id) 
+        INSERT INTO posts (title, description, post_image, status, admin_id) 
         VALUES (?, ?, ?, ?, ?)
     `;
 
-    dbConn.query(query, [title, description || null, post_image || null, status || 'unpublish', user_id], (err, result) => {
+    dbConn.query(query, [title, description || null, post_image || null, status || 'DRAFT', admin_id], (err, result) => {
         if (err) {
             return callback(err, null);
         }

@@ -7,6 +7,8 @@ const authRoutes = require('./src/routes/auth.route')
 const vanRoutes = require('./src/routes/van.route')
 const bookingRoutes = require('./src/routes/booking.route')
 const postingRoutes = require('./src/routes/posts.route')
+const driverRoutes = require('./src/routes/driver.route')
+const adminRoutes = require('./src/routes/admin.route')
 const { verifyToken } = require('./middleware/auth');
 
 const app = express();
@@ -23,10 +25,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/users', userRoute);
 
 // private routes
+app.use('/api/driver', verifyToken, driverRoutes);
 app.use('/api', verifyToken, authRoutes);
 app.use('/api/van',verifyToken, vanRoutes)
 app.use('/api/booking', bookingRoutes)
 app.use('/api/posting',verifyToken, postingRoutes)
+app.use('/api/admin',verifyToken, adminRoutes)
 
 //public routes
 app.use('/public/van', vanRoutes)

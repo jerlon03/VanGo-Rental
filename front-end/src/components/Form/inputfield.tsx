@@ -4,7 +4,7 @@ interface Props {
   id?: string; // Add id prop to the interface
   height?: string;
   width?: string;
-  type?: "text" | "password" | "number" | "email" | "search";
+  type?: "text" | "password" | "number" | "email" | "search"| "date";
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
   value?: string | number;
@@ -14,6 +14,7 @@ interface Props {
   onClick?: React.MouseEventHandler<HTMLInputElement>; // Add onClick prop to the interface
   icon?: React.ReactNode; // Add icon prop to the interface
   className?: string; // Add className prop to the interface
+  required?: boolean; // Add required prop to the interface
 }
 
 const InputField: React.FC<Props> = ({
@@ -30,6 +31,7 @@ const InputField: React.FC<Props> = ({
   onClick,
   icon, // Destructure icon prop
   className, // Destructure className prop
+  required, // Destructure required prop
   ...rest
 }) => {
   return (
@@ -55,6 +57,7 @@ const InputField: React.FC<Props> = ({
         value={value}
         readOnly={readOnly}
         onClick={onClick}
+        required={required} // Add required attribute
         style={{
           width,
           height,

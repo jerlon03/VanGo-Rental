@@ -90,4 +90,18 @@
     background-color: #0076a3;
     color: white;
   }
+
+  /* radio custom  */
+  .custom-radio {
+    width: 12px; /* Size of the custom radio */
+    height: 12px; /* Size of the custom radio */
+    border: 1px solid #CCCCCC; /* Default border color */
+    border-radius: 50%; /* Make it circular */
+    display: inline-block; /* Align with text */
+    margin-right: 8px; /* Space between radio and label text */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+  }
   
+  .custom-radio.checked {
+    background-color: #003459; 
+  }

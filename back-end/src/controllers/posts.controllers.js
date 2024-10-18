@@ -1,16 +1,16 @@
 const Posts = require('../model/posts.model'); // Correct path to your model module
 
 exports.createPost = (req, res) => {
-    const { title, description, post_image, status, user_id } = req.body;
+    const { title, description, post_image, status, admin_id } = req.body;
 
     // Validate required fields
-    if (!title || !user_id) {
+    if (!title || !admin_id) {
         return res.status(400).json({
-            message: 'Title and user_id are required fields'
+            message: 'Title and admin_id are required fields'
         });
     }
 
-    Posts.createPost(title, description, post_image, status, user_id, (err, postId) => {
+    Posts.createPost(title, description, post_image, status, admin_id, (err, postId) => {
         if (err) {
             return res.status(500).json({
                 message: 'Error creating post',

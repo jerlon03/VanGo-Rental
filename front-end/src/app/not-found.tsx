@@ -3,6 +3,8 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/lib/hooks/useAuth';
+import Button from '@/components/Button/button';
+import Image from 'next/image';
 
 const NofFound: NextPage = () => {
   const router = useRouter();
@@ -11,9 +13,7 @@ const NofFound: NextPage = () => {
   const handleRedirect = () => {
     if (role === 'admin') {
       router.push('/dashboard');
-    } else if (role === 'customer') {
-      router.push('/customer');
-    } else if (role === 'driver') {
+    }else if (role === 'driver') {
       router.push('/driver');
     } else {
       router.push('/');
@@ -21,12 +21,12 @@ const NofFound: NextPage = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '50px' }}>
-      <h1>404 - Page Not Found</h1>
-      <p>Sorry, we couldn't find the page you were looking for.</p>
-      <button onClick={handleRedirect}>
-        {role ? 'Go to Your Dashboard' : 'Go to Homepage'}
-      </button>
+
+    <div className='flex h-screen w-screen justify-center items-center flex-col gap-2'>
+        <Image src='/png/notfound.png' width={500} height={500} alt='Not Found Page' />
+        <h1 className='text-[20px] font-semibold'>404 - Page Not Found</h1>
+        <p>Sorry, we couldn't find the page you were looking for.</p>
+        <Button name={role ? 'Go to Your Dashboard' : 'Go to Homepage'} backgroundColor='alert' width='200px' onClick={handleRedirect}/>
     </div>
   );
 };

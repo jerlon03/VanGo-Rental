@@ -4,10 +4,10 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { fetchAllVan } from '@/lib/api/van.api'
+import { fetchAllVan, fetchUpdateVan } from '@/lib/api/van.api'
 import { Van } from '@/lib/types/van.type'
-import { FaRegEdit, FaEye} from 'react-icons/fa'
-import { MdDeleteOutline } from '@/components/icons'
+import { FaRegEdit, FaEye } from 'react-icons/fa'
+import { IoClose, MdDeleteOutline } from '@/components/icons'
 import { formatDateRange } from '@/components/date/formatDate'
 import Button from '@/components/Button/button'
 import Modal from '@/components/modals/modalContainer'
@@ -15,6 +15,10 @@ import { fetchAddVan } from '@/lib/api/van.api';
 import SweetAlert from '@/components/alert/alert'
 import ImagesUploader from '@/components/Uplooad/ImagesUploader'
 import InputField from '@/components/Form/inputfield'
+import Select from '@/components/Form/select';
+import Image from 'next/image'
+// import { Driver } from '@/lib/types/driver.type'
+// import { fetchAllDrivers } from '@/lib/api/driver.api'
 
 const VanInventory = () => {
   const [vans, setVans] = useState<Van[]>([]);
@@ -32,6 +36,16 @@ const VanInventory = () => {
     people_capacity: '',
     things_capacity: '',
   });
+  const [drivers, setDrivers] = useState([
+    { id: 1, name: 'John Doe' },
+    { id: 2, name: 'Jane Smith' },
+    { id: 3, name: 'Alice Johnson' },
+    { id: 4, name: 'Bob Brown' },
+  ]);
+  const [selectedDriver, setSelectedDriver] = useState<string>('');
+  const [selectedVan, setSelectedVan] = useState<Van | null>(null); // State to hold the selected van for details
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State to control the details modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control the edit modal
 
   const initialVanState = {
     van_name: '',
@@ -59,13 +73,13 @@ const VanInventory = () => {
   const handleImageUpload = (file: File) => {
     setVanImage(file);
   };
-  
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Check if all required fields are filled
-    if (!newVan.van_name || !newVan.van_description || !vanImage || 
-        !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity) {
+    if (!newVan.van_name || !newVan.van_description || !vanImage ||
+      !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity) {
       SweetAlert.showError('Please fill out all required fields and upload an image.');
       return;
     }
@@ -117,7 +131,13 @@ const VanInventory = () => {
 
   const openModal = () => {
     setIsModalOpen(true);
+    // No need to fetch drivers for now
   };
+
+  const handleDriverChange = (value: string) => {
+    setSelectedDriver(value);
+  };
+
   useEffect(() => {
     const fetchVans = async () => {
       try {
@@ -132,12 +152,55 @@ const VanInventory = () => {
   }, []);
 
 
-  function onEditClick(rowData: any): void {
-    throw new Error('Function not implemented.')
-  }
+
   function onDeleteClick(rowData: any): void {
     throw new Error('Function not implemented.')
   }
+
+  const onViewDetailsClick = (rowData: Van): void => {
+    setSelectedVan(rowData); // Set the selected van to display in the modal
+    setIsDetailsModalOpen(true); // Open the details modal
+  };
+
+  // Function to handle the edit submission
+  const handleEditSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // Add your validation logic here if needed
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        SweetAlert.showError('You are not authorized. Please log in.');
+        return;
+      }
+
+      const formData = new FormData();
+      Object.entries(newVan).forEach(([key, value]) => {
+        formData.append(key, value.toString());
+      });
+
+      // {{ edit_1 }} - Call the new fetchUpdateVan function
+      const updatedVan = await fetchUpdateVan(selectedVan?.van_id as any, newVan as any);
+      // {{ edit_1 }}
+
+      SweetAlert.showSuccess('Van updated successfully');
+      setIsEditModalOpen(false);
+      const updatedVans = await fetchAllVan();
+      setVans(updatedVans.data);
+      
+    } catch (error) {
+      SweetAlert.showError('Failed to update van');
+      console.error('Error:', error);
+    }
+  };
+
+  const handleEditConfirmation = (rowData: Van) => {
+    const confirmed = SweetAlert.showConfirm("Are you sure you want to edit this van?");
+    if (!confirmed) { // Change this condition to check if confirmed
+      setSelectedVan(rowData); // Set the selected van to edit
+      setIsEditModalOpen(true); // Open the edit modal
+    }
+  };
 
   return (
     <div className='w-full'>
@@ -151,7 +214,7 @@ const VanInventory = () => {
           <Button name='ADD VAN' onClick={openModal} width='180px' height='35px'></Button>
         </div>
         <div>
-          
+
         </div>
         <DataTable
           value={vans}
@@ -166,27 +229,27 @@ const VanInventory = () => {
             header="Van Name"
             field="van_name"
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px] truncate rounded-tl-[3px] border-r' }
             }}
           />
           <Column
             header="Image"
             body={(rowData) => (
               <div className="flex justify-center items-center h-full">
-                <img 
-                  src={rowData.van_image} 
+                <img
+                  src={rowData.van_image}
                   alt={`${rowData.van_name} image`}
-                  className="w-20 h-20 object-cover rounded"
+                  className=" object-cover rounded"
                   onError={(e) => {
-                    e.currentTarget.src = '/path/to/fallback/image.jpg'
+                    e.currentTarget.src = '/default-image.png'; 
                   }}
                 />
               </div>
             )}
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px]  border-r' }
             }}
           />
           <Column
@@ -199,34 +262,34 @@ const VanInventory = () => {
               </div>
             )}
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] xl:text-[15px] text-[16px] border-r' }
             }}
           />
           <Column
             field="people_capacity"
             header="People Capacity" pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px] text-center' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] text-center lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
             }} />
           <Column
             field="things_capacity"
             header="Things Capacity" pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
             }} />
           <Column
             field="transmission_type"
             header="Transmission Type" pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
             }} />
           <Column
             body={(rowData) => `${formatDateRange(rowData.createdAt)}`}
             header="Date Created"
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
             }} />
           <Column
             field="status"
@@ -269,7 +332,7 @@ const VanInventory = () => {
             body={(rowData) => (
               <div className="flex space-x-2">
                 <FaRegEdit
-                  onClick={() => onEditClick(rowData)}
+                  onClick={() => handleEditConfirmation(rowData)} // Updated to use the new confirmation function
                   className="text-primaryColor cursor-pointer"
                   size={18}
                 />
@@ -279,7 +342,7 @@ const VanInventory = () => {
                   size={22}
                 />
                 <FaEye
-                  onClick={() => onDeleteClick(rowData)}
+                  onClick={() => onViewDetailsClick(rowData)}
                   className="text-green-400 cursor-pointer"
                   size={22}
                 />
@@ -350,9 +413,20 @@ const VanInventory = () => {
                 <p>Van Image</p>
                 <ImagesUploader onUpload={handleImageUpload} />
               </div>
+              <div>
+                <p>Driver Assignee</p>
+                <Select
+                  options={drivers.map(driver => ({ value: driver.id.toString(), label: driver.name }))}
+                  onChange={handleDriverChange}
+                  defaultValue={selectedDriver}
+                  className="w-full"
+                  disabled={false}
+                />
+              </div>
+
             </div>
           </form>
-          <div className="py-2 px-6  border-t">
+          <div className="py-2 px-6 border-t">
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
@@ -370,6 +444,124 @@ const VanInventory = () => {
               </button>
             </div>
           </div>
+        </div>
+      </Modal>
+      {/* Details Modal */}
+      <Modal isOpen={isDetailsModalOpen} width='600px' height='550px' onClose={() => setIsDetailsModalOpen(false)}>
+        <div className="h-full flex flex-col bg-white rounded-[5px] justify-between">
+          <div className="flex justify-between items-center bg-primaryColor rounded-t-[5px] p-2">
+            <h2 className="text-[18px] font-semibold text-white">VAN DETAILS</h2>
+          </div>
+          {selectedVan && (
+            <div className="p-3">
+              <div className="flex flex-col ">
+                <div className='w-full flex justify-center'>
+                  <Image
+                    src={selectedVan.van_image} // Display the van image
+                    alt={`${selectedVan.van_name} image`}
+                    className="w-[200px] object-cover rounded mb-4"
+                    width={300}
+                    height={500}
+                  />
+                </div>
+
+                <p><strong>Van Name:</strong> {selectedVan.van_name}</p>
+                <p><strong>Description:</strong> {selectedVan.van_description}</p>
+                <p><strong>People Capacity:</strong> {selectedVan.people_capacity}</p>
+                <p><strong>Things Capacity:</strong> {selectedVan.things_capacity}</p>
+                <p><strong>Transmission Type:</strong> {selectedVan.transmission_type}</p>
+                <p><strong>Status:</strong> {selectedVan.status}</p>
+                <p><strong>Date Created:</strong> {formatDateRange(selectedVan.createdAt)}</p>
+                {/* Add more fields as necessary */}
+              </div>
+            </div>
+          )}
+          <div className="py-2 px-6 border-t">
+            <div className="flex justify-end space-x-4">
+              <Button name='CLOSE' onClick={() => setIsDetailsModalOpen(false)} backgroundColor='alert' width='120px'></Button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      {/* Edit Modal */}
+      <Modal isOpen={isEditModalOpen} width='500px' height='600px' onClose={() => setIsEditModalOpen(false)}>
+        <div className="h-full flex flex-col bg-white">
+          <h2 className="text-[20px] font-medium p-3 pb-2">Edit Van</h2>
+          <form onSubmit={handleEditSubmit} className="flex-1 overflow-y-auto p-3 pt-2">
+            <div className="space-y-4">
+              <input
+                type="text"
+                name="van_name"
+                value={newVan.van_name}
+                onChange={handleInputChange}
+                placeholder="Van Name"
+                className="w-full p-2 border rounded"
+              />
+              <textarea
+                name="van_description"
+                value={newVan.van_description}
+                onChange={handleInputChange}
+                placeholder="Van Description"
+                className="w-full p-2 border rounded"
+              />
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  name="people_capacity"
+                  value={newVan.people_capacity}
+                  onChange={handleInputChange}
+                  placeholder="People Capacity"
+                  className="w-full p-2 border rounded"
+                  inputMode="numeric"
+                />
+                {inputErrors.people_capacity && (
+                  <p className="text-red-500 text-sm">{inputErrors.people_capacity}</p>
+                )}
+              </div>
+              <select
+                name="transmission_type"
+                value={newVan.transmission_type}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded text-gray-700"
+              >
+                <option value="">Select Transmission Type</option>
+                <option value="Manual">Manual</option>
+                <option value="Automatic">Automatic</option>
+              </select>
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  name="things_capacity"
+                  value={newVan.things_capacity}
+                  onChange={handleInputChange}
+                  placeholder="Things Capacity"
+                  className="w-full p-2 border rounded"
+                  inputMode="numeric"
+                />
+                {inputErrors.things_capacity && (
+                  <p className="text-red-500 text-sm">{inputErrors.things_capacity}</p>
+                )}
+              </div>
+              {/* Add any additional fields as necessary */}
+            </div>
+            <div className="py-2 px-6 border-t">
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Update Van
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </Modal>
     </div>

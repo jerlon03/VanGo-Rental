@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, CSSProperties, useEffect } from 'react';
 import Image from 'next/image';
-import { MdDashboard, FaCar, AiFillBook, CiSettings, FaFileInvoice, FaUserCog, MdOutlineInventory, MdArrowDropDown } from '@/components/icons/index'
+import { MdDashboard, FaCar, AiFillBook, FaUserCog, GrArticle } from '@/components/icons/index'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import router from 'next/router';
@@ -14,8 +14,6 @@ interface AdminSidebarProps {
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar }) => {
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const pathname = usePathname();
 
 
@@ -35,34 +33,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
     return styles;
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target instanceof HTMLElement && event.target.closest('.dropdown-container'))) {
-        setIsOpen(false);
-      }
-    };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
 
-  // Close dropdown when route changes (assuming Next.js router)
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setIsOpen(false);
-    };
 
-    router.events.on('routeChangeComplete', handleRouteChange);
-
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
-  }, []);
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
 
   return (
     <div className={`bg-primaryColor h-screen fixed left-0 transition-width duration-300 ${isCollapsed ? 'w-[60px]' : 'w-[220px]'}`}>
@@ -104,7 +77,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
             </Link>
             <Link href="/dashboard/post" className={getNavLinkClass("/dashboard/post")}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
-                <FaUserCog size={20}
+                <GrArticle size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard/post')} />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Post</p>}
@@ -112,7 +85,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
             </Link>
             <Link href="/dashboard/van-inventory " className={getNavLinkClass("/dashboard/van-inventory")}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
-                <FaUserCog size={20}
+                <FaCar size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard/van-inventory')} />
                 {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Van Inventory</p>}

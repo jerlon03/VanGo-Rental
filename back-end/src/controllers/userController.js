@@ -25,9 +25,6 @@ exports.create = function(req, res) {
     });
   }
 
-  console.log('Attempting to create user:', newUser.email);
-  console.log('Password length:', newUser.password.length);
-
   // Hash the password before saving the user
   bcrypt.hash(newUser.password, saltRounds, function(err, hashedPassword) {
     if (err) {
@@ -37,9 +34,6 @@ exports.create = function(req, res) {
         message: 'Error hashing password'
       });
     }
-
-    console.log('Password hashed successfully. Hash length:', hashedPassword.length);
-
     // Replace the plain text password with the hashed password
     newUser.password = hashedPassword;
 

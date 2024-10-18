@@ -14,6 +14,8 @@
  import { IoMdCheckmarkCircleOutline } from "react-icons/io";
  import { LuCalendarCheck } from "react-icons/lu";
  import { FaMapLocationDot } from "react-icons/fa6";
+ import { GrArticle } from "react-icons/gr";
+ import { RiErrorWarningFill } from "react-icons/ri";
  
  
 
@@ -22,7 +24,7 @@
  
 
 export {
-    FaCheckCircle,LuCalendarCheck,MdKeyboardArrowUp,MdKeyboardArrowDown,
+    FaCheckCircle,LuCalendarCheck,MdKeyboardArrowUp,MdKeyboardArrowDown,GrArticle,RiErrorWarningFill,
     IoCloseCircle,FaMapLocationDot,
     IoMdCheckmarkCircleOutline,
     IoCloudUploadOutline,
