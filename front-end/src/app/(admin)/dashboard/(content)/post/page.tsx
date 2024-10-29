@@ -1,16 +1,20 @@
 'use client'
+import LoadingComponents from '@/app/loading'
 import AdminHeader from '@/components/admin/adminHeader'
 import SweetAlert from '@/components/alert/alert'
 import Button from '@/components/Button/button'
-import { formatDateRange } from '@/components/date/formatDate'
+import { formatDatePublicRange, formatDateRange } from '@/components/date/formatDate'
 import InputField from '@/components/Form/inputfield'
 import TextArea from '@/components/Form/textarea'
 import { FaEye, FaRegEdit, IoClose, MdDeleteOutline, MdPublish } from '@/components/icons'
 import Modal from '@/components/modals/modalContainer'
 import Pagination from '@/components/pagination/pagination'
 import ImagesUploader from '@/components/Uplooad/ImagesUploader'
-import { fetchAllPosts, fetchUpdatePosts } from '@/lib/api/posts.api'
+import { fetchAllAdmins, fetchAdminByUserId } from '@/lib/api/admin.api'
+import { fetchAllPosts, fetchUpdatePosts, fetchCreatePost } from '@/lib/api/posts.api'
+import { Admin } from '@/lib/types/admin.type'
 import { BlogPost } from '@/lib/types/posts.type'
+import { useAuth } from '@/Provider/context/authContext'
 import Link from 'next/link'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
@@ -29,6 +33,9 @@ const AdminPost = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL'); // Default to 'ALL'
   const dropdownRef = useRef<HTMLDivElement | null>(null); // Ref for the dropdown
+  const [admins, setAdmins] = useState<Admin[]>([]); // Initialize as an empty array
+  const { user } = useAuth();
+  const [title, setTitle] = useState(''); // State for title
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -47,12 +54,31 @@ const AdminPost = () => {
   };
 
   const handleImageUpload = (file: File) => {
-    setPostsImage(file);
+    setPostsImage(file); // Ensure this is correctly setting the file
   };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(prev => !prev); // Toggle dropdown visibility
   };
+
+  useEffect(() => {
+    const loadAdmins = async () => {
+      try {
+        const userId = user?.user_id ? Number(user.user_id) : undefined; // Convert user_id to number if it exists
+        if (userId !== undefined) { // Check if userId is defined before calling the function
+          const response = await fetchAdminByUserId(userId); // Call the function to fetch the admin
+          console.log('Admin Response', response);
+          setAdmins([response]); // Set the fetched admin in state (wrap in an array if expecting a single admin)
+        }
+      } catch (err) {
+        setError('Failed to fetch admin'); // Update error message for clarity
+      } finally {
+        setLoading(false); // Set loading to false
+      }
+    };
+
+    loadAdmins(); // Invoke the function
+  }, [user]); // Add user as a dependency to re-run if user changes
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -69,7 +95,7 @@ const AdminPost = () => {
     loadPosts();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingComponents />;
   if (error) return <div>{error}</div>;
 
   // actions
@@ -96,6 +122,10 @@ const AdminPost = () => {
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value); // Update title state
   };
 
   const onPublishClick = async (rowData: BlogPost): Promise<void> => {
@@ -125,10 +155,59 @@ const AdminPost = () => {
     openModal(); // Open the modal
   };
 
-  const handleSave = () => {
-    SweetAlert.showSuccess('Post saved successfully!'); // Show success alert
-    closeModal(); // This will also clear the data
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    // Check if all required fields are filled
+    if (!title || !description || !postImage || !admins[0]?.admin_id) {
+      SweetAlert.showError('Please fill out all required fields and upload an image.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        SweetAlert.showError('You are not authorized. Please log in.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('admin_id', admins[0]?.admin_id.toString() || ''); // Ensure admin_id is included
+      formData.append('status', 'DRAFT'); // Set the status as needed
+
+      if (postImage) {
+        formData.append('post_image', postImage); // Ensure the key matches what the back-end expects
+      }
+
+      const res = await fetch('http://localhost:8080/api/posting/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        SweetAlert.showSuccess('Post created successfully');
+        // Reset your form fields as needed
+        setTitle(''); // Reset title
+        setDescription(''); // Reset description
+        setPostsImage(null); // Reset image
+        setIsAddPostModalOpen(false); // Close the modal
+        const updatedPosts = await fetchAllPosts(); // Fetch updated posts
+        setPosts(updatedPosts.posts || []); // Update state with new posts
+      } else {
+        SweetAlert.showError(data.message || 'Failed to create post');
+      }
+    } catch (error) {
+      SweetAlert.showError('Failed to create post');
+      console.error('Error:', error);
+    }
   };
+
 
   const statuses = ['ALL', 'PUBLISH', 'DRAFT', 'CLOSED']; // Updated array of statuses to include 'ALL'
 
@@ -139,24 +218,10 @@ const AdminPost = () => {
     setIsDropdownOpen(false); // Close the dropdown when a status is selected
   };
 
-
-  // Event handler for clicking outside the dropdown
-  const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsDropdownOpen(false);
-    }
-  };
-
-  // Effect to handle outside click
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []); // This effect runs only once on mount
-
   // Filter posts based on selected status
-  const filteredPosts = selectedStatus ? posts.filter(post => post.status === selectedStatus) : posts; // Show all posts if selectedStatus is empty
+  const filteredPosts = selectedStatus === 'ALL' ? posts : posts.filter(post => post.status === selectedStatus); // Show all posts if 'ALL' is selected
+
+
 
   return (
     <div>
@@ -195,34 +260,40 @@ const AdminPost = () => {
                 <h2 className="text-[20px] text-white font-medium">CREATE BLOG POST</h2>
               </div>
               <div className='w-full px-4 p-4'>
-                <div className='flex flex-col gap-4'>
-                  <div>
-                    <label htmlFor="">Title <span className='text-red-700 font-bold'>*</span></label>
-                    <InputField placeholder='Write Here...' />
+                <form onSubmit={handleSubmit}>
+                  <div className='flex flex-col gap-4'>
+                    <div>
+                      <label htmlFor="">Title <span className='text-red-700 font-bold'>*</span></label>
+                      <InputField
+                        placeholder='Write Here...'
+                        value={title}
+                        onChange={handleTitleChange}
+                      />
+                    </div>
+                    <div className='w-full'>
+                      <h2>Description <span className='text-red-700 font-bold'>*</span></h2>
+                      <TextArea
+                        value={description}
+                        onChange={handleTextChange}
+                        placeholder="Enter your description here"
+                        rows={4}
+                        cols={60}
+                        maxLength={300}
+                      />
+                      <p className='flex w-full justify-end text-[12px] font-medium text-[#cccccc]'>{description.length}/300</p>
+                    </div>
                   </div>
-                  <div className='w-full'>
-                    <h2>Description <span className='text-red-700 font-bold'>*</span></h2>
-                    <TextArea
-                      value={description}
-                      onChange={handleTextChange}
-                      placeholder="Enter your description here"
-                      rows={4}
-                      cols={60}
-                      maxLength={300}
-                    />
-                    <p className='flex w-full justify-end text-[12px] font-medium text-[#cccccc]'>{description.length}/300</p>
+                  <div className='w-full flex gap-8 justify-center items-center'>
+                    <div className='flex flex-col w-[60%]'>
+                      <h2>Post Image <span className='text-red-700 font-bold'>*</span></h2>
+                      <ImagesUploader onUpload={handleImageUpload} />
+                    </div>
+                    <div className='flex w-[40%] flex-col h-full gap-2'>
+                      <Button name='CANCEL' onClick={closeModal} backgroundColor='error'></Button>
+                      <Button name='SAVE' backgroundColor='success' type="submit"></Button>
+                    </div>
                   </div>
-                </div>
-                <div className='w-full flex gap-8 justify-center items-center'>
-                  <div className='flex flex-col w-[60%]'>
-                    <h2>Post Image <span className='text-red-700 font-bold'>*</span></h2>
-                    <ImagesUploader onUpload={handleImageUpload} />
-                  </div>
-                  <div className='flex w-[40%] flex-col h-full gap-2'>
-                    <Button name='CANCEL' onClick={closeModal} backgroundColor='error'></Button>
-                    <Button name='SAVE' backgroundColor='success' onClick={handleSave}></Button>
-                  </div>
-                </div>
+                </form>
               </div>
             </div>
           )}
@@ -275,35 +346,50 @@ const AdminPost = () => {
             header="ID"
             field="post_id"
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] rounded-tl-[3px] border-r lg:text-[14px]' }
             }}
           />
           <Column
-            body={(rowData) => `${formatDateRange(rowData.createdAt)}`}
+            body={(rowData) => `${formatDatePublicRange(rowData.createdAt)}`}
             header="Date Created"
             pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] truncate lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r lg:text-[14px] truncate' }
             }} />
           <Column
             field="title"
             header="Title" pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px] text-center' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] text-center truncate' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r lg:text-[14px]' }
             }} />
           <Column
             field="description"
             header="Description" pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r lg:text-[14px]' }
             }} />
           <Column
-            field="post_image"
-            header="Image" pt={{
-              bodyCell: { className: 'border text-blackColor p-2 text-[15px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
-            }} />
+            header="Image"
+            body={(rowData) => (
+              <div className="flex justify-center items-center h-full">
+                <img
+                  src={rowData.post_image}
+                  alt={`${rowData.title} image`}
+                  className=" object-cover  rounded-[5px] border "
+                  width={100}
+                  height={100}
+                  onError={(e) => {
+                    e.currentTarget.src = '/default-image.png ';
+                  }}
+                />
+              </div>
+            )}
+            pt={{
+              bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px]  border-r' }
+            }}
+          />
           <Column
             field="status"
             header="Status"
@@ -313,16 +399,16 @@ const AdminPost = () => {
               // Apply different styles based on the status value
               switch (rowData.status) {
                 case 'PUBLISH':
-                  statusClass = 'bg-green-500 text-white';
+                  statusClass = 'bg-green-500 text-white lg:text-[14px]';
                   break;
                 case 'DRAFT':
-                  statusClass = 'bg-yellow-400 text-white';
+                  statusClass = 'bg-yellow-400 text-white lg:text-[14px]';
                   break;
                 case 'CLOSED':
-                  statusClass = 'bg-yellow-400 text-white';
+                  statusClass = 'bg-yellow-400 text-white lg:text-[14px]';
                   break;
                 default:
-                  statusClass = 'bg-gray-100 text-gray-800';
+                  statusClass = 'bg-gray-100 text-gray-800 lg:text-[14px]';
               }
 
               return (
@@ -333,14 +419,14 @@ const AdminPost = () => {
             }}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r lg:text-[14px]' }
             }}
           />
           <Column
             header="Actions"
             pt={{
               bodyCell: { className: 'border-b text-blackColor p-2' },
-              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium text-[16px] border-r ' }
+              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium text-[16px] border-r lg:text-[14px]' }
             }}
             body={(rowData) => (
               <div className="flex space-x-2 justify-center">

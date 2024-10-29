@@ -1,5 +1,20 @@
 const jwt = require('jsonwebtoken');
 
+// Function to generate a JWT token
+const generateResetToken = (userId) => {
+  const payload = { userId }; // Create a variable to hold the payload
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }); // Use the variable in jwt.sign with expiration
+};
+const verifyResetToken = (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.userId; // Assuming the user ID is stored in the 'userId' field of the token
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return null; // Return null if the token is invalid or expired
+  }
+};
+
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
@@ -21,5 +36,8 @@ const verifyToken = (req, res, next) => {
 };
 
 module.exports = {
-  verifyToken
+  verifyToken,
+  generateResetToken ,// Export the generateToken function
+  verifyResetToken
+
 };

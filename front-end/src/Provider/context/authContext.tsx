@@ -31,16 +31,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       setUser(response.data.user);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        // Handle AxiosError specifically
-        console.error('Axios error:', error.response?.data);
-      } else if (error instanceof Error) {
-        // Handle other types of errors
-        console.error('General error:', error.message);
-      } else {
-        // Handle unexpected errors
-        console.error('Unexpected error:', error);
-      }
+      console.error('Error fetching user profile:', error);
       setUser(null);
     } finally {
       setLoading(false);

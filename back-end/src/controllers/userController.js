@@ -2,9 +2,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../model/users.model');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const transporter = require('../../config/mailer.config')
+const { generateResetToken, verifyResetToken } = require('../../middleware/auth')
+require('dotenv').config();
 
-exports.findAll = function(req, res) {
-  User.findAll(function(err, users) {
+exports.findAll = function (req, res) {
+  User.findAll(function (err, users) {
     if (err) {
       res.status(500).send({ error: true, message: 'Error retrieving users' });
     } else {
@@ -14,7 +17,7 @@ exports.findAll = function(req, res) {
 };
 
 
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   const newUser = req.body;
 
   // Validate all required fields
@@ -26,7 +29,7 @@ exports.create = function(req, res) {
   }
 
   // Hash the password before saving the user
-  bcrypt.hash(newUser.password, saltRounds, function(err, hashedPassword) {
+  bcrypt.hash(newUser.password, saltRounds, function (err, hashedPassword) {
     if (err) {
       console.error('Error hashing password:', err);
       return res.status(500).send({
@@ -38,7 +41,7 @@ exports.create = function(req, res) {
     newUser.password = hashedPassword;
 
     // Proceed with user creation if validation passes and password is hashed
-    User.create(newUser, function(err, userId) {
+    User.create(newUser, function (err, userId) {
       if (err) {
         console.error('Error adding user:', err);
         return res.status(500).send({
@@ -77,7 +80,7 @@ exports.login = (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
       );
-      
+
       // Respond with the token and user role
       res.json({ token, role: user.role });
     } else {
@@ -110,6 +113,79 @@ exports.getProfile = (req, res) => {
     }
   });
 };
+
+exports.forgotPassword = (req, res) => {
+  const { email } = req.body;
+
+  // Check if the user exists
+  User.getByEmail(email, (err, user) => {
+    if (err) {
+      return res.status(500).send({ message: "Database error", details: err });
+    }
+    if (!user) {
+      return res.status(404).send({ message: "Email does not exist" }); // Correctly handle non-existing email
+    }
+
+    // Generate a password reset token
+    const resetToken = generateResetToken(user.user_id); // Call the function to generate a unique token
+
+    // Create the reset link using FRONTEND_URL
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    // Email options
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to: user.email,
+      subject: 'Password Reset Request',
+      text: `You requested a password reset. Click the link to reset your password: ${resetLink}`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).send({ message: "Error sending email", details: error });
+      }
+      return res.status(200).send({ message: "Password reset email sent successfully" });
+    });
+  });
+};
+
+exports.changePassword = (req, res) => {
+  const { token, newPassword } = req.body;
+
+  // Validate input
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: 'Token and new password are required.' });
+  }
+
+  // Verify the reset token and extract user ID
+  const userId = verifyResetToken(token); // Implement this function to decode the token and get userId
+
+  if (!userId) {
+    return res.status(400).json({ message: 'Invalid or expired token.' });
+  }
+
+  // Hash the new password
+  bcrypt.hash(newPassword, saltRounds, (err, hashedPassword) => {
+    if (err) {
+      console.error('Error hashing new password:', err);
+      return res.status(500).send({ message: 'Error hashing new password' });
+    }
+
+    // Update the user's password in the database
+    User.updatePassword(userId, hashedPassword, (err) => { // Implement this method in your User model
+      if (err) {
+        console.error('Error updating password:', err);
+        return res.status(500).send({ message: 'Error updating password' });
+      }
+
+      res.status(200).send({ message: 'Password changed successfully' });
+    });
+  });
+};
+
+
+
 
 
 

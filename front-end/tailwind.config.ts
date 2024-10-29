@@ -29,7 +29,7 @@ const config: Config = {
         Poppins: ["Poppins", "sans-serif"],
       },
       screens: {
-        'sm': '767px',
+        'sm': '320px',
         'md': '768px',
         'lg': '1024px',
         'xl': '1280px',

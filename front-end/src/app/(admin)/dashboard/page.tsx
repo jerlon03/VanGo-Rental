@@ -18,7 +18,7 @@ const AdminDashboard = () => {
           </AdminHeader>
         </div>
         <div className='w-full p-[2%] flex gap-[40px] pt-4'>
-          <div className='w-[50%] grid grid-cols-2  gap-x-6 items-center justify-center'>
+          <div className='w-[50%] grid grid-cols-2  gap-x-6 items-start justify-center'>
             <div className='p-2 rounded-lg  h-[100px]  bg-primaryColor flex items-center gap-4'>
               <div className='rounded-full bg-white  flex justify-center items-center 2xl:h-[70px] lg:h-[50px] xl:h-[60px] 2xl:w-[70px] xl:w-[60px] lg:w-[50px]'>
                 <Image src='/complete_booking-removebg-preview.png' width={50} height={30} alt='Complete Booking' className='w-full ' ></Image>

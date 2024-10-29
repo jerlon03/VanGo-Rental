@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/posts.controllers'); // Ensure this path is correct
+const { uploadBlogPost } = require('../../middleware/multer');
 
-router.post('/create', postController.createPost);
+// Ensure the key name matches what you use in FormData
+router.post('/create', uploadBlogPost.single('post_image'), postController.createPost);
 router.get('/', postController.getAllPosts);
 router.get('/:id', postController.getPostById);
 router.put('/:id', postController.updatePost);

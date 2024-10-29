@@ -65,24 +65,25 @@ const Blog = () => {
           {/* Article Loop */}
           {posts.length > 0 && posts.filter(post => post.status === 'PUBLISH').map((post, index) => ( // Filter for 'PUBLISH' status
             <div key={index} className="flex flex-col gap-5 bg-white shadow-md p-5 rounded-lg transition-transform transform hover:-translate-y-2 hover:shadow-xl">
-              <Image
-                src="/png/blog_img.png"
+              <img
+                src={post.post_image} // Ensure post_image is valid
+                alt={post.title}
                 width={300}
                 height={200}
-                alt="Article Image"
-                className="w-full h-48 object-cover rounded-md"
+                className="w-full
+                 h-auto rounded-lg"
               />
               <div>
                 <h2 className="text-xl font-medium text-blackColor">{post.title}</h2>
                 <p className="text-[14px] font-semibold text-primaryColor mt-1">
-                  {formatDatePublicRange(post.createdAt as any)} 
+                  {formatDatePublicRange(post.createdAt as any)}
                 </p>
               </div>
               <p className="text-gray-700 leading-relaxed line-clamp-3">
                 {post.description}
               </p>
             </div>
-          ))} 
+          ))}
         </div>
       </div>
 

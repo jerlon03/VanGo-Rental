@@ -37,6 +37,8 @@ app.use('/public/van', vanRoutes)
 app.use('/public/posts', postingRoutes)
 app.use('/public/booking',bookingRoutes )
 
+
+
 // Catch-all route for undefined routes (404)
 app.use('*', (req, res) => {
   console.log(`Attempted to access non-existent route: ${req.method} ${req.originalUrl}`);

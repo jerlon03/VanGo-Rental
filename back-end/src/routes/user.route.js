@@ -8,6 +8,8 @@ router.get('/', userController.findAll);
 router.post('/register',verifyToken, userController.create);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
+router.post('/forgot-password', userController.forgotPassword);
+router.post('/change-password', userController.changePassword);
 
 
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import InputField from '@/components/Form/inputfield';
 import { MdEmail, IoMdLock } from "@/components/icons/index";
 import Button from '@/components/Button/button';
+import Link from 'next/link';
 import SweetAlert from '@/components/alert/alert'
 import { useRouter } from 'next/navigation';
 
@@ -109,7 +110,7 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password} // Update email state on input change
               />
-              <p className='text-[14px]'>Forgot your password ? <span className='text-button'>reset password</span></p>
+              <p className='text-[14px]'>Forgot your password ?  <Link href='/forgot-password'><span className='text-button underline'>Click Here !</span></Link></p>
               <div className="flex w-full gap-2  items-center justify-center px-2 bg-button">
                 <Button type='submit' name={loading ? 'Logging in...' : 'Login'} />
               </div>

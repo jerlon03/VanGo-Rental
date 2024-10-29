@@ -19,10 +19,9 @@ const fetchUpdatePosts = async (postId: number, updatedData: any) => { // Accept
     const response = await Instance.put<PostsResponse>(`/api/posting/${postId}`, updatedData); // Use PUT method for updating
     return response.data;
 }
-const fetchCreatePost = async (newPostData: any) => { // Accept newPostData as parameter
-    const response = await Instance.post<PostsResponse>('/api/posting/create', newPostData); // Use POST method for creating
+const fetchCreatePost = async (data: FormData) => { // Ensure the parameter type is FormData
+    const response = await Instance.post<PostsResponse>('/api/posting/create', data); // Pass the FormData as the second argument
     return response.data;
-
 }
 
 

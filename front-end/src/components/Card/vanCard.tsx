@@ -103,6 +103,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
       date_of_birth: new Date(),
       van_id: van.van_id,
       created_at: new Date(),
+      status: ''
     };
 
     try {

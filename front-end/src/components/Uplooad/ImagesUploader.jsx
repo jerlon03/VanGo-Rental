@@ -12,15 +12,16 @@ const ImagesUploader = ({ onUpload }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
+        onUpload(file); // Ensure the file is passed to the parent component after loading
       };
       reader.readAsDataURL(file);
-      onUpload(file);
     }
   };
 
   const handleRemoveImage = () => {
     setPreviewImage(null); // Reset the preview image
     document.getElementById('file-input').value = null; // Clear the file input
+    onUpload(null); // Notify parent component that the image has been removed
   };
 
   return (
@@ -33,8 +34,8 @@ const ImagesUploader = ({ onUpload }) => {
           </>
         ) : (
           <div className="text-gray-400 text-center">
-            <label htmlFor="file-input">
-                <p className='flex gap-[1rem]'><IoCloudUploadOutline size={20} />{previewImage ? 'Change Picture' : 'Click to upload Image'}</p>
+            <label htmlFor="file-input" className="cursor-pointer">
+              <p className='flex gap-[1rem]'><IoCloudUploadOutline size={20} />Click to upload Image</p>
             </label>
           </div>
         )}

@@ -64,7 +64,7 @@ const InputField: React.FC<Props> = ({
           border,
           paddingLeft: icon ? "40px" : "10px", // Adjust padding for icon
         }}
-        className={`${className} w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor`}
+        className={`${className} w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[40px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor`}
         {...rest}
       />
     </div>

@@ -107,6 +107,64 @@ User.findById = function(id, result) {
   });
 };
 
+User.getByEmail = function(email, result) {
+  dbConn.query("SELECT * FROM users WHERE email = ?", [email], function(err, res) {
+    if (err) {
+      return result(err, null);
+    } else if (res.length > 0) { // Check if any user was found
+      return result(null, res[0]); // Return the first user found
+    } else {
+      return result(null, null); // Return null if no user found
+    }
+  });
+};
+
+User.setResetToken = function(email, token, expiration, result) {
+  dbConn.query(
+    "UPDATE users SET reset_token = ?, reset_token_expiration = ? WHERE email = ?",
+    [token, expiration, email],
+    function(err, res) {
+      if (err) {
+        console.error("Database error:", err);
+        return result(err, null);
+      }
+      result(null, res);
+    }
+  );
+};
+
+User.clearResetToken = function(email, result) {
+  dbConn.query(
+    "UPDATE users SET reset_token = NULL, reset_token_expiration = NULL WHERE email = ?",
+    [email],
+    function(err, res) {
+      if (err) {
+        console.error("Database error:", err);
+        return result(err, null);
+      }
+      result(null, res);
+    }
+  );
+};
+
+User.updatePassword = function(userId, newPassword, result) {
+  dbConn.query(
+    "UPDATE users SET password = ? WHERE user_id = ?",
+    [newPassword, userId],
+    function(err, res) {
+      if (err) {
+        console.error("Database error:", err);
+        return result(err, null);
+      }
+      // Check if any rows were affected
+      if (res.affectedRows === 0) {
+        return result({ message: 'User not found' }, null);
+      }
+      result(null, res);
+    }
+  );
+};
+
 
 
 

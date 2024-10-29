@@ -21,3 +21,17 @@ exports.getAllAdmins = function(req, res) {
         return res.status(200).json(admins); // Return all admin details
     });
 };
+
+exports.getAdminByUserId = function(req, res) {
+    const userId = req.params.userId; // Get userId from request parameters
+    console.log('Received userId:', userId); // Log the userId
+    adminModel.getAdminByUserId(userId, (err, admin) => {
+        if (err) {
+            return res.status(500).json({ message: 'Server error', error: err.message });
+        }
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+        return res.status(200).json(admin); // Return admin details if found
+    });
+};

@@ -1,6 +1,8 @@
 const dbConn = require('../../config/db.config');
 
-const createPost = (title, description, post_image, status, admin_id, callback) => {
+const createPost = (newPost, callback) => {
+    const { title, description, post_image, status, admin_id } = newPost;
+
     const query = `
         INSERT INTO posts (title, description, post_image, status, admin_id) 
         VALUES (?, ?, ?, ?, ?)
@@ -8,6 +10,7 @@ const createPost = (title, description, post_image, status, admin_id, callback) 
 
     dbConn.query(query, [title, description || null, post_image || null, status || 'DRAFT', admin_id], (err, result) => {
         if (err) {
+            console.error('Database query error:', err); // Log the error for debugging
             return callback(err, null);
         }
         callback(null, result.insertId);
