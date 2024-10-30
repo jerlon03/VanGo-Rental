@@ -1,42 +1,40 @@
-const driverModel = require('../model/driver.model');
+// const driverModel = require('../model/driver.model');
 
-exports.updateProfile = function(req, res) {
-    const { userId, firstName, lastName, phoneNumber, location, vehicleAssigned, experienceYears } = req.body;
+// exports.updateProfile = function(req, res) {
+//     const userId = req.params.userId; // Assuming userId is passed as a URL parameter
+//     const driverData = req.body;
 
-    if (!userId) {
-        return res.status(400).send({ error: true, message: 'User ID is required.' });
-    }
+//     // Log the userId being used for the update
+//     console.log('Updating driver for userId:', userId);
 
-    // Update user profile
-    driverModel.updateUser(userId, firstName, lastName, phoneNumber, (err) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send({ error: true, message: 'Error updating user profile' });
-        }
+//     // Validate required fields
+//     const requiredFields = ['license_number', 'experience_years', 'vehicle_assigned', 'phoneNumber', 'Location'];
+//     for (const field of requiredFields) {
+//         if (!driverData[field]) {
+//             return res.status(400).send({
+//                 error: true,
+//                 message: `Please provide ${field}`
+//             });
+//         }
+//     }
 
-        // Update driver profile
-        driverModel.updateDriver(userId, phoneNumber, location, vehicleAssigned, experienceYears, (err) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send({ error: true, message: 'Error updating driver profile' });
-            }
+//     // Attempt to update the driver
+//     driverModel.updateDriver(userId, driverData, (err, affectedRows) => {
+//         if (err) {
+//             console.error('Error updating driver:', err);
+//             return res.status(500).send({
+//                 error: true,
+//                 message: 'Error updating driver profile'
+//             });
+//         }
 
-            res.status(200).send({ error: false, message: 'Profile updated successfully!' });
-        });
-    });
-};
+//         // Log the number of affected rows
+//         console.log('Number of affected rows:', affectedRows);
 
-
-// Get profile
-exports.getProfile = function(req, res) {
-    const userId = req.user.user_id;
-
-    driverModel.getDriverProfile(userId, (err, profile) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send({ error: true, message: 'Error fetching profile' });
-        }
-
-        res.status(200).send({ error: false, data: profile[0] }); // Assuming you return the first row
-    });
-};
+//         res.status(200).send({
+//             error: false,
+//             message: 'Driver profile updated successfully',
+//             affectedRows: affectedRows
+//         });
+//     });
+// };

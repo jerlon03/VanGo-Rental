@@ -14,18 +14,33 @@ const User = function(user) {
 };
 
 // Assuming you have dbConn set up elsewhere in your code
-User.create = function(newUser, result) {
-  dbConn.query("INSERT INTO users set ?", newUser, function(err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      console.log("User created with id: ", res.insertId);
-      console.log("Stored hashed password length: ", newUser.password.length);
-      result(null, res.insertId);
-    }
+User.create = function (userData, callback) {
+  return dbConn.query(`
+      INSERT INTO users (first_name, last_name, email, password)
+      VALUES (?, ?, ?, ?)
+  `, [userData.first_name, userData.last_name, userData.email, userData.password], (err, results) => {
+      if (err) {
+          return callback(err); // Handle any errors that occur during the query
+      }
+      // Return the ID of the newly created user
+      callback(null, results.insertId); // This should correctly return the user ID
   });
 };
+
+User.update = function (userId, userData, callback) {
+  return dbConn.query(`
+      UPDATE users
+      SET first_name = ?, last_name = ?, email = ?
+      WHERE user_id = ?
+  `, [userData.first_name, userData.last_name, userData.email, userId], (err, results) => {
+      if (err) {
+          return callback(err); // Handle any errors that occur during the query
+      }
+      // Optionally, you can return the number of affected rows
+      callback(null, results.affectedRows); // This returns the number of rows affected by the update
+  });
+};
+
 
 User.findAll = function(result) {
     dbConn.query("SELECT * FROM users", function(err, res) {

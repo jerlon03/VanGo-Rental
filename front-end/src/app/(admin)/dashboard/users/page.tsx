@@ -23,6 +23,7 @@ const UsersPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('driver'); // Set default value to 'driver'
+  const [phoneNumber, setPhoneNumber] = useState('');
   const itemPerPage = 10;
 
 
@@ -77,6 +78,7 @@ const UsersPage: React.FC = () => {
             email,
             password,
             role: 'driver', 
+            phoneNumber: phoneNumber
         };
         await addUser(newUser as any); // Call the addUser function with the new user data
         SweetAlert.showSuccess('User added successfully!'); // Show success message
@@ -87,11 +89,17 @@ const UsersPage: React.FC = () => {
         setEmail('');
         setPassword('');
         setConfirmPassword('');
+        setPhoneNumber(''); // Clear phone number field
         setRole('user'); // Reset role to default
         
         closeModal(); // Close the modal after successful submission
-    } catch (error) {
-        SweetAlert.showError('Failed to add user.'); // Show error message
+    } catch (error: any) {
+        // Check if the error response has a status code of 400
+        if (error.response && error.response.status === 400) {
+            SweetAlert.showError(error.response.data.message || 'Failed to add user.'); // Show specific error message
+        } else {
+            SweetAlert.showError('Failed to add user.'); // Show generic error message for other errors
+        }
     }
   };
 

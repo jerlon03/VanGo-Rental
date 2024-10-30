@@ -1,12 +1,11 @@
 const express = require('express');
-const driverController = require('../controllers/driver.controller');
 const router = express.Router();
+const userController = require('../controllers/userController'); // Ensure this path is correct
+const { verifyToken } = require('../../middleware/auth');
 
+// Define your routes
+router.put('/:userId',verifyToken, userController.updateDriver); // Ensure this matches your controller function
+// router.get('/drivers/:userId', userController.getDriverProfile); // Ensure this is defined in your controller
 
-// Route to update driver profile
-router.put('/profile/update',  driverController.updateProfile);
-
-// Route to get driver profile
-router.get('/profile', driverController.getProfile);
-
+// Export the router
 module.exports = router;
