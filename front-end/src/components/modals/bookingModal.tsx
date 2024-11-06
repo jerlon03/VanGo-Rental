@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef } from 'react'; // Added useEffect and useRef
 import ModalContainer from '@/components/modals/modalContainer'; // Import the ModalContainer component
 import { Booking } from '@/lib/types/booking.type';
-import { formatDateRange } from '@/components/date/formatDate';
+import { formatDatePublicRange, formatDateRange } from '@/components/date/formatDate';
 import Button from '@/components/Button/button';
 import SweetAlert from '@/components/alert/alert'; // Import SweetAlert
 import Image from 'next/image'; // Import Image component
@@ -55,12 +55,20 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
                     <div>
                         <h3 className="text-xl font-semibold mb-2">Pickup Information</h3>
                         <p><span className="font-medium">Location:</span> {booking.province}, {booking.city_or_municipality}, {booking.barangay}, {booking.pickup_location}</p>
-                        <p><span className="font-medium">Pickup Date & Time:</span> {formatDateRange(booking.pickup_date_time as any)}</p>
+                        <p><span className="font-medium">Pickup Date & Time:</span> {formatDatePublicRange(booking.pickup_date_time as any)}</p>
                     </div>
 
-                    <div className="col-span-2">
+                    <div className="">
                         <h3 className="text-xl font-semibold mb-2">Proof of Payment</h3>
                         <Image src={booking.proof_of_payment} alt="Proof of Payment" width={160} height={160} className="object-cover rounded-lg border" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-xl font-semibold mb-2">Driver Details</h3>
+                        <p><span className="font-medium">Driver ID:</span> DR-O2</p>
+                        <p><span className="font-medium">Driver Name:</span> {booking.first_name} {booking.last_name}</p>
+                        <p><span className="font-medium">Email:</span> {booking.email}</p>
+                        <p><span className="font-medium">Phone:</span> {booking.phone_number}</p>
                     </div>
 
                     <div className="col-span-2 text-center">

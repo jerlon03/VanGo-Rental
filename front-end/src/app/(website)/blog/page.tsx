@@ -114,7 +114,7 @@ const Blog = () => {
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%]">
               <Image
-                src="png/blog_us/blog1.jpg"
+                src="/png/blog_us/blog1.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
                 width={200}
@@ -140,16 +140,18 @@ const Blog = () => {
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%]">
               <Image
-                src="png/blog_us/blog2.jpg"
+                src="/png/blog_us/blog2.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
+                width={200}
+                height={200}
               />
             </div>
             <div className="mt-16">
               <h3 className="font-semibold">Shaira Shane Gonzaga</h3>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
-                The van provided excellent comfort and space for our groups
+                The van provided excellent comfort and space for our groups 
                 trip around Cebu. Its smooth ride and reliable performance made
                 our journey enjoyable and stress-free.
               </p>

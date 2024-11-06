@@ -20,6 +20,7 @@ import Image from 'next/image'
 import { getAllDriver } from '@/lib/api/driver.api'
 import { Driver } from '@/lib/types/driver.type'
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import TextArea from '@/components/Form/textarea'
 // import { fetchAllDrivers } from '@/lib/api/driver.api'
 
 const VanInventory = () => {
@@ -55,10 +56,7 @@ const VanInventory = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const driverData = await getAllDriver();
-        console.log('Fetched Drivers:', driverData); // Log the fetched driver data
-
-        // Access the data property to get the array of drivers
+        const driverData = await getAllDriver()
         const driversArray = driverData.data; // Access the array of drivers
 
         // Check if driversArray is an array
@@ -70,8 +68,6 @@ const VanInventory = () => {
           }));
           setDrivers(driversWithFullName); // Set the drivers state
         } else {
-          console.error('Driver data is not an array:', driversArray);
-          console.error('Driver data structure:', JSON.stringify(driversArray, null, 2));
           setDrivers([]); // Set to empty array if not an array
         }
       } catch (err) {
@@ -85,17 +81,7 @@ const VanInventory = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === 'people_capacity' || name === 'things_capacity') {
-      if (!/^\d*$/.test(value)) {
-        setInputErrors(prev => ({ ...prev, [name]: 'Please enter numbers only' }));
-      } else {
-        setInputErrors(prev => ({ ...prev, [name]: '' }));
-      }
-      const numericValue = value.replace(/[^0-9]/g, '');
-      setNewVan(prev => ({ ...prev, [name]: numericValue }));
-    } else {
-      setNewVan(prev => ({ ...prev, [name]: value }));
-    }
+    setNewVan(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageUpload = (file: File) => {
@@ -104,58 +90,61 @@ const VanInventory = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    
+    console.log('Submitting van:', newVan);
+    console.log('Van image:', vanImage);
+    
     // Check if all required fields are filled
     if (!newVan.van_name || !newVan.van_description || !vanImage ||
-      !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity || !selectedDriver) {
-      SweetAlert.showError('Please fill out all required fields and upload an image.');
-      return;
+        !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity || !selectedDriver) {
+        SweetAlert.showError('Please fill out all required fields and upload an image.');
+        return;
     }
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        SweetAlert.showError('You are not authorized. Please log in.');
-        return;
-      }
-
-      const formData = new FormData();
-      Object.entries(newVan).forEach(([key, value]) => {
-        if (key === 'people_capacity' || key === 'things_capacity') {
-          formData.append(key, value ? parseInt(value, 10).toString() : '0');
-        } else {
-          formData.append(key, value.toString());
+        const token = localStorage.getItem('token');
+        console.log('Token:', token);
+        if (!token) {
+            SweetAlert.showError('You are not authorized. Please log in.');
+            return;
         }
-      });
-      formData.append('status', 'available');
-      // formData.append('driver_id', selectedDriver);
-      if (vanImage) {
-        formData.append('image', vanImage);
-      }
 
-      const res = await fetch('http://localhost:8080/api/van/create', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData,
-      });
+        const formData = new FormData();
+        Object.entries(newVan).forEach(([key, value]) => {
+            if (key === 'people_capacity' || key === 'things_capacity') {
+                formData.append(key, value ? parseInt(value, 10).toString() : '0');
+            } else {
+                formData.append(key, value.toString());
+            }
+        });
+        formData.append('status', 'available');
+        // formData.append('driver_id', selectedDriver);
+        if (vanImage) {
+            formData.append('image', vanImage);
+        }
 
-      const data = await res.json();
-      if (res.ok) {
-        SweetAlert.showSuccess('Van added successfully');
-        setNewVan(initialVanState);
-        setVanImage(null);
-        // setSelectedDriver('');
-        setIsModalOpen(false);
-        const updatedVans = await fetchAllVan();
-        setVans(updatedVans.data);
-      } else {
-        SweetAlert.showError(data.message || 'Failed to add van');
-      }
+        const res = await fetch('http://localhost:8080/api/van/create', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData,
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            SweetAlert.showSuccess('Van added successfully');
+            setNewVan(initialVanState);
+            setVanImage(null);
+            setIsModalOpen(false);
+            const updatedVans = await fetchAllVan();
+            setVans(updatedVans.data);
+        } else {
+            SweetAlert.showError(data.message || 'Failed to add van');
+        }
     } catch (error) {
-      SweetAlert.showError('Failed to add van');
-      console.error('Error:', error);
+        console.error('Error:', error);
+        SweetAlert.showError('Failed to add van');
     }
   };
 
@@ -164,10 +153,6 @@ const VanInventory = () => {
     // No need to fetch drivers for now
   };
 
-  const handleDriverChange = (e: DropdownChangeEvent) => {
-    console.log('Selected Driver:', e.value); // Log the selected driver
-    setSelectedDriver(e.value as Driver);
-  };
 
   useEffect(() => {
     const fetchVans = async () => {
@@ -182,7 +167,6 @@ const VanInventory = () => {
     fetchVans();
   }, []);
 
-  console.log(selectedDriver, 'Selected Driver');
 
 
   function onDeleteClick(rowData: any): void {
@@ -239,7 +223,7 @@ const VanInventory = () => {
       <div className=" bg-white px-4 p-1">
         <div className='flex justify-between rounded-[5px] '>
           <span className='text-gray-500'>{driver.full_name}</span>
-          <span className="text-gray-500">DR-O{driver.driver_id}</span> 
+          <span className="text-gray-500">DR-O{driver.driver_id}</span>
         </div>
       </div>
     );
@@ -401,34 +385,32 @@ const VanInventory = () => {
           <h2 className="text-[20px] font-medium p-3 pb-2">Add New Van</h2>
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 pt-2">
             <div className="space-y-4">
-              <input
-                type="text"
-                name="van_name"
-                value={newVan.van_name}
-                onChange={handleInputChange}
-                placeholder="Van Name"
-                className="w-full p-2 border rounded"
-              />
-              <textarea
-                name="van_description"
-                value={newVan.van_description}
-                onChange={handleInputChange}
-                placeholder="Van Description"
-                className="w-full p-2 border rounded"
-              />
-              <div className="space-y-1">
-                <input
-                  type="text"
-                  name="people_capacity"
-                  value={newVan.people_capacity}
+              <InputField type="text" name='van_name' onChange={handleInputChange} placeholder="Van Name" />
+              <div>
+                <TextArea
+                  value={newVan.van_description}
                   onChange={handleInputChange}
-                  placeholder="People Capacity"
-                  className="w-full p-2 border rounded"
-                  inputMode="numeric"
+                  placeholder="Van Description"
+                  name="van_description" // Pass the name prop
                 />
                 {inputErrors.people_capacity && (
                   <p className="text-red-500 text-sm">{inputErrors.people_capacity}</p>
                 )}
+              </div>
+              <div className=" flex  gap-4 w-full">
+                <div className='w-full'>
+                  <InputField type="text" name="people_capacity" onChange={handleInputChange} placeholder="People Capacity" inputMode="numeric" />
+                  {inputErrors.people_capacity && (
+                    <p className="text-red-500 text-sm">{inputErrors.people_capacity}</p>
+                  )}
+                </div>
+                <div className='w-full'>
+                  <InputField type="text" name="things_capacity" onChange={handleInputChange} placeholder="Things Capacity" inputMode="numeric" />
+                  {inputErrors.things_capacity && (
+                    <p className="text-red-500 text-sm">{inputErrors.things_capacity}</p>
+                  )}
+                </div>
+
               </div>
               <select
                 name="transmission_type"
@@ -440,20 +422,6 @@ const VanInventory = () => {
                 <option value="Manual">Manual</option>
                 <option value="Automatic">Automatic</option>
               </select>
-              <div className="space-y-1">
-                <input
-                  type="text"
-                  name="things_capacity"
-                  value={newVan.things_capacity}
-                  onChange={handleInputChange}
-                  placeholder="Things Capacity"
-                  className="w-full p-2 border rounded"
-                  inputMode="numeric"
-                />
-                {inputErrors.things_capacity && (
-                  <p className="text-red-500 text-sm">{inputErrors.things_capacity}</p>
-                )}
-              </div>
               <div className='flex flex-col gap-[.5rem]'>
                 <p>Van Image</p>
                 <ImagesUploader onUpload={handleImageUpload} />
@@ -474,25 +442,25 @@ const VanInventory = () => {
               </div>
 
             </div>
-          </form>
-          <div className="py-2 px-6 border-t">
-            <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                form="addVanForm"
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add Van
-              </button>
+            <div className="py-2 px-6 border-t">
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  form="addVanForm"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Add Van
+                </button>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
       </Modal>
       {/* Details Modal */}
@@ -538,6 +506,7 @@ const VanInventory = () => {
           <h2 className="text-[20px] font-medium p-3 pb-2">Edit Van</h2>
           <form onSubmit={handleEditSubmit} className="flex-1 overflow-y-auto p-3 pt-2">
             <div className="space-y-4">
+              <InputField type="text" value={newVan.van_name} onChange={handleInputChange} placeholder="Van Name" />
               <input
                 type="text"
                 name="van_name"

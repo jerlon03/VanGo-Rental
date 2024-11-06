@@ -40,9 +40,8 @@ const ManageBookings = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-
   const handleViewClick = (rowData: BookingDetails) => {
-    setSelectedBooking(rowData as any); // Cast BookingDetails to Booking
+    setSelectedBooking(rowData as any); // Ensure rowData is valid
     setModalVisible(true); // Show the modal
   };
 
@@ -62,20 +61,20 @@ const ManageBookings = () => {
             tbody: { className: 'border' },
             headerRow: { className: 'h-[40px]' },
           }}
-          sortField="booking_id" // Add this line to specify the field to sort by
-          sortOrder={-1} // Add this line to specify descending order
+          sortField="booking_id"
+          sortOrder={-1}
         >
           <Column
             header="Booking ID"
-            field="booking_id" // Ensure this matches the field in your data
+            field="booking_id"
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
             }}
           />
           <Column
-            header="Booked By" // Changed header to "Name"
-            body={(rowData) => `${rowData.first_name} ${rowData.last_name}`} // Combine first and last name
+            header="Booked By"
+            body={(rowData) => `${rowData.first_name} ${rowData.last_name}`}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
@@ -83,7 +82,7 @@ const ManageBookings = () => {
           />
           <Column
             header="Email Account"
-            field="email" // Ensure this matches the field in your data
+            field="email"
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
@@ -91,7 +90,7 @@ const ManageBookings = () => {
           />
           <Column
             header=" Phone Number"
-            field="phone_number" // Ensure this matches the field in your data
+            field="phone_number"
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
@@ -99,7 +98,7 @@ const ManageBookings = () => {
           />
           <Column
             header="Pick up Location "
-            body={(rowData) => `${rowData.province} , ${rowData.city_or_municipality}, ${rowData.barangay}, ${rowData.pickup_location} `} // Combine first and last name
+            body={(rowData) => `${rowData.province} , ${rowData.city_or_municipality}, ${rowData.barangay}, ${rowData.pickup_location} `}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
@@ -107,7 +106,7 @@ const ManageBookings = () => {
           />
           <Column
             header="Pick up Date "
-            body={(rowData) => formatDatePublicRange(rowData.pickup_date_time)} // Format the date
+            body={(rowData) => formatDatePublicRange(rowData.pickup_date_time)}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] border-r' },
@@ -115,7 +114,7 @@ const ManageBookings = () => {
           />
           <Column
             header="Book Created "
-            body={(rowData) => formatDatePublicRange(rowData.created_at)} // Format the date
+            body={(rowData) => formatDatePublicRange(rowData.created_at)}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] border-r' },
@@ -123,17 +122,26 @@ const ManageBookings = () => {
           />
           <Column
             header="Proof of Payment"
-            field="proof_of_payment" // Ensure this matches the field in your data
-            body={(rowData) => (
-              <div className="flex justify-center"> {/* Centering the image */}
-                <Image
-                  src={rowData.proof_of_payment}
-                  alt={rowData.proof_of_payment}
-                  width={50}
-                  height={50}
-                />
-              </div>
-            )}
+            field="proof_of_payment"
+            body={(rowData) => {
+              const imageUrl = rowData.proof_of_payment ? rowData.proof_of_payment : '/default-image.png'; // Fallback to default image
+              const isAbsoluteUrl = imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+
+              return (
+                <div className="flex justify-center">
+                  <Image
+                    src={isAbsoluteUrl ? imageUrl : '/default-image.png'} // Use default image if not an absolute URL
+                    alt={`Receipt image`}
+                    className="object-cover rounded-[5px] border"
+                    width={100}
+                    height={100}
+                    onError={(e) => {
+                      e.currentTarget.src = '/default-image.png'; // Fallback to default image on error
+                    }}
+                  />
+                </div>
+              );
+            }}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[14px]' },
               headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r' },
@@ -145,7 +153,6 @@ const ManageBookings = () => {
             body={(rowData) => {
               let statusClass = '';
 
-              // Apply different styles based on the status value
               switch (rowData.status) {
                 case 'confirmed':
                   statusClass = 'bg-green-500 text-white lg:text-[14px]';
@@ -177,7 +184,7 @@ const ManageBookings = () => {
                     onClick={() => handleViewClick(rowData)}
                     className="text-primaryColor cursor-pointer lg:size-[25px]"
                     size={30}
-                    title="View Post" // Tooltip for view icon
+                    title="View Post"
                   />
                 ) : rowData.status === 'pending' ? (
                   <>
@@ -185,7 +192,7 @@ const ManageBookings = () => {
                       onClick={() => handleViewClick(rowData)}
                       className="text-primaryColor cursor-pointer lg:size-[25px]"
                       size={30}
-                      title="View Post" // Tooltip for view icon
+                      title="View Post"
                     />
                   </>
                 ) : null}
@@ -200,8 +207,11 @@ const ManageBookings = () => {
       </div>
       {isModalVisible && (
         <BookingDetailsModal
-          booking={selectedBooking} // Ensure selectedBooking is of type Booking
-          onClose={() => setModalVisible(false)}
+          booking={selectedBooking}
+          onClose={() => {
+            setModalVisible(false);
+            setSelectedBooking(null);
+          }}
         />
       )}
     </div>

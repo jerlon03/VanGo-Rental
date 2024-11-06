@@ -32,7 +32,6 @@ const updateDriver = async (userId: number, updatedData: {
 const getAllDriver = async () => {
     try {
         const response = await Instance.get<{ data: Driver[] }>(`/api/driver/`); // Specify the expected response type
-        console.log('Fetched Drivers Response:', response); // Log the entire response object
         return response.data; // Return the data array
     } catch (error) {
         console.error('Error fetching drivers:', error); // Log the error for debugging

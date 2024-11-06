@@ -16,6 +16,8 @@ interface Props {
   className?: string; // Add className prop to the interface
   required?: boolean; // Add required prop to the interface
   maxLength?: number; 
+  name?: string;
+  inputMode?: "search" | "numeric" | "email" | "tel" | "text" | "url" | "none" | "decimal"; // Updated inputMode prop
 }
 
 const InputField: React.FC<Props> = ({
@@ -34,6 +36,8 @@ const InputField: React.FC<Props> = ({
   className, // Destructure className prop
   required, // Destructure required prop
   maxLength,
+  name, // Destructure name prop
+  inputMode, // Destructure inputMode prop
   ...rest
 }) => {
   return (
@@ -53,6 +57,7 @@ const InputField: React.FC<Props> = ({
       )}
       <input
         id={id}
+        name={name} // Set the name attribute
         type={type}
         onChange={onChange}
         placeholder={placeholder}
@@ -61,6 +66,7 @@ const InputField: React.FC<Props> = ({
         readOnly={readOnly}
         onClick={onClick}
         required={required} // Add required attribute
+        inputMode={inputMode} // Set the inputMode attribute
         style={{
           width,
           height,

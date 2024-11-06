@@ -1,11 +1,11 @@
 'use client'
-import React, { useState } from 'react';
-// Check if these imports are correct
+import React, { useState, useRef } from 'react';
 import { IoCloudUploadOutline, IoMdCloseCircle } from "@/components/icons/index"; // Ensure these are named exports
 import Image from 'next/image'; // Import the Image component from next/image
 
 const ImagesUploader = ({ onUpload }) => {
   const [previewImage, setPreviewImage] = useState(null);
+  const fileInputRef = useRef(null); // Create a ref for the file input
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -21,7 +21,9 @@ const ImagesUploader = ({ onUpload }) => {
 
   const handleRemoveImage = () => {
     setPreviewImage(null); // Reset the preview image
-    document.getElementById('file-input').value = null; // Clear the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null; // Clear the file input using ref
+    }
     onUpload(null); // Notify parent component that the image has been removed
   };
 
@@ -30,8 +32,8 @@ const ImagesUploader = ({ onUpload }) => {
       <div className="relative w-full h-[120px] border-2 border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center">
         {previewImage ? (
           <>
-            <Image src={previewImage} alt="Preview" layout="fill" className="object-contain" width={300} height={300} />
-            <IoMdCloseCircle onClick={handleRemoveImage} className=' text-red-500 hover:text-red-800 absolute top-[-10px] right-[-10px] size-[25px]' />
+            <Image src={previewImage} alt="Preview" className="object-contain" width={150} height={200} />
+            <IoMdCloseCircle onClick={handleRemoveImage} className='text-red-500 hover:text-red-800 absolute top-[-10px] right-[-10px] size-[25px]' />
           </>
         ) : (
           <div className="text-gray-400 text-center">
@@ -44,6 +46,7 @@ const ImagesUploader = ({ onUpload }) => {
       <input
         type="file"
         id="file-input"
+        ref={fileInputRef} // Attach the ref to the file input
         accept="image/*"
         onChange={handleFileChange}
         className="hidden"

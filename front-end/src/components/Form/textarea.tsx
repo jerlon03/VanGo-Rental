@@ -1,26 +1,29 @@
 import React, { ChangeEvent, FC } from 'react';
 
 interface TextAreaProps {
-  value: string;
+  value?: string;
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   rows?: number;
   cols?: number;
   maxLength?: number;
   disabled?: boolean;
+  name?: string;
 }
 
 const TextArea: FC<TextAreaProps> = ({
-  value,
+  value = '',
   onChange,
   placeholder = '',
   rows = 4,
   cols = 50,
   maxLength = 500,
   disabled = false,
+  name,
 }) => {
   return (
     <textarea
+      name={name}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
