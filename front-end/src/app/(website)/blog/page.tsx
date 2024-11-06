@@ -42,11 +42,9 @@ const Blog = () => {
           alt="Blog Banner"
           className="w-full"
         />
-        <h1 className="absolute top-10 right-9 w-[60%] text-[20px] text-center">
-          &ldquo;Embark on a Journey of Discovery: Your Go-To for Unforgettable
-          Outdoor Fun, Where Every Moment Counts, Every Adventure Awaits, and
-          Ever
-        </h1>
+        <p className="absolute top-10 right-9 w-[60%] text-[20px] text-center">
+          Embark on a Journey of Discovery : Your Go-To for Unforgettable Outdoor Fun, Where Every Moment Counts, Every Adventure Awaits, and Ever
+        </p>
       </div>
 
       {/* Introduction */}
@@ -127,9 +125,9 @@ const Blog = () => {
               <h3 className="font-semibold">Menjolen Bentolan</h3>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
-                &quot;The van provided excellent comfort and space for our group's
+                The van provided excellent comfort and space for our groups
                 trip around Cebu. Its smooth ride and reliable performance made
-                our journey enjoyable and stress-free.&quot;
+                our journey enjoyable and stress-free.
               </p>
               <p className="mt-4 text-gray-500">Review Rates</p>
               <div className="flex justify-center mt-2">
@@ -151,9 +149,9 @@ const Blog = () => {
               <h3 className="font-semibold">Shaira Shane Gonzaga</h3>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
-                &quot;The van provided excellent comfort and space for our group's
+                The van provided excellent comfort and space for our groups
                 trip around Cebu. Its smooth ride and reliable performance made
-                our journey enjoyable and stress-free.&quot;
+                our journey enjoyable and stress-free.
               </p>
               <p className="mt-4 text-gray-500">Review Rates</p>
               <div className="flex justify-center mt-2">
