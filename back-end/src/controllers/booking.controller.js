@@ -1,11 +1,26 @@
 // src/controllers/booking.controller.js
 const Booking = require('../model/booking.model');
 
-exports.createBooking = (req, res) => {
-    const bookingData = req.body;
+exports.createBooking = async (req, res) => {
+    console.log('Request body:', req.body); // Log the request body
+    console.log('Uploaded file:', req.file); // Log the uploaded file
+
+    // Check if the file is uploaded
+    if (!req.file) {
+        return res.status(400).json({ error: 'Proof of payment image is required.' });
+    }
+
+    // Get the URL of the uploaded image from Cloudinary
+    const imagePath = req.file.path; // This should be the URL returned by Cloudinary
+
+    // Set the proof_of_payment
+    const bookingData = { ...req.body, proof_of_payment: imagePath }; // Combine body and image path
+
+    console.log('Booking Data:', bookingData); // Log booking data to check if proof_of_payment is included
 
     Booking.createBooking(bookingData, (err, bookingId) => {
         if (err) {
+            console.error('Database Error:', err); // Log the error
             return res.status(400).json({ error: err.message });
         }
         res.status(201).json({ bookingId });

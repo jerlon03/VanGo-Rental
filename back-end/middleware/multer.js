@@ -20,13 +20,24 @@ const blogPostStorage = new CloudinaryStorage({
   },
 });
 
+const ReceiptStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+      folder: "receipt",
+      allowedFormats: ["jpg", "png", "jpeg"],
+  },
+});
+
 // Middleware for uploading modules
 const uploadVan = multer({ storage: vanStorage });
 
 // Middleware for uploading blog post images
 const uploadBlogPost = multer({ storage: blogPostStorage });
 
+const uploadReceipt = multer({ storage: ReceiptStorage });
+
 module.exports = {
     uploadVan,
     uploadBlogPost,
+    uploadReceipt
 };

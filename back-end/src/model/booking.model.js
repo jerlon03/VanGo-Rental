@@ -15,21 +15,59 @@ const checkUserExists = (user_id, callback) => {
 
 // Create a booking
 const createBooking = (data, callback) => {
-    const { first_name, last_name, email, phone_number, date_of_birth, drop_off_location, pickup_location, city_or_municipality, pickup_date_time, barangay, proof_of_payment, van_id } = data;
-    
+    const { 
+        first_name, 
+        last_name, 
+        email, 
+        phone_number, 
+        date_of_birth, 
+        pickup_location, 
+        city_or_municipality, 
+        pickup_date_time, 
+        barangay, 
+        proof_of_payment, 
+        van_id 
+    } = data;
+
+    // SQL query to insert booking data
     const query = `
-        INSERT INTO bookings (first_name, last_name, email, phone_number, date_of_birth, province, pickup_location, city_or_municipality, pickup_date_time, barangay, proof_of_payment, van_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO bookings (
+            first_name, 
+            last_name, 
+            email, 
+            phone_number, 
+            date_of_birth, 
+            pickup_location, 
+            city_or_municipality, 
+            pickup_date_time, 
+            barangay, 
+            proof_of_payment, 
+            van_id
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    dbConn.query(query, [first_name, last_name, email, phone_number, date_of_birth, drop_off_location, pickup_location, city_or_municipality, pickup_date_time, barangay, proof_of_payment, van_id], (err, result) => {
+    // Execute the query
+    dbConn.query(query, [
+        first_name, 
+        last_name, 
+        email, 
+        phone_number, 
+        date_of_birth, 
+        pickup_location, 
+        city_or_municipality, 
+        pickup_date_time, 
+        barangay, 
+        proof_of_payment, // Ensure this is the correct value
+        van_id
+    ], (err, result) => {
         if (err) {
+            console.error('Database Error:', err); // Log the error for debugging
             return callback(err, null);
         }
-        callback(null, result.insertId);
+        callback(null, result.insertId); // Return the inserted booking ID
     });
 };
-
 const getAllBookings = (callback) => {
     const query = `SELECT * FROM bookings`;
 
