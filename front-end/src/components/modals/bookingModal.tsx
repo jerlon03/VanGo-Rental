@@ -5,6 +5,7 @@ import { Booking } from '@/lib/types/booking.type';
 import { formatDateRange } from '@/components/date/formatDate';
 import Button from '@/components/Button/button';
 import SweetAlert from '@/components/alert/alert'; // Import SweetAlert
+import Image from 'next/image'; // Import Image component
 
 
 interface BookingDetailsModalProps {
@@ -26,7 +27,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
         return () => {
             document.removeEventListener('mousedown', handleClickOutside); // Cleanup event listener
         };
-    }, []);
+    }, [handleClickOutside]);
 
     if (!booking) return null; // Return null if no booking is provided
 
@@ -59,7 +60,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
 
                     <div className="col-span-2">
                         <h3 className="text-xl font-semibold mb-2">Proof of Payment</h3>
-                        <img src={booking.proof_of_payment} alt="Proof of Payment" className="w-40 h-40 object-cover rounded-lg border" />
+                        <Image src={booking.proof_of_payment} alt="Proof of Payment" width={160} height={160} className="object-cover rounded-lg border" />
                     </div>
 
                     <div className="col-span-2 text-center">

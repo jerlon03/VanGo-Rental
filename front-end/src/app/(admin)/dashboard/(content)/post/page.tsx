@@ -19,6 +19,7 @@ import Link from 'next/link'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import React, { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 const AdminPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -243,10 +244,15 @@ const AdminPost = () => {
                 <div className="p-4">
                   {/* Image Section */}
                   {selectedPost.post_image && (
-                    <img
+                    <Image
                       src={selectedPost.post_image}
                       alt={selectedPost.title}
                       className="w-full h-auto rounded-lg mb-4 shadow-md"
+                      width={500}
+                      height={300}
+                      onError={(e) => {
+                        e.currentTarget.src = '/default-image.png';
+                      }}
                     />
                   )}
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">{selectedPost.title}</h3>
@@ -374,21 +380,21 @@ const AdminPost = () => {
             header="Image"
             body={(rowData) => (
               <div className="flex justify-center items-center h-full">
-                <img
+                <Image
                   src={rowData.post_image}
                   alt={`${rowData.title} image`}
-                  className=" object-cover  rounded-[5px] border "
+                  className="object-cover rounded-[5px] border"
                   width={100}
                   height={100}
                   onError={(e) => {
-                    e.currentTarget.src = '/default-image.png ';
+                    e.currentTarget.src = '/default-image.png';
                   }}
                 />
               </div>
             )}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px]  border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px] border-r' }
             }}
           />
           <Column

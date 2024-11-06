@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 // Check if these imports are correct
 import { IoCloudUploadOutline, IoMdCloseCircle } from "@/components/icons/index"; // Ensure these are named exports
+import Image from 'next/image'; // Import the Image component from next/image
 
 const ImagesUploader = ({ onUpload }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -29,7 +30,7 @@ const ImagesUploader = ({ onUpload }) => {
       <div className="relative w-full h-[120px] border-2 border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center">
         {previewImage ? (
           <>
-            <img src={previewImage} alt="Preview" className="w-full h-full object-contain" />
+            <Image src={previewImage} alt="Preview" layout="fill" className="object-contain" width={300} height={300} />
             <IoMdCloseCircle onClick={handleRemoveImage} className=' text-red-500 hover:text-red-800 absolute top-[-10px] right-[-10px] size-[25px]' />
           </>
         ) : (

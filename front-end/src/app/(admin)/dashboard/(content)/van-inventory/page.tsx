@@ -280,10 +280,12 @@ const VanInventory = () => {
             header="Image"
             body={(rowData) => (
               <div className="flex justify-center items-center h-full">
-                <img
+                <Image
                   src={rowData.van_image || '/default-image.png'}
                   alt={`${rowData.van_name} image`}
                   className="object-cover rounded"
+                  width={300}
+                  height={200}
                   onError={(e) => {
                     e.currentTarget.src = '/default-image.png';
                   }}
@@ -503,21 +505,13 @@ const VanInventory = () => {
             <div className="p-3">
               <div className="flex flex-col">
                 <div className='w-full flex justify-center'>
-                  {selectedVan.van_image ? ( // Check if van_image is valid
-                    <Image
-                      src={selectedVan.van_image} // Display the van image
-                      alt={`${selectedVan.van_name} image`}
-                      className="w-[200px] object-cover rounded mb-4"
-                      width={300}
-                      height={500}
-                    />
-                  ) : (
-                    <img
-                      src="/default-image.png" // Fallback to a default image
-                      alt="Default image"
-                      className="w-[200px] object-cover rounded mb-4"
-                    />
-                  )}
+                  <Image
+                    src={selectedVan.van_image || "/default-image.png"}
+                    alt={`${selectedVan.van_name} image`}
+                    className="w-[200px] object-cover rounded mb-4"
+                    width={200}
+                    height={300}
+                  />
                 </div>
 
                 <p><strong>Van Name:</strong> {selectedVan.van_name}</p>
