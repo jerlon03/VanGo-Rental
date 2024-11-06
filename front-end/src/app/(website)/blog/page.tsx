@@ -45,7 +45,7 @@ const Blog = () => {
         <h1 className="absolute top-10 right-9 w-[60%] text-[20px] text-center">
           &ldquo;Embark on a Journey of Discovery: Your Go-To for Unforgettable
           Outdoor Fun, Where Every Moment Counts, Every Adventure Awaits, and
-          Every Memory Lasts a Lifetime.&rdquo;
+          Ever
         </h1>
       </div>
 

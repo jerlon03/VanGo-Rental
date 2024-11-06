@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef } from 'react'; // Added useEffect and useRef
+import React, { useCallback, useEffect, useRef } from 'react'; // Added useEffect and useRef
 import ModalContainer from '@/components/modals/modalContainer'; // Import the ModalContainer component
 import { Booking } from '@/lib/types/booking.type';
 import { formatDateRange } from '@/components/date/formatDate';
@@ -16,11 +16,11 @@ interface BookingDetailsModalProps {
 const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onClose }) => {
     const modalRef = useRef<HTMLDivElement>(null); // Create a ref for the modal
 
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = useCallback((event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
             onClose(); // Close the modal if clicked outside
         }
-    };
+    }, [onClose]);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside); // Add event listener
