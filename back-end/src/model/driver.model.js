@@ -22,14 +22,28 @@ const updateDriver = (userId, driverData, callback) => {
         // Proceed with the update if the driver exists
         return dbConn.query(`
             UPDATE drivers
-            SET experience_years = ?, vehicle_assigned = ?, phoneNumber = ?, location = ?
+            SET experience_years = ?, phoneNumber = ?, location = ?
             WHERE user_id = ?
-        `, [driverData.experience_years, driverData.vehicle_assigned, driverData.phoneNumber, driverData.location, userId], (err, results) => { 
+        `, [driverData.experience_years, driverData.phoneNumber, driverData.location, userId], (err, results) => { 
             if (err) {
                 return callback(err); // Handle any errors that occur during the query
             }
             callback(null, results.affectedRows); // Return the number of affected rows
         });
+    });
+};
+
+// Get all drivers with user names
+const getAllDrivers = (callback) => {
+    return dbConn.query(`
+        SELECT d.*, u.first_name, u.last_name
+        FROM drivers d
+        JOIN users u ON d.user_id = u.user_id
+    `, (err, results) => {
+        if (err) {
+            return callback(err); // Handle any errors that occur during the query
+        }
+        callback(null, results); // Return the list of drivers with user names
     });
 };
 
@@ -42,8 +56,26 @@ const getDriverProfile = (userId) => {
     `, [userId]);
 };
 
+const getDriverByUserId = (userId, callback) => {
+    return dbConn.query(`
+        SELECT *
+        FROM drivers
+        WHERE user_id = ?
+    `, [userId], (err, results) => {
+        if (err) {
+            return callback(err); // Handle any errors that occur during the query
+        }
+        if (results.length === 0) {
+            return callback(new Error('No driver found with the provided user_id')); // Handle case where no driver exists
+        }
+        callback(null, results[0]); // Return the driver details
+    });
+};
+
 module.exports = {
     updateDriver,
     getDriverProfile,
-    createDriver
+    createDriver,
+    getDriverByUserId,
+    getAllDrivers
 };

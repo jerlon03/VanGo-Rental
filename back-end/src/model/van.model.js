@@ -9,6 +9,7 @@ const Van = function(van) {
   this.transmission_type = van.transmission_type;
   this.things_capacity = van.things_capacity;
   this.status = van.status || 'available';
+  this.driver_id = van.driver_id;
 };
 
 Van.create = (newVan, result) => {
@@ -72,8 +73,6 @@ Van.getAll = (result) => {
       result(err, null);
       return;
     }
-
-    console.log("Vans: ", res);
     result(null, res);
   });
 };

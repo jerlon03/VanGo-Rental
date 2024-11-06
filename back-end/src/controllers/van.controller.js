@@ -3,7 +3,7 @@ const Van = require('../model/van.model');
 // const cloudinary = require('../../utils/cloudinary')
 
 exports.createVan = (req, res) => {
-  const { van_name, van_description, people_capacity, transmission_type, things_capacity } = req.body;
+  const { van_name, van_description, people_capacity, transmission_type, things_capacity, driver_id } = req.body;
   const imagePath = req.file?.path;
 
   if (!imagePath) {
@@ -18,6 +18,7 @@ exports.createVan = (req, res) => {
     people_capacity,
     transmission_type,
     things_capacity,
+    driver_id,
   });
 
   // Save the Van object to the database
@@ -73,8 +74,6 @@ exports.updateVan = (req, res) => {
 exports.getAllVans = (req, res) => {
   Van.getAll((err, vans) => {
     if (err) {
-      // Log the error and send a server error response
-      console.error("Error retrieving vans: ", err);
       res.status(500).send({
         status: 'error',
         message: 'An error occurred while retrieving vans',

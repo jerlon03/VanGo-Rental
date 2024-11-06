@@ -101,7 +101,7 @@ exports.updateDriver = async function (req, res) {
   const updatedUserData = req.body;
 
   // Validate required fields
-  const requiredFields = ['first_name', 'last_name', 'email', 'experience_years', 'vehicle_assigned', 'phoneNumber', 'location'];
+  const requiredFields = ['first_name', 'last_name', 'email', 'experience_years', 'phoneNumber', 'location'];
   for (const field of requiredFields) {
     if (!updatedUserData[field]) {
       return res.status(400).send({
@@ -112,23 +112,7 @@ exports.updateDriver = async function (req, res) {
   }
 
   try {
-    // Check if the email already exists for another user
-    const existingUser = await new Promise((resolve, reject) => {
-      User.getByEmail(updatedUserData.email, (err, user) => {
-        if (err) {
-          console.error('Error checking email:', err);
-          return reject(err);
-        }
-        resolve(user);
-      });
-    });
 
-    if (existingUser && existingUser.user_id !== userId) {
-      return res.status(400).send({
-        error: true,
-        message: 'Email already exists. Please use a different email.'
-      });
-    }
 
     // Update user details
     await new Promise((resolve, reject) => {
@@ -144,7 +128,6 @@ exports.updateDriver = async function (req, res) {
     // Update driver details
     const driverData = {
       experience_years: updatedUserData.experience_years,
-      vehicle_assigned: updatedUserData.vehicle_assigned,
       phoneNumber: updatedUserData.phoneNumber,
       location: updatedUserData.location
     };
@@ -296,6 +279,54 @@ exports.changePassword = (req, res) => {
     });
   });
 };
+
+exports.getDriver = async function (req, res) {
+  const userId = req.params.userId; // Assuming userId is passed as a URL parameter
+
+  try {
+    // Fetch user details
+    const user = await new Promise((resolve, reject) => {
+      User.findById(userId, (err, user) => {
+        if (err) {
+          console.error('Error fetching user:');
+          return reject(err);
+        }
+        resolve(user);
+      });
+    });
+
+    // Fetch driver details
+    const driver = await new Promise((resolve, reject) => {
+      Driver.getDriverByUserId(userId, (err, driver) => {
+        if (err) {
+          console.error('Error fetching driver:', err);
+          return reject(err);
+        }
+        resolve(driver);
+      });
+    });
+
+    if (!driver) {
+      return res.status(404).send({
+        error: true,
+        message: 'Driver not found'
+      });
+    }
+
+    res.status(200).send({
+      error: false,
+      user,
+      driver
+    });
+  } catch (error) {
+    console.error('Error during fetching driver:', error);
+    res.status(500).send({
+      error: true,
+      message: 'Error fetching user and driver details'
+    });
+  }
+};
+
 
 
 

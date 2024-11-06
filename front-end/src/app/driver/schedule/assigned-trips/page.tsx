@@ -96,7 +96,7 @@ const AssignedTrips = () => {
                 const updatedData = [...data];
                 updatedData[index].status = 'Completed';
                 setData(updatedData);
-                SweetAlert.showSuccess('Completed!', 'The trip has been marked as completed.');
+                SweetAlert.showSuccess('Completed!, The trip has been marked as completed.');
 
                 // Send email to the customer
                 sendEmailToCustomer(updatedData[index].email, 'Your trip has been completed!', 'Thank you for using our service. Your trip has been successfully completed.');
