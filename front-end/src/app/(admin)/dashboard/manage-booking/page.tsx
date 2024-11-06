@@ -13,6 +13,7 @@ import Button from '@/components/Button/button';
 import BookingDetailsModal from '@/components/modals/bookingModal'; // Import the new modal component
 import { IoCloseCircle, IoMdCheckmarkCircleOutline } from '@/components/icons';
 import SweetAlert from '@/components/alert/alert'; // Adjust the import path as necessary
+import Image from 'next/image'; // Import the Image component from next/image
 
 const ManageBookings = () => {
   const [bookings, setBookings] = useState<BookingDetails[]>([]);
@@ -125,11 +126,11 @@ const ManageBookings = () => {
             field="proof_of_payment" // Ensure this matches the field in your data
             body={(rowData) => (
               <div className="flex justify-center"> {/* Centering the image */}
-                <img
+                <Image
                   src={rowData.proof_of_payment}
                   alt={rowData.proof_of_payment}
-                  width="50"
-                  height="50"
+                  width={50}
+                  height={50}
                 />
               </div>
             )}

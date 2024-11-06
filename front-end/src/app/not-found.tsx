@@ -25,7 +25,7 @@ const NofFound: NextPage = () => {
     <div className='flex h-screen w-screen justify-center items-center flex-col gap-2'>
         <Image src='/png/notfound.png' width={500} height={500} alt='Not Found Page' />
         <h1 className='text-[20px] font-semibold'>404 - Page Not Found</h1>
-        <p>Sorry, we couldn't find the page you were looking for.</p>
+        <p>Sorry, we couldn&apos;t find the page you were looking for.</p>
         <Button name={role ? 'Go to Your Dashboard' : 'Go to Homepage'} backgroundColor='alert' width='200px' onClick={handleRedirect}/>
     </div>
   );

@@ -17,7 +17,7 @@ const ContactUs = () => {
       <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center text-white text-2xl space-y-2 md:space-y-4">
         <h1 className="font-medium text-lg md:text-2xl">Contact Us</h1>
         <p className="text-sm md:text-lg">
-          Ready to connect? Reach out to us and let's start a conversation!
+          Ready to connect? Reach out to us and let&apos;s start a conversation!
         </p>
       </div>
       {/* Main Content */}

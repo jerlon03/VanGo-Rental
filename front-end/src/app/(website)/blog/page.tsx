@@ -43,9 +43,9 @@ const Blog = () => {
           className="w-full"
         />
         <h1 className="absolute top-10 right-9 w-[60%] text-[20px] text-center">
-          “Embark on a Journey of Discovery: Your Go-To for Unforgettable
+          &ldquo;Embark on a Journey of Discovery: Your Go-To for Unforgettable
           Outdoor Fun, Where Every Moment Counts, Every Adventure Awaits, and
-          Every Memory Lasts a Lifetime."
+          Every Memory Lasts a Lifetime.&rdquo;
         </h1>
       </div>
 
@@ -115,19 +115,21 @@ const Blog = () => {
           {/* Card 1 */}
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%]">
-              <img
+              <Image
                 src="png/blog_us/blog1.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
+                width={200}
+                height={200}
               />
             </div>
             <div className="mt-16">
               <h3 className="font-semibold">Menjolen Bentolan</h3>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
-                "The van provided excellent comfort and space for our group's
+                &quot;The van provided excellent comfort and space for our group's
                 trip around Cebu. Its smooth ride and reliable performance made
-                our journey enjoyable and stress-free."
+                our journey enjoyable and stress-free.&quot;
               </p>
               <p className="mt-4 text-gray-500">Review Rates</p>
               <div className="flex justify-center mt-2">
@@ -139,7 +141,7 @@ const Blog = () => {
           {/* Card 2 */}
           <div className="relative w-[350px] p-6 bg-gray-100 text-center rounded-lg shadow-lg">
             <div className="absolute top-[-50px] left-[35%]">
-              <img
+              <Image
                 src="png/blog_us/blog2.jpg"
                 alt="Customer"
                 className="w-[100px] h-[100px] rounded-full object-cover border-4 border-white"
@@ -149,9 +151,9 @@ const Blog = () => {
               <h3 className="font-semibold">Shaira Shane Gonzaga</h3>
               <p className="text-gray-500 text-sm">25th of May, 2024</p>
               <p className="mt-4 text-gray-600">
-                "The van provided excellent comfort and space for our group's
+                &quot;The van provided excellent comfort and space for our group's
                 trip around Cebu. Its smooth ride and reliable performance made
-                our journey enjoyable and stress-free."
+                our journey enjoyable and stress-free.&quot;
               </p>
               <p className="mt-4 text-gray-500">Review Rates</p>
               <div className="flex justify-center mt-2">

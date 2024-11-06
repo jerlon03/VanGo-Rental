@@ -18,7 +18,7 @@ const AboutUs = () => {
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white">
           <h1 className="text-4xl font-bold">About Us</h1>
           <p className="mt-2 text-lg">
-            Driving Convenience, Every Mile of the Way—Your Trusted Partner for Seamless and Reliable Van Rentals
+            Driving Convenience, Every Mile of the Way&mdash;Your Trusted Partner for Seamless and Reliable Van Rentals
           </p>
         </div>
       </div>
@@ -162,7 +162,7 @@ const AboutUs = () => {
             </div>
             <div>
               <h2 className="text-xl font-semibold">Company Services</h2>
-              <p className="mt-2 text-gray-600">Our company provides a suite of tailored solutions to meet your diverse needs. From personalized private tours to seamless airport transfers, heartfelt Balik Probinsya assistance, stress-free hotel pickups and drop-offs, and comprehensive wedding services, we're dedicated to making every journey memorable and every occasion extraordinary.</p>
+              <p className="mt-2 text-gray-600">Our company provides a suite of tailored solutions to meet your diverse needs. From personalized private tours to seamless airport transfers, heartfelt Balik Probinsya assistance, stress-free hotel pickups and drop-offs, and comprehensive wedding services, we&apos;re dedicated to making every journey memorable and every occasion extraordinary.</p>
             </div>
           </div>
           
@@ -213,7 +213,7 @@ const AboutUs = () => {
             </div>
             <div>
               <h2 className="text-xl font-semibold">Balik Probinsya</h2>
-              <p className="mt-2 text-gray-600">Let us assist you in reconnecting with your roots with our Balik Probinsya service. Whether you're returning to your hometown or exploring a new province, we provide seamless support to ensure a smooth transition and a warm welcome back home.</p>
+              <p className="mt-2 text-gray-600">Let us assist you in reconnecting with your roots with our Balik Probinsya service. Whether you&apos;re returning to your hometown or exploring a new province, we provide seamless support to ensure a smooth transition and a warm welcome back home.</p>
             </div>
           </div>
           
