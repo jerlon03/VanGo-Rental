@@ -64,24 +64,25 @@ const Blog = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Article Loop */}
           {posts.length > 0 && posts.filter(post => post.status === 'PUBLISH').map((post, index) => ( // Filter for 'PUBLISH' status
-            <div key={index} className="flex flex-col gap-5 bg-white shadow-md p-5 rounded-lg transition-transform transform hover:-translate-y-2 hover:shadow-xl">
-              <img
-                src={post.post_image} // Ensure post_image is valid
+            <div key={index} className="flex flex-col justify-between gap-5 bg-white shadow-md p-5 rounded-lg transition-transform transform hover:-translate-y-2 hover:shadow-x ">
+              <Image
+                src={post.post_image || '/path/to/default/image.png'} // Fallback image if post_image is undefined
                 alt={post.title}
-                width={300}
-                height={200}
-                className="w-full
-                 h-auto rounded-lg"
+                width={300} // Fixed width
+                height={200} // Fixed height
+                className="rounded-lg object-contain h-auto w-full aspect-[300/200]" // Added object-cover to maintain aspect ratio
               />
-              <div>
-                <h2 className="text-xl font-medium text-blackColor">{post.title}</h2>
-                <p className="text-[14px] font-semibold text-primaryColor mt-1">
-                  {formatDatePublicRange(post.createdAt as any)}
+              <div className="w-full">
+                <div className="pb-4">
+                  <h2 className="text-xl font-medium text-blackColor">{post.title}</h2>
+                  <p className="text-[14px] font-semibold text-primaryColor mt-1">
+                    {formatDatePublicRange(post.createdAt as any)}
+                  </p>
+                </div>
+                <p className="text-gray-700 leading-relaxed ">
+                  {post.description}
                 </p>
               </div>
-              <p className="text-gray-700 leading-relaxed line-clamp-3">
-                {post.description}
-              </p>
             </div>
           ))}
         </div>
@@ -154,7 +155,7 @@ const Blog = () => {
               </p>
               <p className="mt-4 text-gray-500">Review Rates</p>
               <div className="flex justify-center mt-2">
-                <span className="text-yellow-500">★ ★ ★ ★ ★</span>
+                <span className="text-yellow-500">★ ★ ★ ★</span>
               </div>
             </div>
           </div>

@@ -7,11 +7,9 @@ const fetchAllUser = async () => {
 }
 
 const addUser = async (newUser: { first_name: string; last_name: string; email: string; password: string; role: string; phoneNumber: string; }) => {
-  const response = await Instance.post<DataRes<Users[]>>('/users/register', newUser); // Pass newUser data
+  const response = await Instance.post<DataRes<Users[]>>('/users/register', newUser); 
   return response.data.data;
 }
-
-
 
 
 export {

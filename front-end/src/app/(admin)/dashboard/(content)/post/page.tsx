@@ -197,6 +197,7 @@ const AdminPost = () => {
         setDescription(''); // Reset description
         setPostsImage(null); // Reset image
         setIsAddPostModalOpen(false); // Close the modal
+        setIsModalOpen(false); // Close the modal to remove background
         const updatedPosts = await fetchAllPosts(); // Fetch updated posts
         setPosts(updatedPosts.posts || []); // Update state with new posts
       } else {

@@ -8,7 +8,7 @@ interface ModalProps {
   children: ReactNode; // Explicitly define children as ReactNode
   width?: string;
   height?: string;
-  onClose: () => void; // Added onClose property
+  onClose?: () => void; // Added onClose property
   className?: string; // Added className property
 }
 

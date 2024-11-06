@@ -15,6 +15,7 @@ interface Props {
   icon?: React.ReactNode; // Add icon prop to the interface
   className?: string; // Add className prop to the interface
   required?: boolean; // Add required prop to the interface
+  maxLength?: number; 
 }
 
 const InputField: React.FC<Props> = ({
@@ -32,6 +33,7 @@ const InputField: React.FC<Props> = ({
   icon, // Destructure icon prop
   className, // Destructure className prop
   required, // Destructure required prop
+  maxLength,
   ...rest
 }) => {
   return (
@@ -54,6 +56,7 @@ const InputField: React.FC<Props> = ({
         type={type}
         onChange={onChange}
         placeholder={placeholder}
+        maxLength={maxLength} 
         value={value}
         readOnly={readOnly}
         onClick={onClick}

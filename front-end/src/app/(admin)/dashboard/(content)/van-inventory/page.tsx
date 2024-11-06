@@ -17,7 +17,9 @@ import ImagesUploader from '@/components/Uplooad/ImagesUploader'
 import InputField from '@/components/Form/inputfield'
 import Select from '@/components/Form/select';
 import Image from 'next/image'
-// import { Driver } from '@/lib/types/driver.type'
+import { getAllDriver } from '@/lib/api/driver.api'
+import { Driver } from '@/lib/types/driver.type'
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 // import { fetchAllDrivers } from '@/lib/api/driver.api'
 
 const VanInventory = () => {
@@ -36,13 +38,8 @@ const VanInventory = () => {
     people_capacity: '',
     things_capacity: '',
   });
-  const [drivers, setDrivers] = useState([
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-    { id: 3, name: 'Alice Johnson' },
-    { id: 4, name: 'Bob Brown' },
-  ]);
-  const [selectedDriver, setSelectedDriver] = useState<string>('');
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
   const [selectedVan, setSelectedVan] = useState<Van | null>(null); // State to hold the selected van for details
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State to control the details modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control the edit modal
@@ -54,6 +51,37 @@ const VanInventory = () => {
     transmission_type: '',
     things_capacity: '',
   };
+
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        const driverData = await getAllDriver();
+        console.log('Fetched Drivers:', driverData); // Log the fetched driver data
+
+        // Access the data property to get the array of drivers
+        const driversArray = driverData.data; // Access the array of drivers
+
+        // Check if driversArray is an array
+        if (Array.isArray(driversArray)) {
+          // Create a new array with fullName property
+          const driversWithFullName = driversArray.map(driver => ({
+            ...driver,
+            fullName: `DR-O${driver.driver_id}  ${driver.first_name} ${driver.last_name}` // Combine first_name and driver_id
+          }));
+          setDrivers(driversWithFullName); // Set the drivers state
+        } else {
+          console.error('Driver data is not an array:', driversArray);
+          console.error('Driver data structure:', JSON.stringify(driversArray, null, 2));
+          setDrivers([]); // Set to empty array if not an array
+        }
+      } catch (err) {
+        console.error('Error fetching drivers:', err); // Log the error
+        setDrivers([]); // Set to empty array on error
+      }
+    };
+
+    fetchDrivers();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -79,7 +107,7 @@ const VanInventory = () => {
 
     // Check if all required fields are filled
     if (!newVan.van_name || !newVan.van_description || !vanImage ||
-      !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity) {
+      !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity || !selectedDriver) {
       SweetAlert.showError('Please fill out all required fields and upload an image.');
       return;
     }
@@ -100,6 +128,7 @@ const VanInventory = () => {
         }
       });
       formData.append('status', 'available');
+      // formData.append('driver_id', selectedDriver);
       if (vanImage) {
         formData.append('image', vanImage);
       }
@@ -117,6 +146,7 @@ const VanInventory = () => {
         SweetAlert.showSuccess('Van added successfully');
         setNewVan(initialVanState);
         setVanImage(null);
+        // setSelectedDriver('');
         setIsModalOpen(false);
         const updatedVans = await fetchAllVan();
         setVans(updatedVans.data);
@@ -134,8 +164,9 @@ const VanInventory = () => {
     // No need to fetch drivers for now
   };
 
-  const handleDriverChange = (value: string) => {
-    setSelectedDriver(value);
+  const handleDriverChange = (e: DropdownChangeEvent) => {
+    console.log('Selected Driver:', e.value); // Log the selected driver
+    setSelectedDriver(e.value as Driver);
   };
 
   useEffect(() => {
@@ -151,6 +182,7 @@ const VanInventory = () => {
     fetchVans();
   }, []);
 
+  console.log(selectedDriver, 'Selected Driver');
 
 
   function onDeleteClick(rowData: any): void {
@@ -179,15 +211,15 @@ const VanInventory = () => {
         formData.append(key, value.toString());
       });
 
-      // {{ edit_1 }} - Call the new fetchUpdateVan function
-      const updatedVan = await fetchUpdateVan(selectedVan?.van_id as any, newVan as any);
-      // {{ edit_1 }}
+      // // {{ edit_1 }} - Call the new fetchUpdateVan function
+      // const updatedVan = await fetchUpdateVan(selectedVan?.van_id as any, newVan as any);
+      // // {{ edit_1 }}
 
       SweetAlert.showSuccess('Van updated successfully');
       setIsEditModalOpen(false);
       const updatedVans = await fetchAllVan();
       setVans(updatedVans.data);
-      
+
     } catch (error) {
       SweetAlert.showError('Failed to update van');
       console.error('Error:', error);
@@ -200,6 +232,17 @@ const VanInventory = () => {
       setSelectedVan(rowData); // Set the selected van to edit
       setIsEditModalOpen(true); // Open the edit modal
     }
+  };
+
+  const itemTemplate = (driver: Driver) => {
+    return (
+      <div className=" bg-white px-4 p-1">
+        <div className='flex justify-between rounded-[5px] '>
+          <span className='text-gray-500'>{driver.full_name}</span>
+          <span className="text-gray-500">DR-O{driver.driver_id}</span> 
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -238,18 +281,18 @@ const VanInventory = () => {
             body={(rowData) => (
               <div className="flex justify-center items-center h-full">
                 <img
-                  src={rowData.van_image}
+                  src={rowData.van_image || '/default-image.png'}
                   alt={`${rowData.van_name} image`}
-                  className=" object-cover rounded"
+                  className="object-cover rounded"
                   onError={(e) => {
-                    e.currentTarget.src = '/default-image.png'; 
+                    e.currentTarget.src = '/default-image.png';
                   }}
                 />
               </div>
             )}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px]  border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px] border-r' }
             }}
           />
           <Column
@@ -300,7 +343,7 @@ const VanInventory = () => {
               // Apply different styles based on the status value
               switch (rowData.status) {
                 case 'available':
-                  statusClass = 'bg-green-100 text-green-800';
+                  statusClass = 'bg-green-100 text-green-800 lg:text-[14px]';
                   break;
                 case 'booked':
                   statusClass = 'bg-red-100 text-red-800';
@@ -415,12 +458,16 @@ const VanInventory = () => {
               </div>
               <div>
                 <p>Driver Assignee</p>
-                <Select
-                  options={drivers.map(driver => ({ value: driver.id.toString(), label: driver.name }))}
-                  onChange={handleDriverChange}
-                  defaultValue={selectedDriver}
-                  className="w-full"
-                  disabled={false}
+                <Dropdown
+                  id="driver"
+                  value={selectedDriver}
+                  onChange={(e) => setSelectedDriver(e.value)}
+                  options={drivers}
+                  optionLabel="full_name" // Use the correct property for display
+                  optionValue="driver_id" // This should match the unique identifier
+                  placeholder="Select a Driver"
+                  itemTemplate={itemTemplate} // Use the custom item template
+                  className="w-full p-2 bg-gray-100 rounded-md shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
               </div>
 
@@ -447,22 +494,30 @@ const VanInventory = () => {
         </div>
       </Modal>
       {/* Details Modal */}
-      <Modal isOpen={isDetailsModalOpen} width='600px' height='550px' onClose={() => setIsDetailsModalOpen(false)}>
-        <div className="h-full flex flex-col bg-white rounded-[5px] justify-between">
+      <Modal isOpen={isDetailsModalOpen} width='600px' onClose={() => setIsDetailsModalOpen(false)}>
+        <div className="flex flex-col bg-white rounded-[5px] justify-between">
           <div className="flex justify-between items-center bg-primaryColor rounded-t-[5px] p-2">
             <h2 className="text-[18px] font-semibold text-white">VAN DETAILS</h2>
           </div>
           {selectedVan && (
             <div className="p-3">
-              <div className="flex flex-col ">
+              <div className="flex flex-col">
                 <div className='w-full flex justify-center'>
-                  <Image
-                    src={selectedVan.van_image} // Display the van image
-                    alt={`${selectedVan.van_name} image`}
-                    className="w-[200px] object-cover rounded mb-4"
-                    width={300}
-                    height={500}
-                  />
+                  {selectedVan.van_image ? ( // Check if van_image is valid
+                    <Image
+                      src={selectedVan.van_image} // Display the van image
+                      alt={`${selectedVan.van_name} image`}
+                      className="w-[200px] object-cover rounded mb-4"
+                      width={300}
+                      height={500}
+                    />
+                  ) : (
+                    <img
+                      src="/default-image.png" // Fallback to a default image
+                      alt="Default image"
+                      className="w-[200px] object-cover rounded mb-4"
+                    />
+                  )}
                 </div>
 
                 <p><strong>Van Name:</strong> {selectedVan.van_name}</p>

@@ -302,7 +302,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                         { value: 'CEBU', label: 'CEBU' }, // Fixed value for the select
                       ]}
                       onChange={(value) => setProvince(value)} 
-                      defaultValue={province} 
+                      value={province} 
                       className={province ? '' : 'border-red-500'} // Change border color if empty
                       disabled={true} // Set to true if you want to disable the select
                     />
@@ -327,7 +327,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                         setMunicipality(value);
                         setBarangay(''); // Reset barangay when municipality changes
                       }} 
-                      defaultValue={municipality} 
+                      value={municipality} 
                       className={municipality ? '' : 'border-red-500'} // Change border color if empty
                       disabled={false} // Set to true if you want to disable the select
                     />
@@ -347,7 +347,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                   <Select 
                     options={barangays.map(bgy => ({ value: bgy, label: bgy }))} // Populate barangays based on selected municipality
                     onChange={(value) => setBarangay(value)} 
-                    defaultValue={barangay} 
+                    value={barangay} 
                     className={barangay ? '' : 'border-red-500'} // Change border color if empty
                     disabled={false} // Disable if no municipality is selected
                   />

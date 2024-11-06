@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface SelectProps {
-  options: { value: string; label: string }[];
+  options: { driver_id: string; fullname: string }[]; // Update to accept driver_id and fullname
   onChange: (value: string) => void;
   value?: string;
   className?: string; // Allow passing custom className
@@ -16,7 +16,7 @@ const Select: React.FC<SelectProps> = ({ options, onChange, value, className, di
   return (
     <div className="w-full">
       <select
-        defaultValue={value}
+        value={value} // Use value instead of defaultValue for controlled component
         onChange={handleChange}
         className={`w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${
           disabled ? 'bg-gray-500 cursor-not-allowed' : ''
@@ -27,8 +27,8 @@ const Select: React.FC<SelectProps> = ({ options, onChange, value, className, di
           Select an option
         </option>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+          <option key={option.driver_id} value={option.driver_id}>
+            {option.fullname}
           </option>
         ))}
       </select>
