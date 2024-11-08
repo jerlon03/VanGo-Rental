@@ -374,8 +374,10 @@ const VanInventory = () => {
       </div>
       {/* ADD MODAL */}
       <Modal isOpen={isModalOpen} width='500px' height='600px' onClose={() => setIsModalOpen(false)}>
-        <div className="h-full flex flex-col bg-white">
-          <h2 className="text-[20px] font-medium p-3 pb-2">Add New Van</h2>
+        <div className="h-full flex flex-col bg-white rounded-[5px]">
+          <div className='w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]'>
+            <h2 className="text-[20px] text-white font-medium">ADD VAN</h2>
+          </div>
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 pt-2">
             <div className="space-y-4">
               <InputField type="text" name='van_name' onChange={handleInputChange} placeholder="Van Name" />
@@ -444,21 +446,10 @@ const VanInventory = () => {
                 )}
               </div>
             </div>
-            <div className="py-2 px-6 border-t">
+            <div className="py-4 px-6 border-t">
               <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Add Van
-                </button>
+                <Button type="button" onClick={() => setIsModalOpen(false)} name='CANCEL' backgroundColor='error'></Button>
+                <Button name='ADD VAN' type="submit" backgroundColor='alert'></Button>
               </div>
             </div>
           </form>
@@ -526,15 +517,15 @@ const VanInventory = () => {
                   ))}
                 </>
               )}
-                <div className='relative group'>
-                  <div className='p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor hover:bg-primaryColor transition-colors duration-200'>
-                    <IoClose className="text-primaryColor cursor-pointer group-hover:text-white" onClick={() => setIsDetailsModalOpen(false)} size={22} />
-                  </div>
-                  {/* Tooltip */}
-                  <div className='absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2'>
-                    Close
-                  </div>
+              <div className='relative group'>
+                <div className='p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor hover:bg-primaryColor transition-colors duration-200'>
+                  <IoClose className="text-primaryColor cursor-pointer group-hover:text-white" onClick={() => setIsDetailsModalOpen(false)} size={22} />
                 </div>
+                {/* Tooltip */}
+                <div className='absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2'>
+                  Close
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -610,12 +601,7 @@ const VanInventory = () => {
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Update Van
-                </button>
+                <Button name='Update Van' type="submit"></Button>
               </div>
             </div>
           </form>
