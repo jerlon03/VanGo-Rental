@@ -173,8 +173,7 @@ exports.login = (req, res) => {
       // Generate a JWT token, making sure to reference user_id
       const token = jwt.sign(
         { id: user.user_id, email: user.email, role: user.role }, // Ensure this matches your model
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        process.env.JWT_SECRET
       );
 
       // Respond with the token and user role

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 // Function to generate a JWT token
 const generateResetToken = (userId) => {
   const payload = { userId }; // Create a variable to hold the payload
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }); // Use the variable in jwt.sign with expiration
+  return jwt.sign(payload, process.env.JWT_SECRET); // Removed expiration
 };
 const verifyResetToken = (token) => {
   try {

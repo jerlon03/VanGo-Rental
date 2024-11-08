@@ -9,5 +9,6 @@ router.get('/', vanController.getAllVans);
 
 // Route for updating a van
 router.put('/update/:van_id', uploadVan.single('image'), vanController.updateVan);
+router.get('/van/:van_id', vanController.getVanByID);
 
 module.exports = router;

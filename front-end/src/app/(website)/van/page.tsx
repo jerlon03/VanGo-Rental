@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import {motion} from 'framer-motion'
 import Image from 'next/image';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import VanCard from '@/components/Card/vanCard';
@@ -24,7 +25,7 @@ const VanPage: React.FC = () => {
     };
 
     fetchVans();
-  }, []); 
+  }, []);
 
   if (loading) {
     return <div>Loading vans...</div>;
@@ -59,8 +60,20 @@ const VanPage: React.FC = () => {
         <h3 className="text-xl font-medium mb-10">Most Popular Used Van Vehicles</h3>
 
         {/* Render Van Cards */}
-        {vans.map(van => (
-          <VanCard key={van.van_id} van={van} />
+        {vans.map((van, index) => (
+          <motion.div
+            key={van.van_id}
+            initial={{ opacity: 0, y: 50 }} // Initial state for each item
+            whileInView={{ opacity: 1, y: 0 }} // Fade and slide up when in view
+            transition={{
+              opacity: { duration: 1.2 },
+              y: { type: 'spring', stiffness: 100, damping: 25, duration: 1.2 },
+              delay: index * 0.2, // Dynamic delay for each item (e.g., 0.2s delay per item)
+            }}
+          >
+            <VanCard key={van.van_id} van={van} />
+          </motion.div>
+
         ))}
       </div>
     </div>

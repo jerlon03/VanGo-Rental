@@ -65,7 +65,16 @@ const createBooking = (data, callback) => {
             console.error('Database Error:', err); // Log the error for debugging
             return callback(err, null);
         }
-        callback(null, result.insertId); // Return the inserted booking ID
+
+        // Update the van status to 'booked'
+        const updateVanStatusQuery = `UPDATE van SET status = 'booked' WHERE van_id = ?`;
+        dbConn.query(updateVanStatusQuery, [van_id], (updateErr) => {
+            if (updateErr) {
+                console.error('Error updating van status:', updateErr);
+                return callback(updateErr, null);
+            }
+            callback(null, result.insertId); // Return the inserted booking ID
+        });
     });
 };
 const getAllBookings = (callback) => {

@@ -37,6 +37,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
   // State for selected municipality
   const [municipality, setMunicipality] = useState('');
 
+  const [isBooked, setIsBooked] = useState(false); // New state to track booking status
 
   // Get the list of municipalities from cebuData
   const municipalities = Object.keys(cebuData.CEBU.municipality_list);
@@ -65,6 +66,12 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // Confirmation dialog using SweetAlert
+    const isConfirmed = await SweetAlert.showConfirm('Are you sure you want to submit your booking?');
+    if (!isConfirmed) {
+        return; // Exit the function if the user cancels
+    }
 
     console.log('Pickup Date Time:', pickupDateTime); // Log the pickup date time
 
@@ -103,7 +110,15 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
             method: 'POST',
             body: formData,
         }); // Pass the FormData object
-        console.log('API Response:', response); // Debugging line
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            SweetAlert.showError(errorData.error || 'Failed to submit booking.'); // Show error from backend
+            return;
+        }
+
+        const data = await response.json();
+        setIsBooked(true); // Set the van as booked after successful submission
         SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
     } catch (error: any) {
         console.error('Error submitting booking:', error); // Log the entire error object
@@ -175,7 +190,13 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
           </div>
         </div>
         <div className="flex justify-start items-end mt-40 md:ml-6">
-          <Button name='Rent Now' onClick={handleRentNowClick} width='120px'></Button>
+          <Button 
+            name={van.status === 'available' ? 'Rent Now' : 'Booked'} 
+            onClick={van.status === 'available' ? handleRentNowClick : undefined} // Only call the function if available
+            width='120px' 
+            className={van.status === 'available' ? '' : 'bg-green-500 hover:bg-green-700 text-white'} // Apply green background if booked
+            disabled={van.status !== 'available'} // Disable button if not available
+          ></Button>
         </div>
 
         {/* Modal Logic */}

@@ -6,7 +6,7 @@ import { MdDeleteOutline } from 'react-icons/md';
 import { fetchAllBookings } from '@/lib/api/booking.api';
 import { Booking, BookingDetails } from '@/lib/types/booking.type';
 import { Column } from 'primereact/column';
-import { formatDateRange, formatDatePublicRange } from '@/components/date/formatDate';
+import { formatDatePublicRange } from '@/components/date/formatDate';
 import AdminHeader from '@/components/admin/adminHeader';
 import Link from 'next/link';
 import Button from '@/components/Button/button';
@@ -132,9 +132,9 @@ const ManageBookings = () => {
                   <Image
                     src={isAbsoluteUrl ? imageUrl : '/default-image.png'} // Use default image if not an absolute URL
                     alt={`Receipt image`}
-                    className="object-cover rounded-[5px] border"
-                    width={100}
-                    height={100}
+                    className="object-contain rounded-[5px] border  "
+                    width={60}
+                    height={50}
                     onError={(e) => {
                       e.currentTarget.src = '/default-image.png'; // Fallback to default image on error
                     }}

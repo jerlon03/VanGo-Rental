@@ -21,8 +21,22 @@ interface User {
     Location: string;
     first_name: string; // Added first name
     last_name: string;  // Added last name
-    full_name: string;  // Added last name
+    full_name: string; 
+    van_id: number;
   }
+
+  export interface DriverDetails {
+    driver_id: number;
+    van_id: number;
+    email: string;              // Driver's email address
+    experience_years: number;   // Years of experience
+    first_name: string;         // Driver's first name
+    last_name: string;          // Driver's last name
+    phoneNumber: string;        // Driver's phone number
+    user_id: number;            // User identifier associated with the driver
+    vehicle_assigned: number;   // Vehicle assigned to the driver (0 if none)
+    location: string;           // Location of the driver
+}
   
    export interface ApiResponse {
     error: boolean;

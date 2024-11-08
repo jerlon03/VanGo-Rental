@@ -24,7 +24,7 @@ const updateDriver = (userId, driverData, callback) => {
             UPDATE drivers
             SET experience_years = ?, phoneNumber = ?, location = ?
             WHERE user_id = ?
-        `, [driverData.experience_years, driverData.phoneNumber, driverData.location, userId], (err, results) => { 
+        `, [driverData.experience_years, driverData.phoneNumber, driverData.location, userId], (err, results) => {
             if (err) {
                 return callback(err); // Handle any errors that occur during the query
             }
@@ -72,10 +72,44 @@ const getDriverByUserId = (userId, callback) => {
     });
 };
 
+const getDriverById = (vanId, callback) => {
+    return dbConn.query(`
+        SELECT d.*, u.first_name, u.last_name, u.email
+        FROM drivers d
+        JOIN users u ON d.user_id = u.user_id
+        WHERE d.van_id = ?
+    `, [vanId], (err, results) => {
+        if (err) {
+            return callback(err); // Handle any errors that occur during the query
+        }
+        if (results.length === 0) {
+            return callback(new Error('No driver found with the provided van_id')); // Handle case where no driver exists
+        }
+        callback(null, results[0]); // Return the driver details along with user info
+    });
+};
+
+// Get all drivers with status not assigned
+const getAllDriversWithStatusNotAssigned = (callback) => {
+    return dbConn.query(`
+        SELECT d.*, u.first_name, u.last_name
+        FROM drivers d
+        JOIN users u ON d.user_id = u.user_id
+        WHERE d.status = 'not assigned'
+    `, (err, results) => {
+        if (err) {
+            return callback(err); // Handle any errors that occur during the query
+        }
+        callback(null, results); // Return the list of drivers with status not assigned
+    });
+};
+
 module.exports = {
     updateDriver,
     getDriverProfile,
     createDriver,
     getDriverByUserId,
-    getAllDrivers
+    getAllDrivers,
+    getDriverById,
+    getAllDriversWithStatusNotAssigned
 };

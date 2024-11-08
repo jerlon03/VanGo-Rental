@@ -32,7 +32,7 @@ const ImagesUploader = ({ onUpload }) => {
       <div className="relative w-full h-[120px] border-2 border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center">
         {previewImage ? (
           <>
-            <Image src={previewImage} alt="Preview" className="object-contain" width={150} height={200} />
+            <Image src={previewImage} alt="Preview" className="object-contain  h-full" width={100} height={80} />
             <IoMdCloseCircle onClick={handleRemoveImage} className='text-red-500 hover:text-red-800 absolute top-[-10px] right-[-10px] size-[25px]' />
           </>
         ) : (

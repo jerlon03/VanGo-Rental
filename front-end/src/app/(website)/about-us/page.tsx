@@ -1,5 +1,8 @@
+'use client'
+import {motion} from 'framer-motion'
 import React from 'react';
 import Image from 'next/image';
+import ScrollSection from '@/components/ScrollContent';
 
 const AboutUs = () => {
   // Data for "Why Choose Us" section
@@ -83,11 +86,11 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="bg-white font-sans">
+    <div className="bg-white">
       {/* About Us Section */}
       <div className="relative">
-        <Image 
-          src="/png/about.png" 
+        <Image
+          src="/png/about.png"
           alt="Scenic view of the Philippines with boats and mountains"
           layout="responsive"
           width={1200}
@@ -118,49 +121,65 @@ const AboutUs = () => {
       {/* Why Choose Us Section */}
       <div className="max-w-6xl mx-auto py-12">
         <h2 className="text-center text-3xl font-bold mb-4">Why Choose Us?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {whyChooseUsData.map(item => (
-            <div key={item.id} className="bg-gray-100 p-6 rounded-lg shadow-lg shadow-gray-500 text-center">
-              <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
-                <Image 
-                  src={item.icon}
-                  alt={`${item.title} Icon`}
-                  width={64}
-                  height={64}
-                />
+        <ScrollSection>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {whyChooseUsData.map(item => (
+              <div key={item.id} className="bg-gray-100 p-6 rounded-lg shadow-lg shadow-gray-500 text-center">
+                <div className="bg-primaryColor text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
+                  <Image
+                    src={item.icon}
+                    alt={`${item.title} Icon`}
+                    width={64}
+                    height={64}
+                  />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                <p className="text-gray-600">{item.description}</p>
               </div>
-              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-              <p className="text-gray-600">{item.description}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </ScrollSection>
+
       </div>
 
       {/* Our Services Section */}
       <div className="max-w-4xl mx-auto py-12 px-4">
         <h1 className="text-3xl font-bold text-center">Our Services</h1>
         <p className="text-center text-lg mt-2 mb-16">We provide complete van rental solutions</p>
-        
-        <div className="space-y-8">
-          {ourServicesData.map(item => (
-            <div key={item.id} className="flex items-start space-x-6">
-              <div className="flex-shrink-0">
-                <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">
-                  <Image 
-                    src={item.icon} 
-                    alt={`${item.title} Icon`}
-                    width={65}
-                    height={65}
-                  />
+        <ScrollSection>
+          <div className="space-y-8">
+            {ourServicesData.map((item, index) => (
+              <motion.div
+                key={item.id}
+                className="flex items-start space-x-6"
+                initial={{ opacity: 0, y: 50 }} // Initial state for each item
+                whileInView={{ opacity: 1, y: 0 }} // Fade and slide up when in view
+                transition={{
+                  opacity: { duration: 1.2 },
+                  y: { type: 'spring', stiffness: 100, damping: 25, duration: 1.2 },
+                  delay: index * 0.2, // Dynamic delay for each item (e.g., 0.2s delay per item)
+                }}
+              >
+                <div className="flex-shrink-0">
+                  <div className="bg-button-light p-12 rounded-full w-45 h-12 flex items-center justify-center">
+                    <Image
+                      src={item.icon}
+                      alt={`${item.title} Icon`}
+                      width={65}
+                      height={65}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h2 className="text-xl font-semibold">{item.title}</h2>
-                <p className="mt-2 text-gray-600">{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+                <div>
+                  <h2 className="text-xl font-semibold">{item.title}</h2>
+                  <p className="mt-2 text-gray-600">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollSection>
+
+
       </div>
     </div>
   );

@@ -3,8 +3,8 @@ const Van = require('../model/van.model');
 // const cloudinary = require('../../utils/cloudinary')
 
 exports.createVan = (req, res) => {
-  const { van_name, van_description, people_capacity, transmission_type, things_capacity, driver_id } = req.body;
-  const imagePath = req.file?.path;
+  const { van_name, van_description, people_capacity, transmission_type, things_capacity, driver_id } = req.body; // Extract driver_id
+  const imagePath = req.file?.path || null;
 
   if (!imagePath) {
     return res.status(400).json({ message: 'No file uploaded' });
@@ -18,17 +18,15 @@ exports.createVan = (req, res) => {
     people_capacity,
     transmission_type,
     things_capacity,
-    driver_id,
   });
 
   // Save the Van object to the database
-  Van.create(newVan, (err, data) => {
+  Van.create(newVan, driver_id, (err, data) => {
     if (err) {
       console.error('Failed to create van:', err);
-      res.status(500).json({ status: 'error', message: 'Failed to create van' });
-    } else {
-      res.status(201).json({ status: 'ok', data: data });
+      return res.status(500).json({ status: 'error', message: 'Failed to create van' });
     }
+    res.status(201).json({ status: 'ok', data: data });
   });
 };
 
@@ -86,5 +84,26 @@ exports.getAllVans = (req, res) => {
       status: 'success',
       data: vans,
     });
+  });
+};
+
+exports.getVanByID = (req, res) => {
+  const van_id = req.params.van_id; // Assuming the van_id is passed as a URL parameter
+
+  Van.getVanByID(van_id, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        return res.status(404).send({
+          status: 'error',
+          message: `Van with id ${van_id} not found.`,
+        });
+      }
+      console.error('Failed to retrieve van:', err);
+      return res.status(500).send({
+        status: 'error',
+        message: 'Failed to retrieve van',
+      });
+    }
+    res.status(200).json({ status: 'ok', data: data });
   });
 };

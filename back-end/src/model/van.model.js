@@ -9,19 +9,30 @@ const Van = function(van) {
   this.transmission_type = van.transmission_type;
   this.things_capacity = van.things_capacity;
   this.status = van.status || 'available';
-  this.driver_id = van.driver_id;
 };
 
-Van.create = (newVan, result) => {
-  dbConn.query("INSERT INTO van SET ?", newVan, (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-      return;
-    }
-    console.log("created van: ", { id: res.insertId, ...newVan });
-    result(null, { id: res.insertId, ...newVan });
-  });
+Van.create = (newVan, driver_id, result) => {
+    dbConn.query("INSERT INTO van SET ?", newVan, (err, res) => {
+      if (err) {
+        return dbConn.rollback(() => {
+          console.log("Error inserting van: ", err);
+          result(err, null);
+        });
+      }
+      console.log("Created van: ", { id: res.insertId, ...newVan });
+
+      const driverUpdateQuery = "UPDATE drivers SET van_id = ?, status = 'assigned' WHERE driver_id = ?";
+      dbConn.query(driverUpdateQuery, [res.insertId, driver_id], (err) => {
+        if (err) {
+          return dbConn.rollback(() => {
+            console.log("Error updating drivers: ", err);
+            result(err, null);
+          });
+        }
+        console.log("Updated driver with van_id: ", res.insertId);    
+        result(null, { id: res.insertId, ...newVan });
+      });
+    });
 };
 
 Van.update = (van_id, van, result) => {
@@ -74,6 +85,25 @@ Van.getAll = (result) => {
       return;
     }
     result(null, res);
+  });
+};
+
+Van.getVanByID = (van_id, result) => {
+  dbConn.query(`SELECT * FROM van WHERE van_id = ?`, [van_id], (err, res) => {
+    if (err) {
+      console.log("Error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("Van found: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+
+    // Van with the id not found
+    result({ kind: "not_found" }, null);
   });
 };
 

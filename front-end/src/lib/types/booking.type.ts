@@ -16,6 +16,7 @@
   van_id: number;
   created_at: Date;
   status: string;
+  driver_id: number;
 }
 
   

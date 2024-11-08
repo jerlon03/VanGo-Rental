@@ -10,6 +10,9 @@ import Button from '@/components/Button/button';
 import Modal from '@/components/modals/modalContainer';
 import { BsPencilSquare } from "react-icons/bs";
 import SweetAlert from '@/components/alert/alert';
+import { Van } from '@/lib/types/van.type';
+import { getVanDetailsById } from '@/lib/api/van.api';
+import { formatDatePublicRange } from '@/components/date/formatDate';
 
 
 const DriverDashboard = () => {
@@ -19,13 +22,14 @@ const DriverDashboard = () => {
   const [error, setError] = useState<string | null>(null); // Added error state
   const { user, loading: authLoading } = useAuth();
   const userId = user?.user_id;
-
+  const [vanData, setVanData] = useState<Van | null>(null);
   const [firstName, setFirstName] = useState<string>(data?.user.first_name || ''); // Added state for first name
   const [lastName, setLastName] = useState<string>(data?.user.last_name || ''); // Added state for last name
   const [email, setEmail] = useState<string>(data?.user.email || ''); // Added state for email
   const [location, setLocation] = useState<string>(data?.driver.Location || ''); // Added state for location
   const [phoneNumber, setPhoneNumber] = useState<string>(data?.driver.phoneNumber || ''); // Added state for phone number
   const [experience, setExperience] = useState<string>(''); // Added state for experience
+  const [vanId, setVanId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && userId) {
@@ -33,6 +37,7 @@ const DriverDashboard = () => {
         try {
           const result = await getDriver(userId as any);
           setData(result);
+          console.log('Driver Data:', result); // Log the entire driver data
         } catch (err) {
           setError('Error fetching user and driver details');
           console.error(err);
@@ -47,12 +52,14 @@ const DriverDashboard = () => {
 
   useEffect(() => {
     if (data) {
+      console.log('Driver Data:', data); // Log the entire driver data
       setFirstName(data.user.first_name);
       setLastName(data.user.last_name);
       setEmail(data.user.email);
       setLocation(data.driver.Location);
       setPhoneNumber(data.driver.phoneNumber);
       setExperience(data.driver.experience_years === 0 ? '' : `${data.driver.experience_years}`);
+      setVanId(data.driver.van_id as any);
     }
   }, [data]);
 
@@ -107,6 +114,23 @@ const DriverDashboard = () => {
     }
   };
 
+
+  useEffect(() => {
+    const fetchVanDetails = async () => {
+      if (!vanId) return;
+      try {
+        const data = await getVanDetailsById(vanId as any);
+        setVanData(data.data);
+      } catch (error: any) {
+        console.error('Error fetching van details:', error);
+        setError('Failed to fetch van details');
+      }
+    };
+
+    fetchVanDetails();
+  }, [vanId]);
+
+
   return (
     <div className='w-full'>
       {error && <p className='text-red-500'>{error}</p>}
@@ -153,7 +177,7 @@ const DriverDashboard = () => {
               </div>
               <div className="table-row">
                 <p className="table-cell font-semibold">Van Assigned:</p>
-                <span className="table-cell">VAN-05</span>
+                <span className="table-cell">VAN-O{data?.driver.van_id || 'N/A'}</span>
               </div>
               <div className="table-row">
                 <p className="table-cell font-semibold">Driver Experience:</p>
@@ -180,19 +204,35 @@ const DriverDashboard = () => {
         <div className='w-[50%]'>
           <div className='bg-white shadow-lg rounded-lg p-6'>
             <h1 className="text-xl font-bold mb-4 text-blackColor">Van Assigned</h1>
-            <div className="w-full">
+            <div className="w-full flex flex-col justify-center items-center gap-4">
               <Image
-                src="/png/van/van1.png" // Replace with your image path
+                src={vanData?.van_image || "/png/van/van1.png"}
                 alt="Van"
-                className="w-full object-cover rounded-md mr-4"
-                width={500}
+                className=" object-cover rounded-md mr-4"
+                width={300}
                 height={200}
               />
-              <div>
-                <p className="text-gray-700"><strong>Model:</strong> Ford Transit</p>
-                <p className="text-gray-700"><strong>License Plate:</strong> XYZ 1234</p>
-                <p className="text-gray-700"><strong>Color:</strong> White</p>
-                <p className="text-gray-700"><strong>Capacity:</strong> 15 passengers</p>
+              <div className="table w-[80%]">
+                <div className="table-row">
+                  <p className="table-cell font-semibold">Van ID:</p>
+                  <span className="table-cell">VAN-O{vanData?.van_id || 'N/A'}</span>
+                </div>
+                <div className="table-row">
+                  <p className="table-cell font-semibold">Model:</p>
+                  <span className="table-cell">{vanData?.van_name || 'N/A'}</span>
+                </div>
+                <div className="table-row">
+                  <p className="table-cell font-semibold">Things Capacity:</p>
+                  <span className="table-cell truncate">{`${vanData?.things_capacity} kg`}</span>
+                </div>
+                <div className="table-row">
+                  <p className="table-cell font-semibold">Number of Passenger  :</p>
+                  <span className="table-cell truncate">{`${vanData?.people_capacity} `}</span>
+                </div>
+                <div className="table-row">
+                  <p className="table-cell font-semibold">Assigned Date:</p>
+                  <span className="table-cell truncate">{formatDatePublicRange(vanData?.createdAt || 'N/A')}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -226,9 +266,9 @@ const DriverDashboard = () => {
             </div>
             <div className='w-full'>
               <label htmlFor="" className='text-[14px]'>Phone Number </label>
-              <InputField 
-                value={phoneNumber} 
-                onChange={handlePhoneNumberChange} 
+              <InputField
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
                 maxLength={11}
               ></InputField>
             </div>

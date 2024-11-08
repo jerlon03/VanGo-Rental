@@ -17,10 +17,10 @@ import ImagesUploader from '@/components/Uplooad/ImagesUploader'
 import InputField from '@/components/Form/inputfield'
 import Select from '@/components/Form/select';
 import Image from 'next/image'
-import { getAllDriver } from '@/lib/api/driver.api'
 import { Driver } from '@/lib/types/driver.type'
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import TextArea from '@/components/Form/textarea'
+import { getAllDriver } from '@/lib/api/driver.api'
 // import { fetchAllDrivers } from '@/lib/api/driver.api'
 
 const VanInventory = () => {
@@ -44,6 +44,7 @@ const VanInventory = () => {
   const [selectedVan, setSelectedVan] = useState<Van | null>(null); // State to hold the selected van for details
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State to control the details modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control the edit modal
+  const [loadingDrivers, setLoadingDrivers] = useState(true); // New loading state
 
   const initialVanState = {
     van_name: '',
@@ -56,28 +57,27 @@ const VanInventory = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const driverData = await getAllDriver()
-        const driversArray = driverData.data; // Access the array of drivers
-
-        // Check if driversArray is an array
-        if (Array.isArray(driversArray)) {
-          // Create a new array with fullName property
-          const driversWithFullName = driversArray.map(driver => ({
+        const driverData = await getAllDriver(); // Fetch drivers from the API
+        console.log('Fetched Drivers:', driverData); // Log the fetched data
+        if (Array.isArray(driverData)) {
+          const formattedDrivers = driverData.map(driver => ({
             ...driver,
-            fullName: `DR-O${driver.driver_id}  ${driver.first_name} ${driver.last_name}` // Combine first_name and driver_id
+            full_name: `${driver.first_name} ${driver.last_name} - DR-O${driver.driver_id}` // Combine first and last name
           }));
-          setDrivers(driversWithFullName); // Set the drivers state
+          setDrivers(formattedDrivers); // Set the formatted drivers to state
         } else {
-          setDrivers([]); // Set to empty array if not an array
+          console.error('Driver data is not an array:', driverData);
         }
-      } catch (err) {
-        console.error('Error fetching drivers:', err); // Log the error
-        setDrivers([]); // Set to empty array on error
+      } catch (error) {
+        console.error('Failed to fetch drivers:', error); // Handle any errors
+      } finally {
+        setLoadingDrivers(false); // Set loading to false after fetching
       }
     };
 
-    fetchDrivers();
+    fetchDrivers(); // Call the fetch function
   }, []);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -90,63 +90,69 @@ const VanInventory = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     console.log('Submitting van:', newVan);
-    console.log('Van image:', vanImage);
-    
+    console.log('Selected Driver:', selectedDriver); // Log the selected driver
+
     // Check if all required fields are filled
     if (!newVan.van_name || !newVan.van_description || !vanImage ||
-        !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity || !selectedDriver) {
-        SweetAlert.showError('Please fill out all required fields and upload an image.');
-        return;
+      !newVan.people_capacity || !newVan.transmission_type || !newVan.things_capacity || !selectedDriver) {
+      SweetAlert.showError('Please fill out all required fields, upload an image, and select a driver.');
+      return;
+    }
+
+    const formData = new FormData();
+    Object.entries(newVan).forEach(([key, value]) => {
+      if (key === 'people_capacity' || key === 'things_capacity') {
+        formData.append(key, value ? parseInt(value, 10).toString() : '0');
+      } else {
+        formData.append(key, value.toString());
+      }
+    });
+
+    // Append the driver_id from selectedDriver
+    formData.append('driver_id', selectedDriver as any); // Ensure this is set correctly
+
+    if (vanImage) {
+      formData.append('image', vanImage);
     }
 
     try {
-        const token = localStorage.getItem('token');
-        console.log('Token:', token);
-        if (!token) {
-            SweetAlert.showError('You are not authorized. Please log in.');
-            return;
-        }
+      const token = localStorage.getItem('token');
+      console.log('Token:', token);
+      if (!token) {
+        SweetAlert.showError('You are not authorized. Please log in.');
+        return;
+      }
 
-        const formData = new FormData();
-        Object.entries(newVan).forEach(([key, value]) => {
-            if (key === 'people_capacity' || key === 'things_capacity') {
-                formData.append(key, value ? parseInt(value, 10).toString() : '0');
-            } else {
-                formData.append(key, value.toString());
-            }
-        });
-        formData.append('status', 'available');
-        // formData.append('driver_id', selectedDriver);
-        if (vanImage) {
-            formData.append('image', vanImage);
-        }
+      const res = await fetch('http://localhost:8080/api/van/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
 
-        const res = await fetch('http://localhost:8080/api/van/create', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData,
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-            SweetAlert.showSuccess('Van added successfully');
-            setNewVan(initialVanState);
-            setVanImage(null);
-            setIsModalOpen(false);
-            const updatedVans = await fetchAllVan();
-            setVans(updatedVans.data);
-        } else {
-            SweetAlert.showError(data.message || 'Failed to add van');
-        }
+      const data = await res.json();
+      console.log('Response:', data);
+      if (res.ok) {
+        SweetAlert.showSuccess('Van added successfully');
+        setNewVan(initialVanState);
+        setVanImage(null);
+        setSelectedDriver(null); // Reset the selected driver after submission
+        setIsModalOpen(false);
+        const updatedVans = await fetchAllVan();
+        setVans(updatedVans.data);
+      } else {
+        SweetAlert.showError(data.message || 'Failed to add van');
+      }
     } catch (error) {
-        console.error('Error:', error);
-        SweetAlert.showError('Failed to add van');
+      console.error('Error:', error);
+      SweetAlert.showError('Failed to add van');
     }
   };
+
+  console.log(selectedDriver, 'driver id')
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -158,7 +164,9 @@ const VanInventory = () => {
     const fetchVans = async () => {
       try {
         const vanData = await fetchAllVan();
-        setVans(vanData.data); // Assuming the data comes in the `data` field
+        // Sort vans by van_id in descending order
+        const sortedVans = vanData.data.sort((a: Van, b: Van) => b.van_id - a.van_id);
+        setVans(sortedVans); // Set the sorted vans to state
       } catch (error) {
         setError('Failed to fetch vans.');
       }
@@ -167,11 +175,6 @@ const VanInventory = () => {
     fetchVans();
   }, []);
 
-
-
-  function onDeleteClick(rowData: any): void {
-    throw new Error('Function not implemented.')
-  }
 
   const onViewDetailsClick = (rowData: Van): void => {
     setSelectedVan(rowData); // Set the selected van to display in the modal
@@ -218,15 +221,15 @@ const VanInventory = () => {
     }
   };
 
-  const itemTemplate = (driver: Driver) => {
-    return (
-      <div className=" bg-white px-4 p-1">
-        <div className='flex justify-between rounded-[5px] '>
-          <span className='text-gray-500'>{driver.full_name}</span>
-          <span className="text-gray-500">DR-O{driver.driver_id}</span>
-        </div>
-      </div>
-    );
+
+  const handleDelete = (vanId: string) => {
+    const confirmed = SweetAlert.showConfirm("Are you sure you want to delete this van?");
+    if (!confirmed) {
+      console.log(`Van with ID ${vanId} would be deleted.`);
+      SweetAlert.showSuccess('Van deleted successfully (static action)');
+      // Here you can also update the state to remove the van from the list if needed
+      // setVans(prevVans => prevVans.filter(van => van.van_id !== vanId));
+    }
   };
 
   return (
@@ -257,7 +260,7 @@ const VanInventory = () => {
             field="van_name"
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px] truncate rounded-tl-[3px] border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[14px] truncate rounded-tl-[3px] border-r' }
             }}
           />
           <Column
@@ -267,9 +270,9 @@ const VanInventory = () => {
                 <Image
                   src={rowData.van_image || '/default-image.png'}
                   alt={`${rowData.van_name} image`}
-                  className="object-cover rounded"
-                  width={300}
-                  height={200}
+                  className="object-contain rounded"
+                  width={150}
+                  height={150}
                   onError={(e) => {
                     e.currentTarget.src = '/default-image.png';
                   }}
@@ -278,7 +281,7 @@ const VanInventory = () => {
             )}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[15px] border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] lg:text-[14px] xl:text-[14px] border-r' }
             }}
           />
           <Column
@@ -292,33 +295,33 @@ const VanInventory = () => {
             )}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium lg:text-[14px] xl:text-[15px] text-[16px] border-r' }
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] xl:text-[14px] text-[16px] border-r' }
             }}
           />
           <Column
             field="people_capacity"
             header="People Capacity" pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] text-center lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r' }
             }} />
           <Column
             field="things_capacity"
             header="Things Capacity" pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r' }
             }} />
           <Column
             field="transmission_type"
             header="Transmission Type" pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r' }
             }} />
           <Column
             body={(rowData) => `${formatDateRange(rowData.createdAt)}`}
             header="Date Created"
             pt={{
               bodyCell: { className: 'border text-blackColor p-2 text-[15px] lg:text-[13px]' },
-              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[15px] border-r' }
+              headerCell: { className: 'px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r' }
             }} />
           <Column
             field="status"
@@ -329,10 +332,10 @@ const VanInventory = () => {
               // Apply different styles based on the status value
               switch (rowData.status) {
                 case 'available':
-                  statusClass = 'bg-green-100 text-green-800 lg:text-[14px]';
+                  statusClass = 'bg-yellow-100 text-yellow-800 text-[14px]';
                   break;
                 case 'booked':
-                  statusClass = 'bg-red-100 text-red-800';
+                  statusClass = 'bg-green-100 text-green-800 text-[14px]';
                   break;
                 // case 'pending':
                 //   statusClass = 'bg-yellow-100 text-yellow-800';
@@ -342,21 +345,21 @@ const VanInventory = () => {
               }
 
               return (
-                <span className={`px-2 py-1 rounded ${statusClass}`}>
+                <span className={`px-2 py-1 rounded w-full flex justify-center ${statusClass}`}>
                   {rowData.status}
                 </span>
               );
             }}
             pt={{
               bodyCell: { className: 'border text-blackColor p-2' },
-              headerCell: { className: 'px-3 font-medium text-[16px] border-r' }
+              headerCell: { className: 'px-3 font-medium text-[16px] border-r xl:text-[14px] ' }
             }}
           />
           <Column
             header="Actions"
             pt={{
               bodyCell: { className: 'border-b text-blackColor p-2' },
-              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium text-[16px] border-r' }
+              headerCell: { className: 'rounded-tr-[3px] px-3 font-medium xl:text-[14px] xl:text-[14px]  text-[16px] border-r' }
             }}
             body={(rowData) => (
               <div className="flex space-x-2">
@@ -366,7 +369,7 @@ const VanInventory = () => {
                   size={18}
                 />
                 <MdDeleteOutline
-                  onClick={() => onDeleteClick(rowData)}
+                  onClick={() => handleDelete(rowData.van_id)} // Updated to call the new delete function
                   className="text-red-400 cursor-pointer"
                   size={22}
                 />
@@ -391,13 +394,13 @@ const VanInventory = () => {
                   value={newVan.van_description}
                   onChange={handleInputChange}
                   placeholder="Van Description"
-                  name="van_description" // Pass the name prop
+                  name="van_description"
                 />
                 {inputErrors.people_capacity && (
                   <p className="text-red-500 text-sm">{inputErrors.people_capacity}</p>
                 )}
               </div>
-              <div className=" flex  gap-4 w-full">
+              <div className="flex gap-4 w-full">
                 <div className='w-full'>
                   <InputField type="text" name="people_capacity" onChange={handleInputChange} placeholder="People Capacity" inputMode="numeric" />
                   {inputErrors.people_capacity && (
@@ -410,7 +413,6 @@ const VanInventory = () => {
                     <p className="text-red-500 text-sm">{inputErrors.things_capacity}</p>
                   )}
                 </div>
-
               </div>
               <select
                 name="transmission_type"
@@ -428,19 +430,29 @@ const VanInventory = () => {
               </div>
               <div>
                 <p>Driver Assignee</p>
-                <Dropdown
-                  id="driver"
-                  value={selectedDriver}
-                  onChange={(e) => setSelectedDriver(e.value)}
-                  options={drivers}
-                  optionLabel="full_name" // Use the correct property for display
-                  optionValue="driver_id" // This should match the unique identifier
-                  placeholder="Select a Driver"
-                  itemTemplate={itemTemplate} // Use the custom item template
-                  className="w-full p-2 bg-gray-100 rounded-md shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                />
+                {loadingDrivers ? ( // Show loading state
+                  <p>Loading drivers...</p>
+                ) : (
+                  <Dropdown
+                    id="driver"
+                    value={selectedDriver}
+                    onChange={(e) => {
+                      console.log("Selected Driver:", e.value); // Log the selected driver
+                      setSelectedDriver(e.value); // Set the selected driver
+                    }}
+                    options={drivers} // Ensure this is an array of driver objects
+                    optionLabel="full_name" // Ensure this matches the property in your driver object
+                    optionValue="driver_id" // Ensure this matches the property in your driver object
+                    placeholder="Select a Driver"
+                    className="w-full p-2 bg-gray-100 rounded-md shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    itemTemplate={(option) => (
+                      <div className="flex items-center justify-between p-1 border bg-gray-300 rounded-[5px] hover:bg-gray-400 transition-colors">
+                        <span className="font-light hover:text-white">{option.full_name}</span> {/* Customize the display here */}
+                      </div>
+                    )}
+                  />
+                )}
               </div>
-
             </div>
             <div className="py-2 px-6 border-t">
               <div className="flex justify-end space-x-4">
@@ -453,7 +465,6 @@ const VanInventory = () => {
                 </button>
                 <button
                   type="submit"
-                  form="addVanForm"
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                   Add Van

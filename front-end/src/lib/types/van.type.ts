@@ -12,6 +12,7 @@
     imageUrl: string; // Add this property if needed
     status: 'booked' | 'available'; 
     createdAt: string; 
+    driver_id: number;
 }
 
   

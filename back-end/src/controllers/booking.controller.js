@@ -13,8 +13,12 @@ exports.createBooking = async (req, res) => {
     // Get the URL of the uploaded image from Cloudinary
     const imagePath = req.file.path; // This should be the URL returned by Cloudinary
 
-    // Set the proof_of_payment
+    // Set the proof_of_payment and ensure van_id is included
     const bookingData = { ...req.body, proof_of_payment: imagePath }; // Combine body and image path
+    // Ensure van_id is included in bookingData
+    if (!bookingData.van_id) {
+        return res.status(400).json({ error: 'Van ID is required.' });
+    }
 
     console.log('Booking Data:', bookingData); // Log booking data to check if proof_of_payment is included
 
