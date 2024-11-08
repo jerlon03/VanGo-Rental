@@ -119,7 +119,6 @@ const VanInventory = () => {
 
     try {
       const token = localStorage.getItem('token');
-      console.log('Token:', token);
       if (!token) {
         SweetAlert.showError('You are not authorized. Please log in.');
         return;
@@ -362,24 +361,15 @@ const VanInventory = () => {
               headerCell: { className: 'rounded-tr-[3px] px-3 font-medium xl:text-[14px] xl:text-[14px]  text-[16px] border-r' }
             }}
             body={(rowData) => (
-              <div className="flex space-x-2">
-                <FaRegEdit
-                  onClick={() => handleEditConfirmation(rowData)} // Updated to use the new confirmation function
-                  className="text-primaryColor cursor-pointer"
-                  size={18}
-                />
-                <MdDeleteOutline
-                  onClick={() => handleDelete(rowData.van_id)} // Updated to call the new delete function
-                  className="text-red-400 cursor-pointer"
-                  size={22}
-                />
+              <div className="flex space-x-2 justify-center">
                 <FaEye
                   onClick={() => onViewDetailsClick(rowData)}
                   className="text-green-400 cursor-pointer"
                   size={22}
                 />
               </div>
-            )} />
+            )}
+          />
         </DataTable>
       </div>
       {/* ADD MODAL */}
@@ -505,8 +495,46 @@ const VanInventory = () => {
             </div>
           )}
           <div className="py-2 px-6 border-t">
-            <div className="flex justify-end space-x-4">
-              <Button name='CLOSE' onClick={() => setIsDetailsModalOpen(false)} backgroundColor='alert' width='120px'></Button>
+            <div className="flex justify-end space-x-2">
+              {selectedVan?.status === 'available' && ( // Show edit and delete buttons only if available
+                <>
+                  {[
+                    {
+                      icon: <FaRegEdit size={18} />,
+                      onClick: () => handleEditConfirmation(selectedVan!),
+                      tooltip: 'Edit',
+                      color: 'text-primaryColor',
+                    },
+                    {
+                      icon: <MdDeleteOutline size={22} />,
+                      onClick: () => handleDelete(selectedVan?.van_id as any),
+                      tooltip: 'Delete',
+                      color: 'text-red-400',
+                    },
+                  ].map((button, index) => (
+                    <div key={index} className='p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor group hover:bg-primaryColor transition-colors duration-200'>
+                      <div className='relative group'>
+                        <div className='flex justify-center items-center h-full cursor-pointer' onClick={button.onClick}>
+                          {React.cloneElement(button.icon, { className: `${button.color} group-hover:text-white` })}
+                        </div>
+                        {/* Tooltip */}
+                        <div className='absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2'>
+                          {button.tooltip}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+                <div className='relative group'>
+                  <div className='p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor hover:bg-primaryColor transition-colors duration-200'>
+                    <IoClose className="text-primaryColor cursor-pointer group-hover:text-white" onClick={() => setIsDetailsModalOpen(false)} size={22} />
+                  </div>
+                  {/* Tooltip */}
+                  <div className='absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2'>
+                    Close
+                  </div>
+                </div>
             </div>
           </div>
         </div>

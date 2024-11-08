@@ -16,6 +16,8 @@
  import { FaMapLocationDot } from "react-icons/fa6";
  import { GrArticle } from "react-icons/gr";
  import { RiErrorWarningFill } from "react-icons/ri";
+ import { HiDotsHorizontal } from "react-icons/hi";
+
  
  
 
@@ -32,6 +34,7 @@ export {
     MdPublish,
     IoMdLock,
     GrPrevious,GrNext,
+    HiDotsHorizontal,
     FaSignOutAlt,
     IoChevronUp,
     IoChevronDown,
