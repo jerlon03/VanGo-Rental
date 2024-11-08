@@ -18,7 +18,33 @@ interface BookingDetailsModalProps {
 const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onClose }) => {
     const modalRef = useRef<HTMLDivElement>(null); // Create a ref for the modal
     const [data, setData] = useState<DriverDetails | null>(null);
+    const [vanId, setVanId] = useState<string | null>(null);
 
+
+    useEffect(() => {
+        if (booking && booking.van_id) {
+            setVanId(booking.van_id as any);
+        }
+    }, [booking]);
+
+    useEffect(() => {
+        if (vanId) {
+            const fetchDriver = async () => {
+                try {
+                    const driverData = await getVanById(vanId as any); 
+                    if (driverData) {
+                        setData(driverData.data as any); 
+                    } else {
+                        SweetAlert.showError('Driver not found.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching driver:', error);
+                    SweetAlert.showError('Failed to fetch driver details. Please try again later.');
+                }
+            };
+            fetchDriver();
+        }
+    }, [vanId]); // Only run when vanId is available
 
     const handleClickOutside = useCallback((event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -27,38 +53,14 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
     }, [onClose]);
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside); // Add event listener
+        document.addEventListener('mousedown', handleClickOutside); 
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside); // Cleanup event listener
+            document.removeEventListener('mousedown', handleClickOutside); 
         };
     }, [handleClickOutside]);
 
-    if (!booking) return null; // Return null if no booking is provided
-
-    const vanId = booking.van_id;
-
-    useEffect(() => {
-        if (!vanId) {
-            SweetAlert.showError('No Van ID available.'); // Notify user if driver ID is not available
-            return; // Exit if no driver ID
-        }
-        const fetchDriver = async () => {
-            try {
-                const driverData = await getVanById(vanId); // Call the function with the driverId
-                if (driverData) {
-                    setData(driverData.data as any); // Set the driver data in state         
-                } else {
-                    SweetAlert.showError('Driver not found.'); // Notify user if driver data is null
-                }
-            } catch (error) {
-                console.error('Error fetching driver:', error); // Log the error for debugging
-                SweetAlert.showError('Failed to fetch driver details. Please try again later.'); // Show error alert
-            }
-        };
-
-        fetchDriver(); // Invoke the fetch function
-    }, [vanId]);
-
+    if (!booking) return null;
+      
     return (
         <ModalContainer onClose={onClose} isOpen={true}>
             <div
