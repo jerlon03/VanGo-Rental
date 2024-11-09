@@ -6,7 +6,7 @@ export interface BlogPost {
     status: 'PUBLISH' | 'DRAFT'; // Status of the blog post
     createdAt: Date;              // Timestamp when the post was created
     updatedAt: Date;              // Timestamp when the post was last updated
-    user_id?: number;             // Foreign key for the user (optional)
+    user_id?: number;    
 }
 
 export type DataRes<Data> = {
@@ -16,5 +16,6 @@ export type DataRes<Data> = {
 export interface PostsResponse {
     message: string;
     posts: BlogPost[];
+    total:number;    
 }
 

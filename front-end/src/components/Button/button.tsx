@@ -46,7 +46,7 @@ const Button: React.FC<Props> = ({
     bgColorClass = 'bg-[#00A8E8]';
   }
 
-  const buttonClass = `flex justify-center items-center font-Poppins text-white text-[16px] xl:text-[15px] lg:text-[14px] p-1 w-full rounded-[3px] tracking-[2px rounded-[3px] ${bgColorClass} ${border} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-white hover:bg-opacity-75'} transition duration-300 ${className}`;
+  const buttonClass = `flex justify-center items-center font-Poppins  text-[16px] xl:text-[15px] lg:text-[14px] p-1 w-full rounded-[3px] tracking-[2px rounded-[3px] ${bgColorClass} ${border} ${disabled ? 'opacity-50 cursor-not-allowed bg-gray-200 text-blackColor' : ' text-white hover:text-white hover:bg-opacity-75'} transition duration-300 ${className}`;
   
   return (
     <button

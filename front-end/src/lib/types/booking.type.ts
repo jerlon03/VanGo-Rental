@@ -24,7 +24,7 @@
   // interfaces/BookingDetails.ts
 
 export interface BookingDetails {
-    book_id: number; // Primary key, auto-incremented
+    booking_id: number; // Primary key, auto-incremented
     user_id: number; // Foreign key referring to a user
     user_first_name: string; // First name of the user
     user_last_name: string; // Last name of the user

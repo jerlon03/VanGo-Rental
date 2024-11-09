@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { FaCheckCircle, FaEye, FaRegEdit } from 'react-icons/fa';
 import { MdDeleteOutline } from 'react-icons/md';
@@ -14,6 +14,7 @@ import BookingDetailsModal from '@/components/modals/bookingModal'; // Import th
 import { IoCloseCircle, IoMdCheckmarkCircleOutline } from '@/components/icons';
 import SweetAlert from '@/components/alert/alert'; // Adjust the import path as necessary
 import Image from 'next/image'; // Import the Image component from next/image
+import { Dropdown } from 'primereact/dropdown';
 
 const ManageBookings = () => {
   const [bookings, setBookings] = useState<BookingDetails[]>([]);
@@ -21,21 +22,95 @@ const ManageBookings = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null); // Change type to Booking
   const [isModalVisible, setModalVisible] = useState(false); // State to control modal visibility
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [showSort, setShowSort] = useState(false);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const sortRef = useRef<HTMLDivElement>(null);
 
+  const statusOptions = [
+    { label: 'All', value: null },
+    { label: 'Pending', value: 'pending' },
+    { label: 'Confirmed', value: 'confirmed' },
+    { label: 'Ongoing', value: 'ongoing' },
+    { label: 'Declined', value: 'declined' },
+    { label: 'Completed', value: 'completed' },
+  ];
+
+  const sortOptions = [
+    { label: 'Ascending', value: 'asc' },
+    { label: 'Descending', value: 'desc' }
+  ];
+
+  // Add this function to filter bookings
+  const filteredBookings = bookings.filter(booking => {
+    if (!selectedStatus) return true;
+    return booking.status === selectedStatus;
+  });
+
+  // Add this function to sort bookings with debugging
+  const sortedAndFilteredBookings = [...filteredBookings].sort((a, b) => {
+    console.log('Sorting:', a.booking_id, b.booking_id); // Debug log
+    if (sortOrder === 'desc') {
+      return b.booking_id - a.booking_id;
+    } else {
+      return a.booking_id - b.booking_id;
+    }
+  });
+
+  // You can also log the final sorted array
+  console.log('Sorted Bookings:', sortedAndFilteredBookings);
+
+  // Add click outside handler
   useEffect(() => {
-    async function loadBookings() {
-      try {
-        const response = await fetchAllBookings();
-        setBookings(response);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch bookings');
-        setLoading(false);
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setShowFilter(false);
+      }
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+        setShowSort(false);
       }
     }
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Modify the loadBookings function to be accessible throughout the component
+  const loadBookings = async () => {
+    try {
+      const response = await fetchAllBookings();
+      setBookings(response);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch bookings');
+      setLoading(false);
+    }
+  };
+
+  // Update the initial useEffect to use the new loadBookings function
+  useEffect(() => {
     loadBookings();
   }, []);
+
+  // Add a new useEffect to handle automatic updates
+  useEffect(() => {
+    // Set up an interval to fetch new bookings every 30 seconds
+    const intervalId = setInterval(() => {
+      loadBookings();
+    }, 30000); // 30 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Update the sort handler to include the automatic refresh
+  const handleSort = (value: 'asc' | 'desc') => {
+    setSortOrder(value);
+    setShowSort(false);
+    // No need to call loadBookings here as the sort is handled client-side
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -52,17 +127,77 @@ const ManageBookings = () => {
           <h1 className='text-[14px] flex items-end  text-blackColor/70 tracking-[2px]'><Link href="/dashboard">Dashboard</Link>/ Manage Booking</h1>
         </AdminHeader>
       </div>
-      <div className='w-full p-[2%]'>
+      <div className='w-full px-[2%]'>
+        <div className='w-full flex gap-2 justify-end p-2'>
+          <div 
+            ref={filterRef} 
+            className='relative'
+            onMouseEnter={() => setShowFilter(true)}
+            onMouseLeave={() => setShowFilter(false)}
+          >
+            <div className='flex gap-2 border py-1 px-2 rounded cursor-pointer hover:bg-button'>
+              <p className='text-[14px] tracking-[1px]'>Filter</p>
+              <Image src='/filter.png' width={20} height={12} alt='Filter Icon' className='object-contain' />
+            </div>
+            {showFilter && (
+              <div className='absolute right-0 top-full mt-[1px] bg-white shadow-lg rounded-md border p-2 z-10 min-w-[150px]'>
+                {statusOptions.map((option) => (
+                  <div 
+                    key={option.label}
+                    className={`p-1 cursor-pointer hover:bg-primaryColor hover:text-white rounded text-[14px] ${selectedStatus === option.value ? 'bg-primaryColor text-white ' : ''}`}
+                    onClick={() => {
+                      setSelectedStatus(option.value);
+                      setShowFilter(false);
+                    }}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div 
+            ref={sortRef}
+            className='relative'
+            onMouseEnter={() => setShowSort(true)}
+            onMouseLeave={() => setShowSort(false)}
+          >
+            <div className='flex gap-2 border py-1 px-2 rounded cursor-pointer hover:bg-button'>
+              <p className='text-[14px] tracking-[1px]'>Sort By ID: {sortOrder === 'asc' ? 'Ascending' : 'Descending'}</p>
+            </div>
+            {showSort && (
+              <div className='absolute right-0 top-full mt-[1px] bg-white shadow-lg rounded-md border p-2 z-10 min-w-[150px]'>
+                {sortOptions.map((option) => (
+                  <div 
+                    key={option.label}
+                    className={`p-1 cursor-pointer hover:bg-primaryColor hover:text-white rounded text-[14px] ${sortOrder === option.value ? 'bg-primaryColor text-white' : ''}`}
+                    onClick={() => handleSort(option.value as 'asc' | 'desc')}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
         <DataTable
-          value={bookings}
+          value={sortedAndFilteredBookings}
           tableStyle={{ minWidth: '50rem' }}
           pt={{
             thead: { className: 'bg-primaryColor text-white' },
             tbody: { className: 'border' },
             headerRow: { className: 'h-[40px]' },
           }}
-          sortField="booking_id"
-          sortOrder={-1}
+          emptyMessage={
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">No bookings found</p>
+              {selectedStatus && (
+                <p className="text-gray-400 text-sm mt-2">
+                  Try changing your filter settings
+                </p>
+              )}
+            </div>
+          }
         >
           <Column
             header="Booking ID"
@@ -152,20 +287,28 @@ const ManageBookings = () => {
             header="Status"
             body={(rowData) => {
               let statusClass = '';
-
               switch (rowData.status) {
                 case 'confirmed':
-                  statusClass = 'bg-green-500 text-white lg:text-[14px]';
+                  statusClass = 'bg-green-500 text-white';
                   break;
                 case 'pending':
-                  statusClass = 'bg-yellow-400 text-white lg:text-[14px]';
+                  statusClass = 'bg-yellow-400 text-white';
+                  break;
+                case 'ongoing':
+                  statusClass = 'bg-blue-500 text-white';
+                  break;
+                case 'declined':
+                  statusClass = 'bg-red-500 text-white';
+                  break;
+                case 'completed':
+                  statusClass = 'bg-purple-500 text-white';
                   break;
                 default:
-                  statusClass = 'bg-gray-100 text-gray-800 lg:text-[14px]';
+                  statusClass = 'bg-gray-100 text-gray-800';
               }
 
               return (
-                <span className={`px-2 py-1 rounded ${statusClass} flex text-center items-center justify-center`}>
+                <span className={`px-2 py-1 rounded ${statusClass} flex text-center items-center justify-center lg:text-[14px]`}>
                   {rowData.status}
                 </span>
               );

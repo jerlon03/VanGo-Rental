@@ -11,17 +11,14 @@ import { IoClose, MdDeleteOutline } from '@/components/icons'
 import { formatDateRange } from '@/components/date/formatDate'
 import Button from '@/components/Button/button'
 import Modal from '@/components/modals/modalContainer'
-import { fetchAddVan } from '@/lib/api/van.api';
 import SweetAlert from '@/components/alert/alert'
 import ImagesUploader from '@/components/Uplooad/ImagesUploader'
 import InputField from '@/components/Form/inputfield'
-import Select from '@/components/Form/select';
 import Image from 'next/image'
 import { Driver } from '@/lib/types/driver.type'
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import TextArea from '@/components/Form/textarea'
 import { getAllDriver } from '@/lib/api/driver.api'
-// import { fetchAllDrivers } from '@/lib/api/driver.api'
 
 const VanInventory = () => {
   const [vans, setVans] = useState<Van[]>([]);
@@ -133,7 +130,6 @@ const VanInventory = () => {
       });
 
       const data = await res.json();
-      console.log('Response:', data);
       if (res.ok) {
         SweetAlert.showSuccess('Van added successfully');
         setNewVan(initialVanState);
