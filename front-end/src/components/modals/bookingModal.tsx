@@ -8,14 +8,16 @@ import SweetAlert from '@/components/alert/alert'; // Import SweetAlert
 import Image from 'next/image'; // Import Image component
 import { getVanById } from '@/lib/api/driver.api';
 import { DriverDetails } from '@/lib/types/driver.type';
+import { updateBookingStatus } from '@/lib/api/booking.api'; // Add this import
 
 
 interface BookingDetailsModalProps {
     booking: Booking | null;
     onClose: () => void;
+    onStatusUpdate?: () => void;
 }
 
-const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onClose }) => {
+const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onClose, onStatusUpdate }) => {
     const modalRef = useRef<HTMLDivElement>(null); // Create a ref for the modal
     const [data, setData] = useState<DriverDetails | null>(null);
     const [vanId, setVanId] = useState<string | null>(null);
@@ -31,9 +33,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
         if (vanId) {
             const fetchDriver = async () => {
                 try {
-                    const driverData = await getVanById(vanId as any); 
+                    const driverData = await getVanById(vanId as any);
                     if (driverData) {
-                        setData(driverData.data as any); 
+                        setData(driverData.data as any);
                     } else {
                         SweetAlert.showError('Driver not found.');
                     }
@@ -46,6 +48,17 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
         }
     }, [vanId]); // Only run when vanId is available
 
+    useEffect(() => {
+        if (booking && booking.status === 'pending') {
+            const pickupDate = new Date(booking.pickup_date_time);
+            const currentDate = new Date();
+            
+            if (pickupDate < currentDate) {
+                handleStatusUpdate('expired');
+            }
+        }
+    }, [booking]);
+
     const handleClickOutside = useCallback((event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
             onClose(); // Close the modal if clicked outside
@@ -53,14 +66,30 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
     }, [onClose]);
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside); 
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside); 
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [handleClickOutside]);
 
     if (!booking) return null;
-      
+
+    const handleStatusUpdate = async (newStatus: string) => {
+        if (!booking) return;
+
+        try {
+            await updateBookingStatus(booking.booking_id, newStatus);
+            SweetAlert.showSuccess(`Booking has been ${newStatus}`);
+            if (onStatusUpdate) {
+                onStatusUpdate(); // Refresh the parent component
+            }
+            onClose();
+        } catch (error) {
+            console.error('Error updating booking status:', error);
+            SweetAlert.showError('Failed to update booking status');
+        }
+    };
+
     return (
         <ModalContainer onClose={onClose} isOpen={true}>
             <div
@@ -133,18 +162,17 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
 
 
                 <div className="flex justify-end mt-6 gap-4">
-                    {booking.status === 'pending' && ( // Show buttons only if status is pending
+                    {booking.status === 'pending' && (
                         <>
                             <Button
                                 name='Decline'
                                 width='120px'
                                 backgroundColor='error'
                                 onClick={() => {
-                                    // Add decline logic here
-                                    SweetAlert.showConfirm('Do you want to decline this booking?').then((isConfirmed) => {
+                                    SweetAlert.showConfirm('Do you want to decline this booking?').then(async (isConfirmed) => {
                                         if (isConfirmed) {
-                                            SweetAlert.showSuccess('The booking has been declined.');
-                                            onClose(); // Close the modal after action
+                                            await handleStatusUpdate('declined');
+                                            SweetAlert.showSuccess('Booking has been declined successfully');
                                         }
                                     });
                                 }}
@@ -154,18 +182,21 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({ booking, onCl
                                 width='120px'
                                 backgroundColor='success'
                                 onClick={() => {
-                                    // Add accept logic here
                                     SweetAlert.showConfirm('Do you want to accept this booking?').then((isConfirmed) => {
                                         if (isConfirmed) {
-                                            SweetAlert.showSuccess('The booking has been accepted.');
-                                            onClose(); // Close the modal after action
+                                            handleStatusUpdate('confirmed');
                                         }
                                     });
                                 }}
                             />
                         </>
                     )}
-                    <Button name='Close' onClick={onClose} width='120px' backgroundColor='alert'></Button>
+                    <Button
+                        name='Close'
+                        onClick={onClose}
+                        width='120px'
+                        backgroundColor='alert'
+                    />
                 </div>
             </div>
         </ModalContainer>

@@ -204,37 +204,46 @@ const DriverDashboard = () => {
         <div className='w-[50%]'>
           <div className='bg-white shadow-lg rounded-lg p-6'>
             <h1 className="text-xl font-bold mb-4 text-blackColor">Van Assigned</h1>
-            <div className="w-full flex flex-col justify-center items-center gap-4">
-              <Image
-                src={vanData?.van_image || "/png/van/van1.png"}
-                alt="Van"
-                className=" object-cover rounded-md mr-4"
-                width={300}
-                height={200}
-              />
-              <div className="table w-[80%]">
-                <div className="table-row">
-                  <p className="table-cell font-semibold">Van ID:</p>
-                  <span className="table-cell">VAN-O{vanData?.van_id || 'N/A'}</span>
-                </div>
-                <div className="table-row">
-                  <p className="table-cell font-semibold">Model:</p>
-                  <span className="table-cell">{vanData?.van_name || 'N/A'}</span>
-                </div>
-                <div className="table-row">
-                  <p className="table-cell font-semibold">Things Capacity:</p>
-                  <span className="table-cell truncate">{`${vanData?.things_capacity} kg`}</span>
-                </div>
-                <div className="table-row">
-                  <p className="table-cell font-semibold">Number of Passenger  :</p>
-                  <span className="table-cell truncate">{`${vanData?.people_capacity} `}</span>
-                </div>
-                <div className="table-row">
-                  <p className="table-cell font-semibold">Assigned Date:</p>
-                  <span className="table-cell truncate">{formatDatePublicRange(vanData?.createdAt || 'N/A')}</span>
+            {vanData ? (
+              <div className="w-full flex flex-col justify-center items-center gap-4">
+                <Image
+                  src={vanData.van_image || "/png/van/van1.png"}
+                  alt="Van"
+                  className="object-cover rounded-md mr-4"
+                  width={300}
+                  height={200}
+                />
+                <div className="table w-[80%]">
+                  <div className="table-row">
+                    <p className="table-cell font-semibold">Van ID:</p>
+                    <span className="table-cell">VAN-O{vanData?.van_id || 'N/A'}</span>
+                  </div>
+                  <div className="table-row">
+                    <p className="table-cell font-semibold">Model:</p>
+                    <span className="table-cell">{vanData?.van_name || 'N/A'}</span>
+                  </div>
+                  <div className="table-row">
+                    <p className="table-cell font-semibold">Things Capacity:</p>
+                    <span className="table-cell truncate">{`${vanData?.things_capacity} kg`}</span>
+                  </div>
+                  <div className="table-row">
+                    <p className="table-cell font-semibold">Number of Passenger  :</p>
+                    <span className="table-cell truncate">{`${vanData?.people_capacity} `}</span>
+                  </div>
+                  <div className="table-row">
+                    <p className="table-cell font-semibold">Assigned Date:</p>
+                    <span className="table-cell truncate">{formatDatePublicRange(vanData?.createdAt || 'N/A')}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="w-full flex flex-col justify-center items-center gap-4 py-8">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-600">No Van Assigned Yet</h3>
+                  <p className="text-sm text-gray-500">Please wait for admin to assign a van to you.</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

@@ -42,9 +42,10 @@ const createBooking = (data, callback) => {
             pickup_date_time, 
             barangay, 
             proof_of_payment, 
-            van_id
+            van_id,
+            status
         ) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
     `;
 
     // Execute the query
@@ -58,7 +59,7 @@ const createBooking = (data, callback) => {
         city_or_municipality, 
         pickup_date_time, 
         barangay, 
-        proof_of_payment, // Ensure this is the correct value
+        proof_of_payment,
         van_id
     ], (err, result) => {
         if (err) {
@@ -103,9 +104,43 @@ const getBookingById = (bookingId, callback) => {
     });
 };
 
+const updateBookingStatus = (bookingId, status, callback) => {
+    const query = `UPDATE bookings SET status = ? WHERE booking_id = ?`;
+
+    dbConn.query(query, [status, bookingId], (err, result) => {
+        if (err) {
+            console.error('Error updating booking status:', err);
+            return callback(err, null);
+        }
+        
+        if (result.affectedRows === 0) {
+            return callback(new Error('Booking not found'), null);
+        }
+        
+        callback(null, { message: 'Booking status updated successfully' });
+    });
+};
+
+const getBookingsByVanId = (vanId, callback) => {
+    const query = `
+        SELECT * FROM bookings 
+        WHERE van_id = ?
+        ORDER BY pickup_date_time DESC`;
+
+    dbConn.query(query, [vanId], (err, results) => {
+        if (err) {
+            console.error('Error fetching bookings by van ID:', err);
+            return callback(err, null);
+        }
+        callback(null, results);
+    });
+};
+
 module.exports = {
     checkUserExists,
     createBooking,
     getAllBookings,
-    getBookingById
+    getBookingById,
+    updateBookingStatus,
+    getBookingsByVanId
 };

@@ -8,7 +8,8 @@ const { uploadReceipt } = require('../../middleware/multer');
 router.post('/', uploadReceipt.single('proof_of_payment'), bookingController.createBooking);
 router.get('/', bookingController.getAllBookings);
 router.get('/:id', bookingController.getBookingById);
-// router.put('/:id', bookingController.updateBooking);
+router.put('/:id/status', bookingController.updateBookingStatus);
+router.get('/van/:vanId', bookingController.getBookingsByVanId);
 // router.delete('/:id', bookingController.deleteBooking);
 
 module.exports = router;

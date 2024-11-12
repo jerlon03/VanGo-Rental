@@ -36,6 +36,22 @@ const SweetAlert = {
         }
       });
     });
+  },
+  showInfo: (message: string) => {
+    Swal.fire({
+      icon: 'info',
+      title: 'INFORMATION',
+      text: `${message}`,
+      confirmButtonText: 'OK'
+    });
+  },
+  showWarning: (message: string) => {
+    Swal.fire({
+      icon: 'warning',
+      title: 'WARNING!',
+      text: `${message}`,
+      confirmButtonText: 'Continue'
+    });
   }
 };
 

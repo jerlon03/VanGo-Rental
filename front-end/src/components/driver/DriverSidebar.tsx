@@ -52,12 +52,14 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar
         }
     };
 
-    // New useEffect to handle dropdown state based on pathname
+    // Modified useEffect to keep dropdown open for schedule routes
     useEffect(() => {
         if (!pathname.startsWith('/driver/schedule')) {
-            setIsScheduleDropdownOpen(false); // Close dropdown if not in schedule routes
+            setIsScheduleDropdownOpen(false);
+        } else {
+            setIsScheduleDropdownOpen(true); // Keep dropdown open for schedule routes
         }
-    }, [pathname]); // Dependency on pathname
+    }, [pathname]);
 
     return (
         <div className={`bg-primaryColor h-screen fixed left-0 transition-width duration-300 ${isCollapsed ? 'w-[60px]' : 'w-[220px]'}`}>
@@ -128,16 +130,6 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar
                                 </Link>
                             </div>
                         )}
-                        {/* <Link href="/driver/assigned-trips" className={getNavLinkClass('/driver/assigned-trips')}>
-                            <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
-                                <FaMapLocationDot
-                                    size={20}
-                                    className={`text-white group-hover:text-button`}
-                                    style={getNavLinkStyle('/driver/assigned-trips')}
-                                />
-                                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Assigned Trips</p>}
-                            </div>
-                        </Link> */}
                         <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group ' onClick={() => { handleMenuItemClick(); handleNotificationClick(); }}>
                             <IoNotifications
                                 size={20}
@@ -149,12 +141,29 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar
                     </div>
                 </div>
             </div>
-            {isNotificationOpen && ( // Render the modal if open
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-100">
-                    <div className="bg-white p-5 rounded shadow-lg">
+            {isNotificationOpen && (
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-100"
+                    onClick={() => {
+                        closeModal();
+                        handleMenuItemClick(); // Close the schedule dropdown when clicking modal backdrop
+                    }}
+                >
+                    <div 
+                        className="bg-white p-5 rounded shadow-lg"
+                        onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing dropdown
+                    >
                         <h2 className="text-lg font-bold">Notifications</h2>
                         {/* Add your notification content here */}
-                        <button onClick={closeModal} className="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
+                        <button 
+                            onClick={() => {
+                                closeModal();
+                                handleMenuItemClick();
+                            }} 
+                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             )}

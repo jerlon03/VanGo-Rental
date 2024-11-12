@@ -1,105 +1,129 @@
 'use client'
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '@/components/Button/button';
 import { formatDatePublicRange } from '@/components/date/formatDate';
 import SweetAlert from '@/components/alert/alert';
+import { fetchBookingByVanId, updateBookingStatus } from '@/lib/api/booking.api';
+import { BookingDetails } from '@/lib/types/booking.type';
+import { useAuth } from '@/Provider/context/authContext';
+import { getDriver } from '@/lib/api/driver.api';
+import { ApiResponse } from '@/lib/types/driver.type';
+
+// Add this helper function to check if trip can be started
+const canStartTrip = (pickupDateTime: string): boolean => {
+    const pickupTime = new Date(pickupDateTime);
+    const currentTime = new Date();
+    const oneHourBefore = new Date(pickupTime.getTime() - (60 * 60 * 1000)); // 1 hour before pickup
+
+    return currentTime >= oneHourBefore && currentTime <= pickupTime;
+};
 
 const AssignedTrips = () => {
+    const { user, loading: authLoading } = useAuth();
     const [view, setView] = useState('active');
-    const [data, setData] = useState([
-        {
-            customerName: 'John Doe',
-            address: '123 Main St, Anytown',
-            email: 'sample@gmail.com',
-            phoneNo: '(555) 123-4567',
-            pickUpLocation: 'Central Park',
-            pickUpDateTime: '2023-10-16 10:00 AM',
-            status: 'Completed',
-        },
-        {
-            customerName: 'Jane Smith',
-            address: '456 Elm St, Othertown',
-            email: 'sample@gmail.com',
-            phoneNo: '(555) 987-6543',
-            pickUpLocation: 'City Hall',
-            pickUpDateTime: '2023-10-16 11:00 AM',
-            status: 'Completed',
-        },
-        {
-            customerName: 'Mike Johnson',
-            address: '789 Oak St, Somewhere',
-            email: 'sample@gmail.com',
-            phoneNo: '(555) 555-5555',
-            pickUpLocation: 'Airport',
-            pickUpDateTime: '2023-10-16 12:00 PM',
-            status: 'Completed',
-        },
-        {
-            customerName: 'Alice Brown',
-            address: '321 Pine St, Newtown',
-            email: 'sample@gmail.com',
-            phoneNo: '(555) 111-2222',
-            pickUpLocation: 'Downtown',
-            pickUpDateTime: '2023-10-17 09:00 AM',
-            status: 'Confirmed',
-        },
-        {
-            customerName: 'Bob White',
-            address: '654 Maple St, Oldtown',
-            email: 'sample@gmail.com',
-            phoneNo: '(555) 333-4444',
-            pickUpLocation: 'Train Station',
-            pickUpDateTime: '2023-10-17 10:30 AM',
-            status: 'Confirmed',
-        },
-        {
-            customerName: 'Charlie Green',
-            address: '987 Cedar St, Hometown',
-            email: 'sample@gmail.com',
-            phoneNo: '(555) 555-6666',
-            pickUpLocation: 'Bus Terminal',
-            pickUpDateTime: '2023-10-18 08:00 AM',
-            status: 'Completed',
-        },
-    ]);
+    const [data, setData] = useState<BookingDetails[]>([]);
+    const [dataDriver, setDataDriver] = useState<ApiResponse | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null); // Added error state
 
-    const handleStartTrip = (index: number) => {
-        // Show confirmation alert before starting the trip
-        SweetAlert.showConfirm('Are you sure you want to start this trip?').then((result) => {
-            if (result) { // result is true if confirmed
-                // Update the status of the selected trip to 'Ongoing'
-                const updatedData = [...data];
-                updatedData[index].status = 'Ongoing';
+    const userId = user?.user_id;
+    useEffect(() => {
+        if (!authLoading && userId) {
+          const fetchData = async () => {
+            try {
+              const result = await getDriver(userId as any);
+              setDataDriver(result as any);
+              console.log('Driver Data:', result); // Log the entire driver data
+            } catch (err) {
+              setError('Error fetching user and driver details');
+              console.error(err);
+            } finally {
+              setLoading(false);
+            }
+          };
+    
+          fetchData();
+        }
+      }, [userId, authLoading]);
 
-                // Send email to the customer
-                sendEmailToCustomer(updatedData[index].email, 'Your trip has started!', 'Thank you for choosing our service. Your trip is now ongoing.');
+    // Fetch bookings when component mounts
+      const vanId = dataDriver?.driver.van_id;
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const bookings = await fetchBookingByVanId(vanId as any);
+                setData(bookings);
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+                SweetAlert.showError('Failed to fetch bookings');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-                // Remove the trip from 'Confirmed' if it was previously confirmed
-                updatedData.forEach((trip, i) => {
-                    if (i !== index && trip.status === 'Ongoing') {
-                        trip.status = 'Confirmed';
-                    }
-                });
+        fetchBookings();
+    }, [vanId]);
 
-                setData(updatedData);
+    // Modified handleStartTrip function
+    const handleStartTrip = async (booking: BookingDetails) => {
+        // Check if it's too early to start the trip
+        if (!canStartTrip(booking.pickup_date_time.toString())) {
+            const pickupTime = new Date(booking.pickup_date_time);
+            const oneHourBefore = new Date(pickupTime.getTime() - (60 * 60 * 1000));
+            
+            SweetAlert.showWarning(
+                `Trip can only be started 1 hour before pickup time.\nPlease wait until ${oneHourBefore.toLocaleTimeString()}`
+            );
+            return;
+        }
+
+        SweetAlert.showConfirm('Are you sure you want to start this trip?').then(async (result) => {
+            if (result) {
+                try {
+                    await updateBookingStatus(booking.booking_id, 'Ongoing');
+
+                    // Update local state
+                    const updatedData = data.map(item => {
+                        if (item.booking_id === booking.booking_id) {
+                            return { ...item, status: 'Ongoing' };
+                        }
+                        // Ensure only one ongoing trip
+                        if (item.status === 'ongoing') {
+                            return { ...item, status: 'Confirmed' };
+                        }
+                        return item;
+                    });
+
+                    setData(updatedData as any);
+                    await sendEmailToCustomer(booking.email, 'Your trip has started!', 'Thank you for choosing our service. Your trip is now ongoing.');
+                } catch (error) {
+                    console.error('Error starting trip:', error);
+                    SweetAlert.showError('Failed to start trip');
+                }
             }
         });
     };
 
-    const handleFinishTrip = (index: number) => {
-        // Show confirmation alert before finishing the trip
-        SweetAlert.showConfirm('Are you sure you want to finish this trip?').then((result) => {
-            if (result) { // result is true if confirmed
-                // Update the status of the selected trip to 'Completed'
-                const updatedData = [...data];
-                updatedData[index].status = 'Completed';
-                setData(updatedData);
-                SweetAlert.showSuccess('Completed!, The trip has been marked as completed.');
+    const handleFinishTrip = async (booking: BookingDetails) => {
+        SweetAlert.showConfirm('Are you sure you want to finish this trip?').then(async (result) => {
+            if (result) {
+                try {
+                    await updateBookingStatus(booking.booking_id, 'Completed');
 
-                // Send email to the customer
-                sendEmailToCustomer(updatedData[index].email, 'Your trip has been completed!', 'Thank you for using our service. Your trip has been successfully completed.');
+                    // Update local state
+                    const updatedData = data.map(item =>
+                        item.booking_id === booking.booking_id ? { ...item, status: 'completed' } : item
+                    );
+
+                    setData(updatedData as any);
+                    SweetAlert.showSuccess('Completed! The trip has been marked as completed.');
+                    await sendEmailToCustomer(booking.email, 'Your trip has been completed!', 'Thank you for using our service. Your trip has been successfully completed.');
+                } catch (error) {
+                    console.error('Error finishing trip:', error);
+                    SweetAlert.showError('Failed to finish trip');
+                }
             }
         });
     };
@@ -115,18 +139,18 @@ const AssignedTrips = () => {
             },
             body: JSON.stringify({ email, subject, message }),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Email sending failed');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Email sent successfully:', data);
-        })
-        .catch(error => {
-            console.error('Error sending email:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Email sending failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Email sent successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error sending email:', error);
+            });
     };
 
     return (
@@ -143,42 +167,105 @@ const AssignedTrips = () => {
                 <div className='pt-6'>
                     {view === 'active' &&
                         <div className='flex flex-col gap-4'>
-                            {data.filter(item => item.status === 'Ongoing').length === 0 ? (
-                                <p>There are no bookings for now.</p>
+                            {data.filter(item => item.status === 'ongoing').length === 0 ? (
+                                <div className="flex items-center justify-center min-h-[120px] bg-gray-50 rounded-lg">
+                                    <div className="text-center p-4">
+                                        <h3 className="text-lg font-medium text-gray-900 mb-1">No Active Bookings yet.</h3>
+                                        <p className="text-sm text-gray-500">Please check the upcoming trips section for new bookings.</p>
+                                    </div>
+                                </div>
                             ) : (
-                                data.filter(item => item.status === 'Ongoing').map((trip, index) => (
-                                    <div key={index} className='w-full flex gap-4 items-centers'>
-                                        <div className='flex flex-col justify-evenly'>
-                                            <div className='flex justify-center flex-col items-center p-2 bg-primaryColor text-white rounded-[5px]'>
-                                                <h1>NOVEMBER</h1>
-                                                <p>MON 01</p>
+                                data.filter(item => item.status === 'ongoing').map((trip, index) => (
+                                    <div key={index} className='w-full flex gap-6'>
+                                        {/* Left Column - Date and Action */}
+                                        <div className='flex flex-col gap-4'>
+                                            {/* Date Display */}
+                                            <div className='w-[120px] bg-gradient-to-br from-primaryColor to-blue-600 text-white rounded-lg shadow-md overflow-hidden'>
+                                                <div className='text-center py-2 bg-black/10'>
+                                                    <span className='text-sm font-medium tracking-wider'>
+                                                        {new Date(trip.pickup_date_time).toLocaleDateString('en-US', { month: 'long' }).toUpperCase()}
+                                                    </span>
+                                                </div>
+                                                <div className='text-center p-3'>
+                                                    <span className='block text-2xl font-bold'>
+                                                        {new Date(trip.pickup_date_time).getDate()}
+                                                    </span>
+                                                    <span className='text-sm opacity-90'>
+                                                        {new Date(trip.pickup_date_time).toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase()}
+                                                    </span>
+                                                </div>
                                             </div>
+
+                                            {/* Finish Button */}
                                             <Button
-                                                name="FINISH"
-                                                onClick={() => handleFinishTrip(index)}
-                                                className='bg-green-500 text-white'
-                                            ></Button>
+                                                name="FINISH TRIP"
+                                                onClick={() => handleFinishTrip(trip)}
+                                                className='w-[120px] bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center gap-2 font-medium'
+                                            />
                                         </div>
-                                        <div className='border w-full grid grid-cols-2 rounded-[5px] p-2 text-[14px] md:grid-cols-1 lg:grid-cols-2 gap-4'>
-                                            <div>
-                                                <h1 className='font-semibold text-center p-2 text-[15px]'>Customer Information</h1>
-                                                <div className='grid grid-cols-2 w-[50%] xl:w-[70%] lg:w-[100%] md:w-[100%]'>
-                                                    <p className='font-medium'> Customer Name :</p>
-                                                    <p>{trip.customerName}</p>
-                                                    <p className='font-medium'>Email Address :</p>
-                                                    <p>{trip.email || 'N/A'}</p>
-                                                    <p className='font-medium'>Phone Number :</p>
-                                                    <p>{trip.phoneNo}</p>
+
+                                        {/* Right Column - Trip Details */}
+                                        <div className='flex-1 bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden'>
+                                            <div className='grid grid-cols-2 gap-6 p-6 md:grid-cols-1'>
+                                                {/* Customer Information */}
+                                                <div className='space-y-4'>
+                                                    <div className='flex items-center gap-2 pb-2 border-b border-gray-200'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primaryColor" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        </svg>
+                                                        <h2 className='text-lg font-semibold text-gray-800'>Customer Information</h2>
+                                                    </div>
+                                                    <div className='space-y-3'>
+                                                        <div className='grid grid-cols-2 gap-4'>
+                                                            <div className='text-gray-600'>Customer Name</div>
+                                                            <div className='font-medium text-gray-800'>{trip.first_name} {trip.last_name}</div>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 gap-4'>
+                                                            <div className='text-gray-600'>Email Address</div>
+                                                            <div className='font-medium text-gray-800'>{trip.email || 'N/A'}</div>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 gap-4'>
+                                                            <div className='text-gray-600'>Phone Number</div>
+                                                            <div className='font-medium text-gray-800'>{trip.phone_number}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Pickup Information */}
+                                                <div className='space-y-4'>
+                                                    <div className='flex items-center gap-2 pb-2 border-b border-gray-200'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primaryColor" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg>
+                                                        <h2 className='text-lg font-semibold text-gray-800'>Pick Up Information</h2>
+                                                    </div>
+                                                    <div className='space-y-3'>
+                                                        <div className='grid grid-cols-2 gap-4'>
+                                                            <div className='text-gray-600'>Date & Time</div>
+                                                            <div className='font-medium text-gray-800'>
+                                                                {new Date(trip.pickup_date_time).toLocaleString('en-US', {
+                                                                    year: 'numeric',
+                                                                    month: 'long',
+                                                                    day: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit'
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 gap-4'>
+                                                            <div className='text-gray-600'>Location</div>
+                                                            <div className='font-medium text-gray-800'>{trip.pickup_location}</div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <h1 className='font-semibold text-center p-2 text-[15px]'>Pick Up Information</h1>
-                                                <div className='grid grid-cols-2 w-[50%] xl:w-[70%] lg:w-[100%] md:w-[100%]'>
-                                                    <p className='font-medium'>Date & Time :</p>
-                                                    <p>{trip.pickUpDateTime}</p>
-                                                    <p className='font-medium'>Location :</p>
-                                                    <p>{trip.pickUpLocation}</p>
-                                                </div>
+
+                                            {/* Status Badge */}
+                                            <div className='absolute top-4 right-4'>
+                                                <span className='inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800'>
+                                                    Active Trip
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -188,39 +275,81 @@ const AssignedTrips = () => {
                     }
                     {view === 'upcoming' &&
                         <div className='flex flex-col gap-4'>
-                            {data.filter(item => item.status === 'Confirmed').length === 0 ? (
-                                <p>There are no bookings for now.</p>
+                            {data.filter(item => item.status === 'confirmed').length === 0 ? (
+                                <div className="flex items-center justify-center min-h-[120px] bg-gray-50 rounded-lg">
+                                    <div className="text-center p-4">
+                                        <h3 className="text-lg font-medium text-gray-900 mb-1">No Upcomming Bookings yet.</h3>
+                                        <p className="text-sm text-gray-500">There are no upcoming bookings that confirmed from admin.</p>
+                                    </div>
+                                </div>
                             ) : (
-                                data.filter(item => item.status === 'Confirmed').map((trip, index) => (
-                                    <div key={index} className='w-full flex gap-4 items-centers'>
-                                        <div className='border w-full grid grid-cols-2 rounded-[5px] p-2 text-[14px] md:grid-cols-1 lg:grid-cols-2 gap-4'>
-                                            <div>
-                                                <h1 className='font-semibold text-center p-2 text-[15px]'>Customer Information</h1>
-                                                <div className='grid grid-cols-2 w-[50%] xl:w-[70%] lg:w-[100%] md:w-[100%]'>
-                                                    <p className='font-medium'> Customer Name :</p>
-                                                    <p>{trip.customerName}</p>
-                                                    <p className='font-medium'>Email Address :</p>
-                                                    <p>{trip.email || 'N/A'}</p>
-                                                    <p className='font-medium'>Phone Number :</p>
-                                                    <p>{trip.phoneNo}</p>
+                                data.filter(item => item.status === 'confirmed').map((booking) => (
+                                    <div key={booking.booking_id} className='w-full'>
+                                        <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
+                                            <div className='grid grid-cols-2 gap-8 md:grid-cols-1 lg:grid-cols-2'>
+                                                {/* Customer Information Section */}
+                                                <div className='space-y-4'>
+                                                    <div className='flex items-center border-b pb-3'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        </svg>
+                                                        <h2 className='text-lg font-semibold text-gray-800'>Customer Information</h2>
+                                                    </div>
+                                                    <div className='grid gap-3 text-sm'>
+                                                        <div className='grid grid-cols-2 items-center'>
+                                                            <span className='text-gray-600 font-medium'>Customer Name:</span>
+                                                            <span className='text-gray-800'>{booking.first_name} {booking.last_name}</span>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 items-center'>
+                                                            <span className='text-gray-600 font-medium'>Email Address:</span>
+                                                            <span className='text-gray-800'>{booking.email || 'N/A'}</span>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 items-center'>
+                                                            <span className='text-gray-600 font-medium'>Phone Number:</span>
+                                                            <span className='text-gray-800'>{booking.phone_number}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <h1 className='font-semibold text-center p-2 text-[15px]'>Pick Up Information</h1>
-                                                <div className='grid grid-cols-2 w-[50%] xl:w-[70%] lg:w-[100%] md:w-[100%]'>
-                                                    <p className='font-medium'>Date & Time :</p>
-                                                    <p>{trip.pickUpDateTime}</p>
-                                                    <p className='font-medium'>Location :</p>
-                                                    <p>{trip.pickUpLocation}</p>
-                                                </div>
-                                            </div>
-                                            <Button
-                                                name="Start The Trip"
-                                                onClick={() => handleStartTrip(index)}
-                                                className='bg-blue-500 text-white'
-                                            />
-                                        </div>
 
+                                                {/* Pickup Information Section */}
+                                                <div className='space-y-4'>
+                                                    <div className='flex items-center border-b pb-3'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg>
+                                                        <h2 className='text-lg font-semibold text-gray-800'>Pick Up Information</h2>
+                                                    </div>
+                                                    <div className='grid gap-3 text-sm'>
+                                                        <div className='grid grid-cols-2 items-center'>
+                                                            <span className='text-gray-600 font-medium'>Date & Time:</span>
+                                                            <span className='text-gray-800'>{new Date(booking.pickup_date_time).toLocaleString()}</span>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 items-center'>
+                                                            <span className='text-gray-600 font-medium'>Location:</span>
+                                                            <span className='text-gray-800'>CEBU, {booking.city_or_municipality}, {booking.barangay}</span>
+                                                        </div>
+                                                        <div className='grid grid-cols-2 items-center'>
+                                                            <span className='text-gray-600 font-medium'>LandMark:</span>
+                                                            <span className='text-gray-800'>{booking.pickup_location}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Action Button */}
+                                            <div className='mt-6 flex justify-end'>
+                                                <Button
+                                                    name="Start The Trip"
+                                                    onClick={() => handleStartTrip(booking)}
+                                                    className={`px-6 py-2 rounded-md transition-colors duration-200 flex items-center gap-2 ${
+                                                        canStartTrip(booking.pickup_date_time.toString())
+                                                            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                                                            : 'bg-gray-300 cursor-not-allowed text-gray-500'
+                                                    }`}                                                  
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 ))
                             )}
@@ -228,11 +357,16 @@ const AssignedTrips = () => {
                     }
                     {view === 'completed' &&
                         <div className='w-full'>
-                            {data.filter(item => item.status === 'Completed').length === 0 ? (
-                                <p>There are no bookings for now.</p>
+                            {data.filter(item => item.status === 'completed').length === 0 ? (
+                                <div className="flex items-center justify-center min-h-[120px] bg-gray-50 rounded-lg">
+                                    <div className="text-center p-4">
+                                        <h3 className="text-lg font-medium text-gray-900 mb-1">No Completed Bookings yet.</h3>
+                                        <p className="text-sm text-gray-500">There are no completed bookings to display at this time.</p>
+                                    </div>
+                                </div>
                             ) : (
                                 <DataTable
-                                    value={data.filter(item => item.status === 'Completed')}
+                                    value={data.filter(item => item.status === 'completed')}
                                     tableStyle={{ minWidth: '50rem' }}
                                     pt={{
                                         thead: { className: 'bg-primaryColor text-white' },
@@ -240,27 +374,36 @@ const AssignedTrips = () => {
                                         headerRow: { className: 'h-[40px] ' },
                                     }}
                                 >
-                                    <Column field="customerName" header="Customer Name" pt={{
-                                        bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
-                                        headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
-                                    }} />
-                                    <Column field="address" header="Address" pt={{
-                                        bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
-                                        headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
-                                    }} />
-                                    <Column field="phoneNo" header="Phone No" pt={{
-                                        bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
-                                        headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
-                                    }} />
-                                    <Column field="pickUpLocation" header="Pick Up Location" pt={{
-                                        bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
-                                        headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
-                                    }} />
-                                    <Column field="pickUpDateTime" header="Pick Up Date & Time" pt={{
+                                    <Column field="customerName" header="Customer Name"
+                                        body={(booking) => (
+                                            <span className="text-[14px]">
+                                                {booking.first_name} {booking.last_name}
+                                            </span>
+                                        )}
+                                        pt={{
+                                            bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
+                                            headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
+                                        }} />
+                                    <Column field="phone_number" header="Phone No"
+                                        pt={{
+                                            bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
+                                            headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
+                                        }} />
+                                    <Column field="pickup_location" header="Pick Up Location"
+                                        body={(booking) => (
+                                            <span className="text-[14px]">
+                                                {booking.pickup_location} • CEBU {booking.city_or_municipality}, {booking.barangay}
+                                            </span>
+                                        )}
+                                        pt={{
+                                            bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
+                                            headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
+                                        }} />
+                                    <Column field="pickup_date_time" header="Pick Up Date & Time" pt={{
                                         bodyCell: { className: 'border text-blackColor p-2 text-[14px]' },
                                         headerCell: { className: 'px-3 font-medium text-[14px]  border-r' }
                                     }} body={(rowData) => (
-                                        <div>{formatDatePublicRange(rowData.pickUpDateTime)}</div>
+                                        <div>{formatDatePublicRange(rowData.pickup_date_time)}</div>
                                     )} />
                                     <Column field="status" header="Status" pt={{
                                         bodyCell: { className: 'border text-blackColor p-2 text-[14px] flex justify-center' },

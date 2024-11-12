@@ -38,6 +38,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
   const [municipality, setMunicipality] = useState('');
 
   const [isBooked, setIsBooked] = useState(false); // New state to track booking status
+  const [vanStatus, setVanStatus] = useState(van.status); // Add new state for van status
 
   // Get the list of municipalities from cebuData
   const municipalities = Object.keys(cebuData.CEBU.municipality_list);
@@ -118,7 +119,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
         }
 
         const data = await response.json();
-        setIsBooked(true); // Set the van as booked after successful submission
+        setVanStatus('booked'); // Update the van status locally
         SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
     } catch (error: any) {
         console.error('Error submitting booking:', error); // Log the entire error object
@@ -191,11 +192,11 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
         </div>
         <div className="flex justify-start items-end mt-40 md:ml-6">
           <Button 
-            name={van.status === 'available' ? 'Rent Now' : 'Booked'} 
-            onClick={van.status === 'available' ? handleRentNowClick : undefined} // Only call the function if available
+            name={vanStatus === 'available' ? 'Rent Now' : 'Booked'} 
+            onClick={vanStatus === 'available' ? handleRentNowClick : undefined}
             width='120px' 
-            className={van.status === 'available' ? '' : 'bg-green-500 hover:bg-green-700 text-white'} // Apply green background if booked
-            disabled={van.status !== 'available'} // Disable button if not available
+            className={vanStatus === 'available' ? '' : 'bg-green-500 hover:bg-green-700 text-white'}
+            disabled={vanStatus !== 'available'}
           ></Button>
         </div>
 

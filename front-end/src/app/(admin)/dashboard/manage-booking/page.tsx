@@ -15,6 +15,7 @@ import { IoCloseCircle, IoMdCheckmarkCircleOutline } from '@/components/icons';
 import SweetAlert from '@/components/alert/alert'; // Adjust the import path as necessary
 import Image from 'next/image'; // Import the Image component from next/image
 import { Dropdown } from 'primereact/dropdown';
+import InputField from '@/components/Form/inputfield';
 
 const ManageBookings = () => {
   const [bookings, setBookings] = useState<BookingDetails[]>([]);
@@ -28,6 +29,7 @@ const ManageBookings = () => {
   const [showSort, setShowSort] = useState(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const sortRef = useRef<HTMLDivElement>(null);
+  const [searchText, setSearchText] = useState('');
 
   const statusOptions = [
     { label: 'All', value: null },
@@ -36,6 +38,7 @@ const ManageBookings = () => {
     { label: 'Ongoing', value: 'ongoing' },
     { label: 'Declined', value: 'declined' },
     { label: 'Completed', value: 'completed' },
+    { label: 'Expired', value: 'expired' },
   ];
 
   const sortOptions = [
@@ -43,10 +46,29 @@ const ManageBookings = () => {
     { label: 'Descending', value: 'desc' }
   ];
 
-  // Add this function to filter bookings
-  const filteredBookings = bookings.filter(booking => {
-    if (!selectedStatus) return true;
-    return booking.status === selectedStatus;
+  // Fix the filteredBookings function
+  const filteredBookings = bookings.filter((booking: BookingDetails) => {
+    // First apply status filter
+    const statusMatch = !selectedStatus || booking.status === selectedStatus;
+
+    // Then apply search filter if there's search text
+    if (!searchText.trim() || !statusMatch) return statusMatch;
+
+    // Convert search text to lowercase for case-insensitive search
+    const searchLower = searchText.toLowerCase();
+
+    // Create full name for searching
+    const fullName = `${booking.first_name} ${booking.last_name}`.toLowerCase();
+
+    // Search across all relevant fields including full name
+    return (
+      String(booking.booking_id).includes(searchLower) ||
+      fullName.includes(searchLower) ||
+      (booking.email || '').toLowerCase().includes(searchLower) ||
+      (booking.phone_number || '').toLowerCase().includes(searchLower) ||
+      (booking.province || '').toLowerCase().includes(searchLower) ||
+      (booking.status || '').toLowerCase().includes(searchLower)
+    );
   });
 
   // Add this function to sort bookings with debugging
@@ -112,6 +134,11 @@ const ManageBookings = () => {
     // No need to call loadBookings here as the sort is handled client-side
   };
 
+  // Add this function to handle booking updates
+  const handleBookingUpdate = async () => {
+    await loadBookings(); // Reload the bookings data
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -128,9 +155,19 @@ const ManageBookings = () => {
         </AdminHeader>
       </div>
       <div className='w-full px-[2%]'>
-        <div className='w-full flex gap-2 justify-end p-2'>
-          <div 
-            ref={filterRef} 
+        <div className='w-full flex gap-2 justify-end p-2 items-center'>
+          <div className=''>
+            <InputField
+              height='30px'
+              type='search'
+              placeholder='search ....'
+              className='placeholder:text-blackColor placeholder:text-[14px]'
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+          <div
+            ref={filterRef}
             className='relative'
             onMouseEnter={() => setShowFilter(true)}
             onMouseLeave={() => setShowFilter(false)}
@@ -142,7 +179,7 @@ const ManageBookings = () => {
             {showFilter && (
               <div className='absolute right-0 top-full mt-[1px] bg-white shadow-lg rounded-md border p-2 z-10 min-w-[150px]'>
                 {statusOptions.map((option) => (
-                  <div 
+                  <div
                     key={option.label}
                     className={`p-1 cursor-pointer hover:bg-primaryColor hover:text-white rounded text-[14px] ${selectedStatus === option.value ? 'bg-primaryColor text-white ' : ''}`}
                     onClick={() => {
@@ -156,7 +193,7 @@ const ManageBookings = () => {
               </div>
             )}
           </div>
-          <div 
+          <div
             ref={sortRef}
             className='relative'
             onMouseEnter={() => setShowSort(true)}
@@ -168,7 +205,7 @@ const ManageBookings = () => {
             {showSort && (
               <div className='absolute right-0 top-full mt-[1px] bg-white shadow-lg rounded-md border p-2 z-10 min-w-[150px]'>
                 {sortOptions.map((option) => (
-                  <div 
+                  <div
                     key={option.label}
                     className={`p-1 cursor-pointer hover:bg-primaryColor hover:text-white rounded text-[14px] ${sortOrder === option.value ? 'bg-primaryColor text-white' : ''}`}
                     onClick={() => handleSort(option.value as 'asc' | 'desc')}
@@ -303,13 +340,21 @@ const ManageBookings = () => {
                 case 'completed':
                   statusClass = 'bg-purple-500 text-white';
                   break;
+                case 'expired':
+                  statusClass = 'bg-red-500 text-white';
+                  break;
                 default:
                   statusClass = 'bg-gray-100 text-gray-800';
               }
 
+              // Add ... only for pending and ongoing statuses
+              const displayText = ['pending', 'ongoing'].includes(rowData.status)
+                ? `${rowData.status}...`
+                : rowData.status;
+
               return (
                 <span className={`px-2 py-1 rounded ${statusClass} flex text-center items-center justify-center lg:text-[14px]`}>
-                  {rowData.status}
+                  {displayText}
                 </span>
               );
             }}
@@ -355,6 +400,7 @@ const ManageBookings = () => {
             setModalVisible(false);
             setSelectedBooking(null);
           }}
+          onStatusUpdate={handleBookingUpdate}
         />
       )}
     </div>

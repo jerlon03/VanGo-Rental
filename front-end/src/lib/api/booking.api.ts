@@ -20,8 +20,44 @@ const fetchAddBooking = async (bookingDetails: FormData) => { // Accept FormData
     }
 }
 
+const updateBookingStatus = async (bookingId: string | number, status: string) => {
+    try {
+        console.log('Sending status update:', { bookingId, status });
+
+        const response = await Instance.put<BookingDetails>(`/api/booking/${bookingId}/status`, {
+            status: status
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('Status update response:', response.data);
+
+        return response.data;
+    } catch (error: any) {
+        console.error('Error in updateBookingStatus:', error);
+        if (error.response) {
+            console.error('Error response:', error.response.data);
+            console.error('Error status:', error.response.status);
+        }
+        throw error;
+    }
+}
+
+const fetchBookingByVanId = async (vanId: string | number) => {
+    try {
+        const response = await Instance.get<BookingDetails[]>(`/api/booking/van/${vanId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error in fetchBookingByVanId:', error);
+        throw error;
+    }
+}
 
 export {
     fetchAllBookings,
     fetchAddBooking,
-  }
+    updateBookingStatus,
+    fetchBookingByVanId
+}

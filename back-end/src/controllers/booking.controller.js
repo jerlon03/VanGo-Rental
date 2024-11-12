@@ -54,3 +54,38 @@ exports.getBookingById = (req, res) => {
     });
 }
 
+exports.updateBookingStatus = (req, res) => {
+    const bookingId = req.params.id;
+    const { status } = req.body;
+
+    // Validate if status is provided
+    if (!status) {
+        return res.status(400).json({ error: 'Status is required' });
+    }
+
+    Booking.updateBookingStatus(bookingId, status, (err, result) => {
+        if (err) {
+            if (err.message === 'Booking not found') {
+                return res.status(404).json({ error: err.message });
+            }
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(result);
+    });
+};
+
+exports.getBookingsByVanId = (req, res) => {
+    const vanId = req.params.vanId;
+    if (!vanId) {
+        return res.status(400).json({ error: 'Van ID is required' });
+    }
+
+    Booking.getBookingsByVanId(vanId, (err, bookings) => {
+        if (err) {
+            console.error('Error fetching bookings by van ID:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(bookings);
+    });
+};
+
