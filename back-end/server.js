@@ -9,6 +9,7 @@ const bookingRoutes = require('./src/routes/booking.route')
 const postingRoutes = require('./src/routes/posts.route')
 const driverRoutes = require('./src/routes/driver.route')
 const adminRoutes = require('./src/routes/admin.route')
+const paymentRoutes = require('./src//routes/payment.route');
 const { verifyToken } = require('./middleware/auth');
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/users', userRoute);
 
 // private routes
+app.use('/api/payment', verifyToken,paymentRoutes )
 app.use('/api/driver', verifyToken, driverRoutes);
 app.use('/api', verifyToken, authRoutes);
 app.use('/api/van',verifyToken, vanRoutes)
@@ -36,6 +38,7 @@ app.use('/api/admin',verifyToken, adminRoutes)
 app.use('/public/van', vanRoutes)
 app.use('/public/posts', postingRoutes)
 app.use('/public/booking',bookingRoutes )
+app.use('/public/payment',paymentRoutes )
 
 
 

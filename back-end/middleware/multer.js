@@ -27,17 +27,24 @@ const ReceiptStorage = new CloudinaryStorage({
       allowedFormats: ["jpg", "png", "jpeg"],
   },
 });
+const PaymentStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+      folder: "payments_method",
+      allowedFormats: ["jpg", "png", "jpeg"],
+  },
+});
 
 // Middleware for uploading modules
 const uploadVan = multer({ storage: vanStorage });
-
 // Middleware for uploading blog post images
 const uploadBlogPost = multer({ storage: blogPostStorage });
-
 const uploadReceipt = multer({ storage: ReceiptStorage });
+const uploadPayment = multer({ storage: PaymentStorage });
 
 module.exports = {
     uploadVan,
     uploadBlogPost,
-    uploadReceipt
+    uploadReceipt,
+    uploadPayment
 };

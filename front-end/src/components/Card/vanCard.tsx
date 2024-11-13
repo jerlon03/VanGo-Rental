@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Modal from '@/components/modals/modalContainer'; // Adjust the import path if necessary
 import { Van } from '@/lib/types/van.type';
@@ -11,8 +11,9 @@ import { DatePicker, DatePickerWithTime } from '@/components/date/calendar';
 import ImagesUploader from '../Uplooad/ImagesUploader';
 import Select from '@/components/Form/select';
 import { cebuData } from '@/components/sampledata/sampleData'; // Import the cebuData
-import { fetchAddBooking } from '@/lib/api/booking.api'; // Import the fetchAddBooking function
-import { Booking } from '@/lib/types/booking.type';
+import { getPublicAllPayments } from '@/lib/api/payment.api';
+import { Payment } from '@/lib/types/payment.type';
+
 
 interface VanCardProps {
 
@@ -33,6 +34,8 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
   const [barangay, setBarangay] = useState('');
   const [pickupLocation, setPickupLocation] = useState('');
   const [pickupDateTime, setPickupDateTime] = useState<Date | null>(null);
+  const [payments, setPayments] = useState<Payment[]>([]);
+
 
   // State for selected municipality
   const [municipality, setMunicipality] = useState('');
@@ -65,13 +68,26 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
     }
   };
 
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const result = await getPublicAllPayments();
+        setPayments(result.data);
+      } catch (error) {
+        console.error('Error fetching payments:', error);
+      }
+    };
+
+    fetchPayments();
+  }, []);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Confirmation dialog using SweetAlert
     const isConfirmed = await SweetAlert.showConfirm('Are you sure you want to submit your booking?');
     if (!isConfirmed) {
-        return; // Exit the function if the user cancels
+      return; // Exit the function if the user cancels
     }
 
     console.log('Pickup Date Time:', pickupDateTime); // Log the pickup date time
@@ -90,12 +106,12 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
     // Append the proof of payment image with the correct key
     if (reservationImage) {
-        formData.append('proof_of_payment', reservationImage); // Ensure this key matches the backend
-        console.log('FormData contents:', Array.from(formData.entries())); // Debugging line
+      formData.append('proof_of_payment', reservationImage); // Ensure this key matches the backend
+      console.log('FormData contents:', Array.from(formData.entries())); // Debugging line
     } else {
-        console.error('No proof of payment image found.'); // Debugging line
-        SweetAlert.showError('Proof of payment image is required.'); // Show error if image is not found
-        return; // Exit the function if proof of payment is missing
+      console.error('No proof of payment image found.'); // Debugging line
+      SweetAlert.showError('Proof of payment image is required.'); // Show error if image is not found
+      return; // Exit the function if proof of payment is missing
     }
 
     // Additional fields
@@ -106,24 +122,24 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
     formData.append('status', '');
 
     try {
-        console.log('Submitting booking with data:', Array.from(formData.entries())); // Log FormData contents
-        const response = await fetch('http://localhost:8080/public/booking/', {
-            method: 'POST',
-            body: formData,
-        }); // Pass the FormData object
+      console.log('Submitting booking with data:', Array.from(formData.entries())); // Log FormData contents
+      const response = await fetch('http://localhost:8080/public/booking/', {
+        method: 'POST',
+        body: formData,
+      }); // Pass the FormData object
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            SweetAlert.showError(errorData.error || 'Failed to submit booking.'); // Show error from backend
-            return;
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        SweetAlert.showError(errorData.error || 'Failed to submit booking.'); // Show error from backend
+        return;
+      }
 
-        const data = await response.json();
-        setVanStatus('booked'); // Update the van status locally
-        SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
+      const data = await response.json();
+      setVanStatus('booked'); // Update the van status locally
+      SweetAlert.showSuccess('Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account.');
     } catch (error: any) {
-        console.error('Error submitting booking:', error); // Log the entire error object
-        SweetAlert.showError('Failed to submit booking. Please try again.');
+      console.error('Error submitting booking:', error); // Log the entire error object
+      SweetAlert.showError('Failed to submit booking. Please try again.');
     }
 
     // Reset form fields
@@ -191,10 +207,10 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
           </div>
         </div>
         <div className="flex justify-start items-end mt-40 md:ml-6">
-          <Button 
-            name={vanStatus === 'available' ? 'Rent Now' : 'Booked'} 
+          <Button
+            name={vanStatus === 'available' ? 'Rent Now' : 'Booked'}
             onClick={vanStatus === 'available' ? handleRentNowClick : undefined}
-            width='120px' 
+            width='120px'
             className={vanStatus === 'available' ? '' : 'bg-green-500 hover:bg-green-700 text-white'}
             disabled={vanStatus !== 'available'}
           ></Button>
@@ -365,16 +381,24 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                 <div className='w-full'>
                   <p>Reservation Free Via</p>
                   <div className='w-full flex p-2 gap-6 items-center'>
-                    <div className='w-[30%] h-[180px] border rounded-md p-2 flex items-center justify-center flex-col '>
-                      <Image src='/gcash-logo.svg' width={80} height={20} alt='Gcash Logo'></Image>
-                      <Image src='/gcash-qr.png' width={110} height={20} alt='Gcash Logo'></Image>
-                      <p className='text-[14px] font-medium'>09-12345-6789</p>
-                    </div>
-                    <div className='w-[30%] h-[180px] border rounded-md p-2 flex items-center justify-center flex-col '>
-                      <Image src='/paypal-logo.png' width={80} height={20} alt='Gcash Logo'></Image>
-                      <Image src='/gcash-qr.png' width={110} height={20} alt='Gcash Logo'></Image>
-                      <p className='text-[14px] font-medium'>09-12345-6789</p>
-                    </div>
+                    {Array.isArray(payments) && payments.length > 0 ? (
+                      payments.map((payment: Payment) => (
+                        <div
+                          key={payment.payment_id}
+                          className='w-[30%] h-[180px] border rounded-md p-1 flex items-center justify-center flex-col'
+                        >
+                          <h1 className='text-[16px] font-semibold tracking-[1px]'>{payment.payment_name}</h1>
+                          <Image
+                            src={payment.payment_image || ''}
+                            width={110}
+                            height={20}
+                            alt={`${payment.payment_name || 'Payment'} QR`}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div>No payment methods available</div> // Fallback content when there are no payments
+                    )}
                     <div className='flex flex-col w-[40%] gap-2'>
                       <h2>Proof of Payment <span className='text-red-700 font-bold'>*</span></h2>
                       <ImagesUploader onUpload={handleImageUpload} />

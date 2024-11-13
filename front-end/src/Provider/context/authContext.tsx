@@ -7,6 +7,7 @@ interface AuthContextType {
   user: Users | null;
   loading: boolean;
   fetchUserProfile: () => Promise<void>;
+  updateUserData: (newData: Partial<Users>) => void;
 }
 
 // Create the AuthContext with a default value of null for type safety
@@ -38,6 +39,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // Add this new function to update user data
+  const updateUserData = (newData: Partial<Users>) => {
+    setUser(prevUser => prevUser ? { ...prevUser, ...newData } : null);
+  };
+
   // Fetch user profile when the component is mounted
   useEffect(() => {
     fetchUserProfile();
@@ -45,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Provide the user and loading state to the component's children
   return (
-    <AuthContext.Provider value={{ user, loading, fetchUserProfile }}>
+    <AuthContext.Provider value={{ user, loading, fetchUserProfile, updateUserData }}>
       {children}
     </AuthContext.Provider>
   );

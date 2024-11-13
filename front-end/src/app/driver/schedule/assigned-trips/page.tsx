@@ -11,13 +11,12 @@ import { useAuth } from '@/Provider/context/authContext';
 import { getDriver } from '@/lib/api/driver.api';
 import { ApiResponse } from '@/lib/types/driver.type';
 
-// Add this helper function to check if trip can be started
+// Modified helper function to check if trip can be started
 const canStartTrip = (pickupDateTime: string): boolean => {
     const pickupTime = new Date(pickupDateTime);
     const currentTime = new Date();
-    const oneHourBefore = new Date(pickupTime.getTime() - (60 * 60 * 1000)); // 1 hour before pickup
-
-    return currentTime >= oneHourBefore && currentTime <= pickupTime;
+    // Allow starting the trip only at or after the pickup time
+    return currentTime >= pickupTime;
 };
 
 const AssignedTrips = () => {
@@ -66,15 +65,23 @@ const AssignedTrips = () => {
         fetchBookings();
     }, [vanId]);
 
+    // Add useEffect to check trip times periodically
+    useEffect(() => {
+        // Check every minute if any trips can be started
+        const interval = setInterval(() => {
+            setData(prevData => [...prevData]); // Force re-render to update button states
+        }, 60000); // Check every minute
+
+        return () => clearInterval(interval);
+    }, []);
+
     // Modified handleStartTrip function
     const handleStartTrip = async (booking: BookingDetails) => {
         // Check if it's too early to start the trip
         if (!canStartTrip(booking.pickup_date_time.toString())) {
-            const pickupTime = new Date(booking.pickup_date_time);
-            const oneHourBefore = new Date(pickupTime.getTime() - (60 * 60 * 1000));
-            
+            const pickupTime = new Date(booking.pickup_date_time);     
             SweetAlert.showWarning(
-                `Trip can only be started 1 hour before pickup time.\nPlease wait until ${oneHourBefore.toLocaleTimeString()}`
+                `Trip can only be started at the scheduled pickup time.\nPlease wait until ${pickupTime.toLocaleTimeString()}`
             );
             return;
         }
@@ -96,8 +103,7 @@ const AssignedTrips = () => {
                         return item;
                     });
 
-                    setData(updatedData as any);
-                    await sendEmailToCustomer(booking.email, 'Your trip has started!', 'Thank you for choosing our service. Your trip is now ongoing.');
+                    setData(updatedData as any);     
                 } catch (error) {
                     console.error('Error starting trip:', error);
                     SweetAlert.showError('Failed to start trip');
@@ -118,8 +124,7 @@ const AssignedTrips = () => {
                     );
 
                     setData(updatedData as any);
-                    SweetAlert.showSuccess('Completed! The trip has been marked as completed.');
-                    await sendEmailToCustomer(booking.email, 'Your trip has been completed!', 'Thank you for using our service. Your trip has been successfully completed.');
+                    SweetAlert.showSuccess('Completed! The trip has been marked as completed.');  
                 } catch (error) {
                     console.error('Error finishing trip:', error);
                     SweetAlert.showError('Failed to finish trip');
@@ -128,30 +133,7 @@ const AssignedTrips = () => {
         });
     };
 
-    // Function to send email to the customer
-    const sendEmailToCustomer = (email: string, subject: string, message: string) => {
-        // Here you would typically make an API call to your backend to send the email
-        // Example:
-        fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, subject, message }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Email sending failed');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Email sent successfully:', data);
-            })
-            .catch(error => {
-                console.error('Error sending email:', error);
-            });
-    };
+
 
     return (
         <div className='w-full'>

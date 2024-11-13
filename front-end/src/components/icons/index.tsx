@@ -17,6 +17,7 @@
  import { GrArticle } from "react-icons/gr";
  import { RiErrorWarningFill } from "react-icons/ri";
  import { HiDotsHorizontal } from "react-icons/hi";
+ import { FiSettings } from "react-icons/fi";
 
  
  
@@ -26,7 +27,7 @@
  
 
 export {
-    FaCheckCircle,LuCalendarCheck,MdKeyboardArrowUp,MdKeyboardArrowDown,GrArticle,RiErrorWarningFill,
+    FaCheckCircle,LuCalendarCheck,MdKeyboardArrowUp,MdKeyboardArrowDown,GrArticle,RiErrorWarningFill,FiSettings,
     IoCloseCircle,FaMapLocationDot,
     IoMdCheckmarkCircleOutline,
     IoCloudUploadOutline,

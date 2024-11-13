@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, CSSProperties, useEffect } from 'react';
 import Image from 'next/image';
-import { MdDashboard, FaCar, AiFillBook, FaUserCog, GrArticle } from '@/components/icons/index'
+import { MdDashboard, FaCar, AiFillBook, FaUserCog, GrArticle ,FiSettings} from '@/components/icons/index'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import router from 'next/router';
@@ -62,7 +62,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard')}
                 />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Dashboard</p>}
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Dashboard</p>}
               </div>
             </Link>
             <Link href="/dashboard/manage-booking" className={getNavLinkClass('/dashboard/manage-booking')}>
@@ -72,7 +72,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard/manage-booking')}
                 />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Manage Booking</p>}
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Manage Booking</p>}
               </div>
             </Link>
             <Link href="/dashboard/post" className={getNavLinkClass("/dashboard/post")}>
@@ -80,7 +80,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                 <GrArticle size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard/post')} />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Post</p>}
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Post</p>}
               </div>
             </Link>
             <Link href="/dashboard/van-inventory " className={getNavLinkClass("/dashboard/van-inventory")}>
@@ -88,17 +88,23 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isCollapsed, toggleSidebar 
                 <FaCar size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard/van-inventory')} />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Van Inventory</p>}
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Van Inventory</p>}
               </div>
             </Link>
-
-
             <Link href="/dashboard/users " className={getNavLinkClass("/dashboard/users")}>
               <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
                 <FaUserCog size={20}
                   className={`text-white group-hover:text-button`}
                   style={getNavLinkStyle('/dashboard/users')} />
-                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button'>Users</p>}
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Users</p>}
+              </div>
+            </Link>
+            <Link href="/dashboard/settings " className={getNavLinkClass("/dashboard/settings")}>
+              <div className='flex items-center gap-[1rem] w-full hover:bg-white  p-2 group'>
+                <FiSettings size={20}
+                  className={`text-white group-hover:text-button`}
+                  style={getNavLinkStyle('/dashboard/settings')} />
+                {!isCollapsed && <p className='font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px]'>Settings</p>}
               </div>
             </Link>
           </div>

@@ -10,5 +10,8 @@ router.get('/', adminController.getAllAdmins); // Added route for getting all ad
 
 // Route to get admin by user ID
 router.get('/user/:userId', adminController.getAdminByUserId); // Added route for getting admin by user ID
+router.get('/admin/:user:id', adminController.getAllAdminUsers);
+// Change userid to userId to match the controller
+router.put('/admin/:userId', adminController.updateAdminUser)
 
 module.exports = router;

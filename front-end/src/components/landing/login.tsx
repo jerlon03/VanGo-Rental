@@ -59,7 +59,6 @@ const LoginPage = () => {
       localStorage.setItem('role', role);
       // Redirect based on role
       if (role === 'admin') {
-        SweetAlert.showSuccess('Your Successfully login.')
         router.push(`/dashboard?${token}`);
       } else if (role === 'driver') {
         router.push(`/driver?${token}`);

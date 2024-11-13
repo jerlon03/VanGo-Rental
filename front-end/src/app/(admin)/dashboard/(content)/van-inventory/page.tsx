@@ -369,12 +369,12 @@ const VanInventory = () => {
         </DataTable>
       </div>
       {/* ADD MODAL */}
-      <Modal isOpen={isModalOpen} width='500px' height='600px' onClose={() => setIsModalOpen(false)}>
-        <div className="h-full flex flex-col bg-white rounded-[5px]">
+      <Modal isOpen={isModalOpen} width='500px' onClose={() => setIsModalOpen(false)}>
+        <div className=" flex flex-col bg-white rounded-[5px]">
           <div className='w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]'>
-            <h2 className="text-[20px] text-white font-medium">ADD VAN</h2>
+            <h2 className="text-[20px] text-white font-medium">CREATE VAN</h2>
           </div>
-          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 pt-2">
+          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 pt-2 h-[400px]">
             <div className="space-y-4">
               <InputField type="text" name='van_name' onChange={handleInputChange} placeholder="Van Name" />
               <div>
@@ -401,45 +401,47 @@ const VanInventory = () => {
                     <p className="text-red-500 text-sm">{inputErrors.things_capacity}</p>
                   )}
                 </div>
+                <select
+                  name="transmission_type"
+                  value={newVan.transmission_type}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-gray-700 outline-none"
+                >
+                  <option value="">Transmission Type:</option>
+                  <option value="Manual" className='text-[13px]'>Manual</option>
+                  <option value="Automatic" className='text-[13px]'>Automatic</option>
+                </select>
               </div>
-              <select
-                name="transmission_type"
-                value={newVan.transmission_type}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded text-gray-700"
-              >
-                <option value="">Select Transmission Type</option>
-                <option value="Manual">Manual</option>
-                <option value="Automatic">Automatic</option>
-              </select>
-              <div className='flex flex-col gap-[.5rem]'>
-                <p>Van Image</p>
-                <ImagesUploader onUpload={handleImageUpload} />
-              </div>
-              <div>
-                <p>Driver Assignee</p>
-                {loadingDrivers ? ( // Show loading state
-                  <p>Loading drivers...</p>
-                ) : (
-                  <Dropdown
-                    id="driver"
-                    value={selectedDriver}
-                    onChange={(e) => {
-                      console.log("Selected Driver:", e.value); // Log the selected driver
-                      setSelectedDriver(e.value); // Set the selected driver
-                    }}
-                    options={drivers} // Ensure this is an array of driver objects
-                    optionLabel="full_name" // Ensure this matches the property in your driver object
-                    optionValue="driver_id" // Ensure this matches the property in your driver object
-                    placeholder="Select a Driver"
-                    className="w-full p-2 bg-gray-100 rounded-md shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    itemTemplate={(option) => (
-                      <div className="flex items-center justify-between p-1 border bg-gray-300 rounded-[5px] hover:bg-gray-400 transition-colors">
-                        <span className="font-light hover:text-white">{option.full_name}</span> {/* Customize the display here */}
-                      </div>
-                    )}
-                  />
-                )}
+              <div className='flex w-full justify-between gap-4'>
+                <div className='flex flex-col gap-[.5rem] w-[55%]'>
+                  <p>Van Image</p>
+                  <ImagesUploader onUpload={handleImageUpload} />
+                </div>
+                <div className='w-[45%] gap-[.5rem] flex flex-col'>
+                  <p>Driver Assignee</p>
+                  {loadingDrivers ? ( // Show loading state
+                    <p>Loading drivers...</p>
+                  ) : (
+                    <Dropdown
+                      id="driver"
+                      value={selectedDriver}
+                      onChange={(e) => {
+                        console.log("Selected Driver:", e.value); // Log the selected driver
+                        setSelectedDriver(e.value); // Set the selected driver
+                      }}
+                      options={drivers} // Ensure this is an array of driver objects
+                      optionLabel="full_name" // Ensure this matches the property in your driver object
+                      optionValue="driver_id" // Ensure this matches the property in your driver object
+                      placeholder="Select a Driver"
+                      className="w-full p-2 bg-gray-100 rounded-md shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      itemTemplate={(option) => (
+                        <div className="flex items-center justify-between p-1 border bg-gray-300 rounded-[5px] hover:bg-gray-400 transition-colors">
+                          <span className="font-light hover:text-white text-[13px]">{option.full_name}</span> {/* Customize the display here */}
+                        </div>
+                      )}
+                    />
+                  )}
+                </div>
               </div>
             </div>
             <div className="py-4 px-6 border-t">
