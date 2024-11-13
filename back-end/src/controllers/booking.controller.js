@@ -85,7 +85,7 @@ const sendDeclinedEmail = async (booking) => {
 
 const sendCompletedEmail = async (booking) => {
     try {
-        const feedbackLink = `${process.env.FRONTEND_URL}/feedback?bookId:${booking.booking_id}`; // Adjust the URL structure as needed
+        const feedbackLink = `${process.env.FRONTEND_URL}/feedback/${booking.booking_id}`;
         
         await transporter.sendMail({
             from: process.env.SMTP_USER,

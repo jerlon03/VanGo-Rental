@@ -77,7 +77,6 @@ const AssignedTrips = () => {
 
     // Modified handleStartTrip function
     const handleStartTrip = async (booking: BookingDetails) => {
-        // Check if it's too early to start the trip
         if (!canStartTrip(booking.pickup_date_time.toString())) {
             const pickupTime = new Date(booking.pickup_date_time);     
             SweetAlert.showWarning(
@@ -91,19 +90,16 @@ const AssignedTrips = () => {
                 try {
                     await updateBookingStatus(booking.booking_id, 'Ongoing');
 
-                    // Update local state
+                    // Update local state with case-insensitive status matching
                     const updatedData = data.map(item => {
                         if (item.booking_id === booking.booking_id) {
-                            return { ...item, status: 'Ongoing' };
-                        }
-                        // Ensure only one ongoing trip
-                        if (item.status === 'ongoing') {
-                            return { ...item, status: 'Confirmed' };
+                            return { ...item, status: 'ongoing' };
                         }
                         return item;
                     });
 
-                    setData(updatedData as any);     
+                    setData(updatedData);
+                    setView('active'); // Automatically switch to active view
                 } catch (error) {
                     console.error('Error starting trip:', error);
                     SweetAlert.showError('Failed to start trip');
@@ -118,13 +114,14 @@ const AssignedTrips = () => {
                 try {
                     await updateBookingStatus(booking.booking_id, 'Completed');
 
-                    // Update local state
+                    // Update local state with case-insensitive status matching
                     const updatedData = data.map(item =>
                         item.booking_id === booking.booking_id ? { ...item, status: 'completed' } : item
                     );
 
-                    setData(updatedData as any);
-                    SweetAlert.showSuccess('Completed! The trip has been marked as completed.');  
+                    setData(updatedData);
+                    setView('completed'); // Automatically switch to completed view
+                    SweetAlert.showSuccess('Completed! The trip has been marked as completed.');
                 } catch (error) {
                     console.error('Error finishing trip:', error);
                     SweetAlert.showError('Failed to finish trip');
