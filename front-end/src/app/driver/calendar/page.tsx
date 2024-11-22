@@ -92,7 +92,7 @@ const Calendar = () => {
           <h1 className="text-[18px] font-semibold text-gray-800">
             My Calendar
           </h1>
-          <p className="text-sm text-gray-500 ">View Schedule / My Calendar</p>
+          <p className="text-sm text-gray-500 ">Driver / Calendar</p>
         </div>
         <div className="flex gap-4 ">
           <div>

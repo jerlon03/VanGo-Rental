@@ -3,13 +3,8 @@ import React, { useState, CSSProperties, useEffect } from "react";
 import Image from "next/image";
 import {
   MdDashboard,
-  AiFillBook,
-  FaFileInvoice,
   FaMapLocationDot,
   LuCalendarCheck,
-  IoNotifications,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
 } from "@/components/icons/index";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,11 +19,16 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({
   isCollapsed,
   toggleSidebar,
 }) => {
+  const [showMenuText, setShowMenuText] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    // Any client-side logic can go here
-  }, []);
+    setShowMenuText(
+      pathname === "/driver" ||
+        pathname === "/driver/calendar" ||
+        pathname === "/driver/assigned-trips"
+    );
+  }, [pathname]);
 
   const getNavLinkClass = (path: string): string => {
     return pathname === path ? "text-button font-medium bg-white " : "";
@@ -84,7 +84,7 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({
             </button>
           </div>
           <div></div>
-          <div className="w-full text-white py-[50px] flex  gap-[.3rem] cursor-pointer xl:py-[10px] xl:gap-[2px] md:flex-col flex-row justify-around">
+          <div className="w-full text-white py-[50px] sm:py-[10px] flex gap-[.3rem] cursor-pointer xl:py-[10px] xl:gap-[2px] md:flex-col flex-row md:justify-around sm:justify-evenly">
             <Link href="/driver" className={getNavLinkClass("/driver")}>
               <div className="flex items-center gap-[1rem] w-full hover:bg-white p-2 group">
                 <MdDashboard
@@ -96,6 +96,9 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({
                   <p className="font-Poppins group-hover:font-medium text-[16px] group-hover:text-button tracking-[1px] md:block hidden">
                     Dashboard
                   </p>
+                )}
+                {showMenuText && (pathname === "/driver" || isCollapsed) && (
+                  <span className={`md:hidden sm:block`}>Dashboard</span>
                 )}
               </div>
             </Link>
@@ -114,6 +117,10 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({
                     Calendar
                   </p>
                 )}
+                {showMenuText &&
+                  (pathname === "/driver/calendar" || isCollapsed) && (
+                    <span className={`md:hidden sm:block`}>Calendar</span>
+                  )}
               </div>
             </Link>
             <Link
@@ -131,6 +138,10 @@ const DriverSidebar: React.FC<AdminSidebarProps> = ({
                     Assigned Trips
                   </p>
                 )}
+                {showMenuText &&
+                  (pathname === "/driver/assigned-trips" || isCollapsed) && (
+                    <span className={`md:hidden sm:block`}>Assigned Trips</span>
+                  )}
               </div>
             </Link>
           </div>

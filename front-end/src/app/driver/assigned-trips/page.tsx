@@ -150,40 +150,43 @@ const AssignedTrips = () => {
 
   return (
     <div className="w-full">
-      <p className="text-[15px]"> View Schedule / Assigned Trips</p>
+      <h1 className="text-[18px] font-semibold text-gray-800 md:pt-0 sm:pt-4">
+        Assigned Trips
+      </h1>
+      <p className="text-[15px] "> Driver / Assigned Trips</p>
       <div className="w-full px-[2%] pt-[2%]">
-        <div className="w-full pt-5 flex gap-4">
+        <div className="w-full pt-5 flex md:gap-4 sm:gap-2">
           <p
             onClick={() => setView("active")}
             className={
               view === "active"
-                ? "cursor-pointer font-bold border-b-2 px-4 flex justify-center border-blackColor text-blackColor"
-                : "cursor-pointer"
+                ? "cursor-pointer font-bold border-b-2 md:text-[16px] sm:text-[14px] px-4 sm:px-0 flex justify-center border-blackColor text-blackColor"
+                : "cursor-pointer md:text-[16px] sm:text-[14px] "
             }
           >
-            Active Trips
+            Active
           </p>
           <p>|</p>
           <p
             onClick={() => setView("upcoming")}
             className={
               view === "upcoming"
-                ? "cursor-pointer font-bold border-b-2 px-4 flex justify-center border-blackColor text-blackColor"
-                : "cursor-pointer"
+                ? "cursor-pointer font-bold border-b-2  md:text-[16px] sm:text-[14px] md:px-4 sm:px-0 flex justify-center border-blackColor text-blackColor"
+                : "cursor-pointer md:text-[16px] sm:text-[14px]"
             }
           >
-            Upcoming Trips
+            Upcoming
           </p>
           <p>|</p>
           <p
             onClick={() => setView("completed")}
             className={
               view === "completed"
-                ? "cursor-pointer font-bold border-b-2 px-4  flex justify-center border-blackColor text-blackColor"
-                : "cursor-pointer"
+                ? "cursor-pointer font-bold border-b-2 px-4 sm:px-0  md:text-[16px] sm:text-[14px]  flex justify-center border-blackColor text-blackColor"
+                : "cursor-pointer md:text-[16px] sm:text-[14px]"
             }
           >
-            Completed Trips
+            Completed
           </p>
         </div>
         <div className="pt-6">

@@ -40,13 +40,13 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <NotificationModal />
                 <div className="flex-grow flex flex-col w-full">
                   <div
-                    className={`transition-margin duration-300 px-[2%] pt-[1%] ${isCollapsed ? "ml-[60px]" : "ml-[220px]"}`}
+                    className={`transition-margin duration-300 px-[2%] pt-[1%] ${isCollapsed ? "ml-[60px]" : isMobile ? "mb-[60px]" : "ml-[220px]"}`}
                   >
                     <DriverHeader />
                     {children}
                   </div>
                   {isMobile && (
-                    <div className="mt-auto">
+                    <div className="fixed bottom-0 left-0 w-full">
                       <DriverSidebar
                         isCollapsed={isCollapsed}
                         toggleSidebar={toggleSidebar}
