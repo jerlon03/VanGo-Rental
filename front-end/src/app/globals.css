@@ -230,4 +230,9 @@
   .modal-open {
     overflow: hidden; /* Prevent scrolling when modal is open */
 }
+.p-datepicker td {
+  font-size: 15px; /* Set the font size for the day cells */
+  padding: 0;
+}
+
 
