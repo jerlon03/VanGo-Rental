@@ -6,7 +6,7 @@ const sendConfirmationEmail = async (booking) => {
 
     try {
         await transporter.sendMail({
-            from: process.env.SMTP_USER,
+            from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
             to: booking.email,
             subject: 'Booking Confirmation',
             html: `
@@ -46,7 +46,7 @@ const sendConfirmationEmail = async (booking) => {
 const sendDeclinedEmail = async (booking) => {
     try {
         await transporter.sendMail({
-            from: process.env.SMTP_USER,
+            from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
             to: booking.email,
             subject: 'Booking Declined',
             html: `
@@ -88,7 +88,7 @@ const sendCompletedEmail = async (booking) => {
         const feedbackLink = `${process.env.FRONTEND_URL}/feedback/${booking.booking_id}`;
         
         await transporter.sendMail({
-            from: process.env.SMTP_USER,
+            from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
             to: booking.email,
             subject: 'Booking Completed - Share Your Experience',
             html: `
@@ -110,6 +110,7 @@ const sendCompletedEmail = async (booking) => {
 
                         <div style="text-align: center; margin: 30px 0;">
                             <p style="font-size: 16px; margin: 10px 0;">We'd love to hear about your experience!</p>
+                            <p style="font-size: 14px; color: #666; margin: 5px 0;">Note: The feedback form is only accessible for completed bookings.</p>
                             <a href="${feedbackLink}" 
                                style="display: inline-block; padding: 12px 24px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">
                                 Share Your Feedback
@@ -117,6 +118,7 @@ const sendCompletedEmail = async (booking) => {
                         </div>
 
                         <p style="font-size: 16px; margin: 10px 0;">Your feedback helps us improve our services for future customers.</p>
+                        <p style="font-size: 14px; color: #666; margin: 10px 0;"><i>Please note that the feedback link will only work for completed bookings.</i></p>
                     </div>
 
                     <div style="text-align: center; font-size: 12px; color: #777; margin-top: 20px;">
@@ -134,25 +136,41 @@ const sendCompletedEmail = async (booking) => {
 };
 
 exports.createBooking = async (req, res) => {
-    console.log('Request body:', req.body); // Log the request body
-    console.log('Uploaded file:', req.file); // Log the uploaded file
+
 
     // Check if the file is uploaded
     if (!req.file) {
         return res.status(400).json({ error: 'Proof of payment image is required.' });
     }
 
-    // Get the URL of the uploaded image from Cloudinary
-    const imagePath = req.file.path; // This should be the URL returned by Cloudinary
+    // Get the URL of the uploaded image
+    const imagePath = req.file.path; // Ensure this is the correct path
 
-    // Set the proof_of_payment and ensure van_id is included
-    const bookingData = { ...req.body, proof_of_payment: imagePath }; // Combine body and image path
-    // Ensure van_id is included in bookingData
-    if (!bookingData.van_id) {
-        return res.status(400).json({ error: 'Van ID is required.' });
+    // Set the proof_of_payment and ensure van_id and booking_end_date are included
+    const bookingData = { 
+        ...req.body, 
+        proof_of_payment: imagePath 
+    };
+
+    // Ensure all required fields are included in bookingData
+    const requiredFields = [
+        'first_name', 
+        'last_name', 
+        'email', 
+        'phone_number', 
+        'date_of_birth', 
+        'pickup_location', 
+        'city_or_municipality', 
+        'pickup_date_time', 
+        'barangay', 
+        'van_id',
+        'booking_end_date' // Added booking_end_date to required fields
+    ];
+    for (const field of requiredFields) {
+        if (!bookingData[field]) {
+            return res.status(400).json({ error: `${field.replace('_', ' ')} is required.` });
+        }
     }
-
-    console.log('Booking Data:', bookingData); // Log booking data to check if proof_of_payment is included
 
     Booking.createBooking(bookingData, (err, bookingId) => {
         if (err) {
@@ -237,6 +255,16 @@ exports.getBookingsByVanId = (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         res.status(200).json(bookings);
+    });
+};
+
+exports.getBookingStatusCounts = (req, res) => {
+    Booking.getBookingStatusCounts((err, statusCounts) => {
+        if (err) {
+            console.error('Error fetching booking status counts:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(statusCounts); // Return the counts of each status
     });
 };
 

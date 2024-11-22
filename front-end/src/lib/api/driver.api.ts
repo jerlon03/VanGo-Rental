@@ -50,6 +50,7 @@ const getVanById = async (id: number) => { // Accept id as a parameter
 };
 
 
+
 export {
     getDriver, updateDriver, getAllDriver,getVanById
 }

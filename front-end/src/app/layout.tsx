@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import QueryProviders from "@/Provider/context/tanstackQuery";
 
 export const metadata: Metadata = {
   title: "VanGO Rental",
   description: "VanGO Rental: Effortless Van Hire at Your Fingertips",
 
- icons: {
-  icon: ['./logo.svg']
- }
+  icons: {
+    icon: ["./logo.svg"],
+  },
 };
 
 export default function RootLayout({
@@ -19,9 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryProviders>
-        <body >{children}</body>
+        <body>
+          <div className="select-none">{children}</div>
+        </body>
       </QueryProviders>
-     
     </html>
   );
 }

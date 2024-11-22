@@ -26,7 +26,8 @@ const createBooking = (data, callback) => {
         pickup_date_time, 
         barangay, 
         proof_of_payment, 
-        van_id 
+        van_id,
+        booking_end_date
     } = data;
 
     // SQL query to insert booking data
@@ -43,9 +44,10 @@ const createBooking = (data, callback) => {
             barangay, 
             proof_of_payment, 
             van_id,
-            status
+            status,
+            booking_end_date
         ) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
     `;
 
     // Execute the query
@@ -60,7 +62,8 @@ const createBooking = (data, callback) => {
         pickup_date_time, 
         barangay, 
         proof_of_payment,
-        van_id
+        van_id,
+        booking_end_date
     ], (err, result) => {
         if (err) {
             console.error('Database Error:', err);
@@ -78,6 +81,7 @@ const createBooking = (data, callback) => {
         });
     });
 };
+
 const getAllBookings = (callback) => {
     const query = `SELECT * FROM bookings`;
 
@@ -136,11 +140,34 @@ const getBookingsByVanId = (vanId, callback) => {
     });
 };
 
+// Get counts of all booking statuses excluding declined
+const getBookingStatusCounts = (callback) => {
+    const query = `
+        SELECT status, COUNT(*) AS count 
+        FROM bookings 
+        WHERE status != 'declined' 
+        GROUP BY status
+    `;
+
+    dbConn.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching booking status counts:', err);
+            return callback(err, null);
+        }
+        const statusCounts = results.reduce((acc, row) => {
+            acc[row.status] = row.count;
+            return acc;
+        }, {});
+        callback(null, statusCounts); // Return an object with counts for each status
+    });
+};
+
 module.exports = {
     checkUserExists,
     createBooking,
     getAllBookings,
     getBookingById,
     updateBookingStatus,
-    getBookingsByVanId
+    getBookingsByVanId,
+    getBookingStatusCounts
 };

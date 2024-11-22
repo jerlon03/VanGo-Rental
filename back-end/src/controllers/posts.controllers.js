@@ -119,3 +119,43 @@ exports.getPostById = (req, res) => {
         });
     });
 };
+
+exports.getPublishedPostCount = (req, res) => {
+    Posts.getPublishedPostCount((err, count) => {
+        if (err) {
+            return res.status(500).json({
+                message: 'Error retrieving published post count',
+                error: err.message
+            });
+        }
+        res.status(200).json({
+            message: 'Published post count retrieved successfully',
+            count: count
+        });
+    });
+};
+
+exports.deletePost = (req, res) => {
+    const postId = req.params.id; // Get the post ID from the request parameters
+
+    // Call the database delete function
+    Posts.deletePost(postId, (err, affectedRows) => {
+        if (err) {
+            if (err.message === 'Post not found') {
+                return res.status(404).json({
+                    message: 'Post not found',
+                    error: err.message
+                });
+            }
+            return res.status(500).json({
+                message: 'Error deleting post',
+                error: err.message
+            });
+        }
+
+        res.status(200).json({
+            message: 'Post deleted successfully',
+            affectedRows: affectedRows
+        });
+    });
+};

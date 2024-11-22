@@ -93,11 +93,39 @@ const getPostById = (id, callback) => {
     });
 };
 
+const getPublishedPostCount = (callback) => {
+    const query = 'SELECT COUNT(*) AS count FROM posts WHERE status = ?';
+    
+    dbConn.query(query, ['PUBLISH'], (err, results) => {
+        if (err) {
+            return callback(err, null);
+        }
+        callback(null, results[0].count); // Return the count of published posts
+    });
+};
+
+const deletePost = (id, callback) => {
+    const query = 'DELETE FROM posts WHERE post_id = ?';
+
+    dbConn.query(query, [id], (err, result) => {
+        if (err) {
+            return callback(err, null);
+        }
+        // Check if any rows were affected
+        if (result.affectedRows === 0) {
+            return callback(new Error('Post not found'), null);
+        }
+        callback(null, result.affectedRows); // Return the number of affected rows
+    });
+};
+
 module.exports = {
     getAllPosts,
     createPost,
     getPostById,
-    updatePost 
+    updatePost,
+    getPublishedPostCount,
+    deletePost
 };
 
 

@@ -9,6 +9,16 @@ const fetchAllBookings = async () => {
     return response.data;
 }
 
+const fetchBookingStatusCounts = async () => {
+    try {
+        const response = await Instance.get<{ [key: string]: number }>('/api/booking/booking/status-counts'); // Fetch status counts
+        return response.data; // Return the status counts data
+    } catch (error) {
+        console.error('Error in fetchBookingStatusCounts:', error); // Log the error for debugging
+        throw error; // Rethrow the error to be handled by the calling function
+    }
+}
+
 // public
 const fetchAddBooking = async (bookingDetails: FormData) => { // Accept FormData as a parameter
     try {
@@ -54,10 +64,21 @@ const fetchBookingByVanId = async (vanId: string | number) => {
         throw error;
     }
 }
+const publicBookingByVanId = async (vanId: string | number) => {
+    try {
+        const response = await Instance.get<BookingDetails[]>(`/public/booking/van/${vanId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error in fetchBookingByVanId:', error);
+        throw error;
+    }
+}
 
 export {
     fetchAllBookings,
     fetchAddBooking,
     updateBookingStatus,
-    fetchBookingByVanId
+    fetchBookingByVanId,
+    fetchBookingStatusCounts,
+    publicBookingByVanId
 }

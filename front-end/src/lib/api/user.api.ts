@@ -11,8 +11,19 @@ const addUser = async (newUser: { first_name: string; last_name: string; email: 
   return response.data.data;
 }
 
+const NewPassword = async (newPassword: string) => {
+  const response = await Instance.post('/users/set-new-password', { newPassword });
+  return response.data; // Assuming the response contains the message
+}
+
+const fetchDriverCount = async (): Promise<number> => { // New function to fetch driver count
+  const response = await Instance.get<{ count: number }>('/users/drivers/count'); // Fetch the driver count
+  return response.data.count; // Return the count from the response
+}
 
 export {
   fetchAllUser,
   addUser,
+  NewPassword,
+  fetchDriverCount
 }

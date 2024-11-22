@@ -4,10 +4,19 @@ interface Props {
   id?: string; // Add id prop to the interface
   height?: string;
   width?: string;
-  type?: "text" | "password" | "number" | "email" | "search"| "date";
+  type?:
+    | "text"
+    | "password"
+    | "number"
+    | "email"
+    | "search"
+    | "date"
+    | "time"
+    | "tel";
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyPress?: React.KeyboardEventHandler<HTMLInputElement>; // Add onKeyPress prop to the interface
   placeholder?: string;
-  value?: string | number;
+  value?: string | null | undefined; // Allow value to be null or undefined
   border?: string;
   assetCharacter?: RegExp;
   readOnly?: boolean; // Add readOnly prop to the interface
@@ -15,9 +24,17 @@ interface Props {
   icon?: React.ReactNode; // Add icon prop to the interface
   className?: string; // Add className prop to the interface
   required?: boolean; // Add required prop to the interface
-  maxLength?: number; 
+  maxLength?: number;
   name?: string;
-  inputMode?: "search" | "numeric" | "email" | "tel" | "text" | "url" | "none" | "decimal"; // Updated inputMode prop
+  inputMode?:
+    | "search"
+    | "numeric"
+    | "email"
+    | "tel"
+    | "text"
+    | "url"
+    | "none"
+    | "decimal"; // Updated inputMode prop
 }
 
 const InputField: React.FC<Props> = ({
@@ -27,17 +44,18 @@ const InputField: React.FC<Props> = ({
   type = "text",
   border,
   onChange,
+  onKeyPress,
   placeholder,
   value,
   assetCharacter,
   readOnly = false,
   onClick,
-  icon, // Destructure icon prop
-  className, // Destructure className prop
-  required, // Destructure required prop
+  icon,
+  className,
+  required,
   maxLength,
-  name, // Destructure name prop
-  inputMode, // Destructure inputMode prop
+  name,
+  inputMode,
   ...rest
 }) => {
   return (
@@ -46,10 +64,10 @@ const InputField: React.FC<Props> = ({
         <span
           style={{
             position: "absolute",
-            left: "10px", // Adjust left position
+            left: "10px",
             top: "50%",
             transform: "translateY(-50%)",
-            pointerEvents: "none", // Prevent icon from capturing clicks
+            pointerEvents: "none",
           }}
         >
           {icon}
@@ -57,21 +75,22 @@ const InputField: React.FC<Props> = ({
       )}
       <input
         id={id}
-        name={name} // Set the name attribute
+        name={name}
         type={type}
         onChange={onChange}
+        onKeyPress={onKeyPress}
         placeholder={placeholder}
-        maxLength={maxLength} 
-        value={value}
+        maxLength={maxLength}
+        value={value ?? ""}
         readOnly={readOnly}
         onClick={onClick}
-        required={required} // Add required attribute
-        inputMode={inputMode} // Set the inputMode attribute
+        required={required}
+        inputMode={inputMode}
         style={{
           width,
           height,
           border,
-          paddingLeft: icon ? "40px" : "10px", // Adjust padding for icon
+          paddingLeft: icon ? "40px" : "10px",
         }}
         className={`${className} w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[40px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor`}
         {...rest}

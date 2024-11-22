@@ -10,6 +10,6 @@ router.get('/', bookingController.getAllBookings);
 router.get('/:id', bookingController.getBookingById);
 router.put('/:id/status', bookingController.updateBookingStatus);
 router.get('/van/:vanId', bookingController.getBookingsByVanId);
-// router.delete('/:id', bookingController.deleteBooking);
+router.get('/booking/status-counts', bookingController.getBookingStatusCounts);
 
 module.exports = router;

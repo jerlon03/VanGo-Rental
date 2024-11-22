@@ -180,6 +180,41 @@ User.updatePassword = function(userId, newPassword, result) {
   );
 };
 
+User.setNewPassword = function(userId, newPassword, callback) {
+  // Hash the new password before storing it
+  bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+    if (err) {
+      console.error("Bcrypt hashing error:", err);
+      return callback(err, null);
+    }
+    
+    dbConn.query(
+      "UPDATE users SET password = ? WHERE user_id = ?",
+      [hashedPassword, userId],
+      function(err, res) {
+        if (err) {
+          console.error("Database error:", err);
+          return callback(err, null);
+        }
+        // Check if any rows were affected
+        if (res.affectedRows === 0) {
+          return callback({ message: 'User not found' }, null);
+        }
+        callback(null, res);
+      }
+    );
+  });
+};
+User.countRegisteredDrivers = function(result) {
+  dbConn.query("SELECT COUNT(*) AS count FROM users WHERE role = 'driver'", function(err, res) {
+    if (err) {
+      console.error("Database error:", err);
+      return result(err, null);
+    }
+    result(null, res[0].count); // Return the count of registered drivers
+  });
+};
+
 
 
 

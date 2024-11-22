@@ -29,7 +29,7 @@ const ImagesUploader = ({ onUpload }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-full h-[120px] border-2 border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center">
+      <div className={`relative w-full h-[120px] border-2 ${previewImage ? 'border-gray-300' : 'border-red-500'} border-dashed rounded-lg mb-4 flex items-center justify-center`}>
         {previewImage ? (
           <>
             <Image src={previewImage} alt="Preview" className="object-contain  h-full" width={100} height={80} />

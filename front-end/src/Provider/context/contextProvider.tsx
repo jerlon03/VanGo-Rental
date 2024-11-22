@@ -15,7 +15,9 @@ interface LogoutContextType {
 }
 
 // Create the context with default undefined value
-const logoutModalContext = createContext<LogoutContextType | undefined>(undefined);
+const logoutModalContext = createContext<LogoutContextType | undefined>(
+  undefined
+);
 
 // Custom hook to use the context
 const useLogoutContext = (): LogoutContextType => {

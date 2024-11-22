@@ -10,6 +10,7 @@ const postingRoutes = require('./src/routes/posts.route')
 const driverRoutes = require('./src/routes/driver.route')
 const adminRoutes = require('./src/routes/admin.route')
 const paymentRoutes = require('./src//routes/payment.route');
+const feedbackRoutes = require('./src/routes/feedback.route')
 const { verifyToken } = require('./middleware/auth');
 
 const app = express();
@@ -25,21 +26,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 app.use('/users', userRoute);
 
-// private routes
-app.use('/api/payment', verifyToken,paymentRoutes )
-app.use('/api/driver', verifyToken, driverRoutes);
-app.use('/api', verifyToken, authRoutes);
-app.use('/api/van',verifyToken, vanRoutes)
-app.use('/api/booking', bookingRoutes)
-app.use('/api/posting',verifyToken, postingRoutes)
-app.use('/api/admin',verifyToken, adminRoutes)
+
 
 //public routes
 app.use('/public/van', vanRoutes)
 app.use('/public/posts', postingRoutes)
 app.use('/public/booking',bookingRoutes )
 app.use('/public/payment',paymentRoutes )
+app.use('/public/feedback',feedbackRoutes )
 
+// private routes
+app.use(verifyToken)
+app.use('/api/payment' ,paymentRoutes )
+app.use('/api/driver' , driverRoutes);
+app.use('/api',  authRoutes);
+app.use('/api/van', vanRoutes)
+app.use('/api/booking', bookingRoutes)
+app.use('/api/posting', postingRoutes)
+app.use('/api/admin', adminRoutes)
+app.use('/api/feedback', feedbackRoutes)
 
 
 // Catch-all route for undefined routes (404)

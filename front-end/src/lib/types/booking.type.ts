@@ -40,6 +40,7 @@ export interface BookingDetails {
   barangay: string;
   pickup_location: string;
   pickup_date_time: Date;
+  booking_end_date: Date;
 }
 
 

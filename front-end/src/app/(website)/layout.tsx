@@ -1,9 +1,14 @@
-'use client'
-import Header from '@/components/landing/header';
-import Footer from '@/components/landing/footer';
-import { useEffect, useState } from 'react';
+"use client";
+import Header from "@/components/landing/header";
+import Footer from "@/components/landing/footer";
 
-export default function LandingLayout({ children }: { children: React.ReactNode }) {
+import { useEffect, useState } from "react";
+
+export default function LandingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

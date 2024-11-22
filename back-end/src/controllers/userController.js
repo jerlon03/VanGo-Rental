@@ -229,10 +229,34 @@ exports.forgotPassword = (req, res) => {
 
     // Email options
     const mailOptions = {
-      from: process.env.SMTP_USER,
+      from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
       to: user.email,
       subject: 'Password Reset Request',
-      text: `You requested a password reset. Click the link to reset your password: ${resetLink}`,
+      html: `
+        <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        
+            <div style="background-color: #003459; color: #fff; padding: 15px; border-radius: 10px 10px 0 0; text-align: center;">
+                <h1 style="margin: 0; font-size: 24px;">Password Reset Request</h1>
+            </div>
+
+            <div style="padding: 20px;">
+                <p style="font-size: 16px; margin: 10px 0;">Dear ${user.first_name} ${user.last_name},</p>
+                <p style="font-size: 16px; margin: 10px 0;">We received a request to reset your password. Click the link below to reset your password:</p>
+
+                <p style="font-size: 16px; margin: 10px 0;">
+                    <a href="${resetLink}" style="background-color: #007BFF; color: #fff; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                </p>
+
+                <p style="font-size: 16px; margin: 10px 0;">If you did not request a password reset, please ignore this email.</p>
+            </div>
+
+            <div style="text-align: center; font-size: 12px; color: #777; margin-top: 20px;">
+                <p>If you have any questions, please <a href="mailto:jerlonabayon16@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
+                <p>&copy; ${new Date().getFullYear()} VanGO Rental Services. All rights reserved.</p>
+            </div>
+
+        </div>
+    `
     };
 
     // Send the email
@@ -324,6 +348,44 @@ exports.getDriver = async function (req, res) {
       message: 'Error fetching user and driver details'
     });
   }
+};
+
+exports.setNewPassword = async (req, res) => {
+  const userId = req.user.id; // Extract userId from the token payload
+  const { newPassword } = req.body;
+
+  // Validate input
+  if (!newPassword) {
+    return res.status(400).json({ message: 'New password is required.' });
+  }
+
+  try {
+    // Update the user's password in the database
+    await new Promise((resolve, reject) => {
+      User.setNewPassword(userId, newPassword, (err) => {
+        if (err) {
+          console.error('Error updating password:', err);
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+
+    res.status(200).send({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error during password update:', error);
+    res.status(500).send({ message: 'Error updating password' });
+  }
+};
+
+exports.countRegisteredDrivers = (req, res) => {
+  User.countRegisteredDrivers((err, count) => {
+    if (err) {
+      console.error('Error counting registered drivers:', err);
+      return res.status(500).send({ error: true, message: 'Error counting registered drivers' });
+    }
+    res.status(200).send({ error: false, count });
+  });
 };
 
 

@@ -13,6 +13,7 @@ interface User {
   }
   
    export interface Driver {
+    van_id: number;
     driver_id: number;
     user_id: number;
     experience_years: number;
@@ -22,7 +23,6 @@ interface User {
     first_name: string; // Added first name
     last_name: string;  // Added last name
     full_name: string; 
-    van_id: number;
   }
 
   export interface DriverDetails {

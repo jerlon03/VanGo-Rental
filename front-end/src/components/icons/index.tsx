@@ -18,6 +18,8 @@
  import { RiErrorWarningFill } from "react-icons/ri";
  import { HiDotsHorizontal } from "react-icons/hi";
  import { FiSettings } from "react-icons/fi";
+ import { VscFeedback } from "react-icons/vsc";
+ import { FaTools } from "react-icons/fa";
 
  
  
@@ -27,7 +29,7 @@
  
 
 export {
-    FaCheckCircle,LuCalendarCheck,MdKeyboardArrowUp,MdKeyboardArrowDown,GrArticle,RiErrorWarningFill,FiSettings,
+    FaCheckCircle,LuCalendarCheck,MdKeyboardArrowUp,MdKeyboardArrowDown,GrArticle,RiErrorWarningFill,FiSettings,VscFeedback,FaTools,
     IoCloseCircle,FaMapLocationDot,
     IoMdCheckmarkCircleOutline,
     IoCloudUploadOutline,

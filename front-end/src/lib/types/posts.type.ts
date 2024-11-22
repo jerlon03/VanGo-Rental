@@ -3,7 +3,7 @@ export interface BlogPost {
     title: string;                // Title of the blog post
     description?: string;         // Description of the blog post (optional)
     post_image?: string;          // URL of the blog post image (optional)
-    status: 'PUBLISH' | 'DRAFT'; // Status of the blog post
+    status: "PUBLISH" | "DRAFT" | "CLOSED"; // Add "CLOSED" here
     createdAt: Date;              // Timestamp when the post was created
     updatedAt: Date;              // Timestamp when the post was last updated
     user_id?: number;    

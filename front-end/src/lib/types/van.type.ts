@@ -10,7 +10,7 @@
     price: string; // Add this property
     reviews: number; // Add this property
     imageUrl: string; // Add this property if needed
-    status: 'booked' | 'available'; 
+    status: 'booked' | 'available' | 'under maintenance'; 
     createdAt: string; 
     driver_id: number;
 }
@@ -19,5 +19,10 @@
   export type DataRes<Data> = {
     data: Data
     error?: boolean;
+}
+
+export interface VanStatusCount {
+  status: string;
+  status_count: number;
 }
   

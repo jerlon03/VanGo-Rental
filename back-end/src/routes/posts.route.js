@@ -8,5 +8,8 @@ router.post('/create', uploadBlogPost.single('post_image'), postController.creat
 router.get('/', postController.getAllPosts);
 router.get('/:id', postController.getPostById);
 router.put('/:id', postController.updatePost);
+router.delete('/:id', postController.deletePost);
+router.get('/count/published', postController.getPublishedPostCount);
+
 
 module.exports = router;

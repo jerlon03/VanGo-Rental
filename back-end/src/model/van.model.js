@@ -107,4 +107,52 @@ Van.getVanByID = (van_id, result) => {
   });
 };
 
+Van.getCountByStatus = (result) => {
+  dbConn.query(
+    "SELECT status, COUNT(*) AS status_count FROM van GROUP BY status",
+    (err, res) => {
+      if (err) {
+        console.log("Error: ", err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    }
+  );
+};
+
+Van.updateStatusById = (van_id, status, result) => {
+  dbConn.query(
+    "UPDATE van SET status = ? WHERE van_id = ?",
+    [status, van_id],
+    (err, res) => {
+      if (err) {
+        console.log("Error updating status: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.affectedRows == 0) {
+        // Van with the id not found
+        result({ kind: "not_found" }, null);
+        return;
+      }
+
+      console.log("Updated van status: ", { van_id: van_id, status: status });
+      result(null, { van_id: van_id, status: status });
+    }
+  );
+};
+
+Van.getCount = (result) => {
+  dbConn.query("SELECT COUNT(*) AS total_count FROM van", (err, res) => {
+    if (err) {
+      console.log("Error: ", err);
+      result(err, null);
+      return;
+    }
+    result(null, res[0].total_count);
+  });
+};
+
 module.exports = Van;

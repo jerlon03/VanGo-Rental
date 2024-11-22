@@ -67,6 +67,35 @@ exports.updateVan = (req, res) => {
   });
 };
 
+exports.updateVanStatus = (req, res) => {
+  const van_id = req.params.van_id; // Assuming the van_id is passed as a URL parameter
+  const { status } = req.body.data; // Extract status from request body
+
+  // Update the van status in the database
+  Van.updateStatusById(van_id, status, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        return res.status(404).send({
+          status: 'error',
+          message: `Van with id ${van_id} not found.`,
+        });
+      }
+      console.error('Failed to update van status:', err);
+      return res.status(500).send({
+        status: 'error',
+        message: 'Failed to update van status',
+      });
+    }
+
+    // Check if the status was actually updated
+    if (data.status === status) {
+      return res.status(200).json({ status: 'ok', message: 'Status updated successfully', data });
+    } else {
+      return res.status(200).json({ status: 'unchanged', message: 'Status was unchanged', data });
+    }
+  });
+};
+
 // ... existing code ...
 
 exports.getAllVans = (req, res) => {
@@ -105,5 +134,31 @@ exports.getVanByID = (req, res) => {
       });
     }
     res.status(200).json({ status: 'ok', data: data });
+  });
+};
+
+exports.getCountByStatus = (req, res) => {
+  Van.getCountByStatus((err, data) => {
+    if (err) {
+      console.error('Failed to retrieve van counts by status:', err);
+      return res.status(500).send({
+        status: 'error',
+        message: 'Failed to retrieve van counts by status',
+      });
+    }
+    res.status(200).json({ status: 'ok', data: data });
+  });
+};
+
+exports.getTotalVansCount = (req, res) => {
+  Van.getCount((err, count) => {
+    if (err) {
+      console.error('Failed to retrieve total vans count:', err);
+      return res.status(500).send({
+        status: 'error',
+        message: 'Failed to retrieve total vans count',
+      });
+    }
+    res.status(200).json({ status: 'ok', total_count: count });
   });
 };
