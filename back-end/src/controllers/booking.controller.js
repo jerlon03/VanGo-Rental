@@ -268,3 +268,18 @@ exports.getBookingStatusCounts = (req, res) => {
     });
 };
 
+exports.getBookingStatusCountsByVan = (req, res) => {
+    const vanId = req.params.vanId; // Get the van ID from the request parameters
+    if (!vanId) {
+        return res.status(400).json({ error: 'Van ID is required' });
+    }
+
+    Booking.getBookingStatusCountsByVan(vanId, (err, statusCounts) => {
+        if (err) {
+            console.error('Error fetching booking status counts by van:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(statusCounts); // Return the counts of each status for the specified van
+    });
+};
+

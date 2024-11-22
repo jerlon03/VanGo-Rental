@@ -11,5 +11,6 @@ router.get('/:id', bookingController.getBookingById);
 router.put('/:id/status', bookingController.updateBookingStatus);
 router.get('/van/:vanId', bookingController.getBookingsByVanId);
 router.get('/booking/status-counts', bookingController.getBookingStatusCounts);
+router.get('/status-counts/van/:vanId', bookingController.getBookingStatusCountsByVan);
 
 module.exports = router;

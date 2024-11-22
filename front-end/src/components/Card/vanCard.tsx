@@ -129,6 +129,20 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
   // State to hold disabled dates
   const [disabledDates, setDisabledDates] = useState<Date[]>([]);
 
+  useEffect(() => {
+    // Add or remove the class when the modal opens or closes
+    if (currentModal) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+
+    // Cleanup function to remove the class when the component unmounts
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [currentModal]); // Dependency on currentModal
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement

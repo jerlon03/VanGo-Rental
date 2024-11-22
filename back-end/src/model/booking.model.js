@@ -162,6 +162,28 @@ const getBookingStatusCounts = (callback) => {
     });
 };
 
+const getBookingStatusCountsByVan = (vanId, callback) => {
+    const query = `
+        SELECT status, COUNT(*) AS count 
+        FROM bookings 
+        WHERE van_id = ?
+        GROUP BY status
+    `;
+
+    dbConn.query(query, [vanId], (err, results) => {
+        if (err) {
+            console.error('Error fetching booking status counts by van:', err);
+            return callback(err, null);
+        }
+        const statusCounts = results.reduce((acc, row) => {
+            acc[row.status] = row.count;
+            return acc;
+        }, {});
+        callback(null, statusCounts); // Return an object with counts for each status
+    });
+};
+
+
 module.exports = {
     checkUserExists,
     createBooking,
@@ -169,5 +191,6 @@ module.exports = {
     getBookingById,
     updateBookingStatus,
     getBookingsByVanId,
-    getBookingStatusCounts
+    getBookingStatusCounts,
+    getBookingStatusCountsByVan
 };

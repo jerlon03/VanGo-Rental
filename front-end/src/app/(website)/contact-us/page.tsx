@@ -68,9 +68,9 @@ const ContactUs = () => {
           ))}
         </div>
       </div>
-      <div className="w-full lg:p-[20%]  md:p-[10%] sm:p-[5%]">
+      <div className="w-full lg:px-[20%] pb-2 md:px-[10%] sm:px-[5%]">
         <h1 className="text-center font- font-medium text-[20px] p-2">
-          We are here
+          We are here !
         </h1>
         <div className="w-full">
           <iframe

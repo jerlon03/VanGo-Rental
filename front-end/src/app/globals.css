@@ -227,3 +227,7 @@
     box-shadow: none !important;
   }
 
+  .modal-open {
+    overflow: hidden; /* Prevent scrolling when modal is open */
+}
+

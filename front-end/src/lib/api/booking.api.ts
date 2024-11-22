@@ -74,11 +74,22 @@ const publicBookingByVanId = async (vanId: string | number) => {
     }
 }
 
+const fetchBookingStatusCountsByVanId = async (vanId: string | number) => { // New function to fetch status counts by van ID
+    try {
+        const response = await Instance.get<{ [key: string]: number }>(`/api/booking/status-counts/van/${vanId}`); // Fetch status counts by van ID
+        return response.data; // Return the status counts data
+    } catch (error) {
+        console.error('Error in fetchBookingStatusCountsByVanId:', error); // Log the error for debugging
+        throw error; // Rethrow the error to be handled by the calling function
+    }
+}
+
 export {
     fetchAllBookings,
     fetchAddBooking,
     updateBookingStatus,
     fetchBookingByVanId,
     fetchBookingStatusCounts,
-    publicBookingByVanId
+    publicBookingByVanId,
+    fetchBookingStatusCountsByVanId
 }

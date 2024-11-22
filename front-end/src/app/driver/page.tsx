@@ -13,6 +13,7 @@ import SweetAlert from "@/components/alert/alert";
 import { Van } from "@/lib/types/van.type";
 import { getVanDetailsById } from "@/lib/api/van.api";
 import { formatDatePublicRange } from "@/components/date/formatDate";
+import { fetchBookingStatusCountsByVanId } from "@/lib/api/booking.api";
 
 const DriverDashboard = () => {
   const [data, setData] = useState<ApiResponse | null>(null);
@@ -33,6 +34,9 @@ const DriverDashboard = () => {
   ); // Added state for phone number
   const [experience, setExperience] = useState<string>(""); // Added state for experience
   const [vanId, setVanId] = useState<string | null>(null);
+  const [bookingStatusCounts, setBookingStatusCounts] = useState<{
+    [key: string]: number;
+  } | null>(null); // Added state for booking status counts
 
   useEffect(() => {
     if (!authLoading && userId) {
@@ -51,7 +55,22 @@ const DriverDashboard = () => {
 
       fetchData();
     }
-  }, [userId, authLoading]);
+    const fetchVanDetails = async () => {
+      if (!vanId) return;
+      try {
+        const data = await getVanDetailsById(vanId as any);
+        setVanData(data.data);
+
+        // Fetch booking status counts for the van
+        const statusCounts = await fetchBookingStatusCountsByVanId(vanId);
+        setBookingStatusCounts(statusCounts); // Set the booking status counts
+      } catch (error: any) {
+        console.error("Error fetching van details:", error);
+        setError("Failed to fetch van details");
+      }
+    };
+    fetchVanDetails();
+  }, [userId, authLoading, vanId]);
 
   useEffect(() => {
     if (data) {
@@ -141,31 +160,50 @@ const DriverDashboard = () => {
     <div className="w-full">
       {error && <p className="text-red-500">{error}</p>}
       <p className="p-2 tracking-[1px]">
-        Welcome! <span className="font-semibold">Driver</span>
+        Welcome ,
+        <span className="font-semibold"> {data?.user.first_name}!</span>
       </p>
       <div className="w-full flex flex-col md:flex-row gap-[15px]">
-        <div className="w-full md:w-[100%] lg:w-[80%] flex flex-col md:flex-row gap-[25px]">
+        <div className="w-full md:w-[100%] lg:w-[80%] flex md:flex-row md:gap-[25px] sm:gap-[10px]">
           {[
-            { title: "Active Trips", count: 3 },
-            { title: "Upcoming Trips", count: 3 },
-            { title: "Completed Trips", count: 3 },
+            {
+              title: "Active Trips",
+              count: bookingStatusCounts?.ongoing || 0,
+              message: "No Active Trips Yet",
+            },
+            {
+              title: "Upcoming Trips",
+              count: bookingStatusCounts?.confirmed || 0,
+              message: "No Upcoming Trips Yet",
+            },
+            {
+              title: "Completed Trips",
+              count: bookingStatusCounts?.completed || 0,
+              message: "No Completed Trips Yet",
+            },
           ].map((trip, index) => (
             <div
               key={index}
-              className="border-2 border-primaryColor bg-[#FFFFFF] w-full rounded-[5px] h-[100px] flex justify-center items-center gap-[10px]"
+              className="border-2 border-primaryColor bg-[#FFFFFF] w-full rounded-[5px] md:h-[100px] sm:h-[90px] flex md:justify-center sm:justify-evenly md:items-center sm:items-start gap-[10px]"
             >
-              <div className="border p-2 bg-primaryColor rounded-[3px]">
+              <div className="border p-2 bg-primaryColor rounded-[3px] md:block sm:hidden">
                 <FaMapLocationDot
                   size={30}
-                  className={`text-white group-hover:text-button`}
+                  className={`text-white group-hover:text-button `}
                 />
               </div>
-              <div className="text-[25px] font-semibold flex flex-col justify-center items-center">
-                {trip.count}{" "}
-                <span className="font-medium text-blackColor text-[18px]">
-                  {trip.title}
+              {trip.count > 0 ? (
+                <div className="text-[25px] font-semibold flex flex-col justify-center items-center">
+                  {trip.count}{" "}
+                  <span className="font-medium text-blackColor md:text-[18px] sm:text-[14px] sm:text-center">
+                    {trip.title}
+                  </span>
+                </div>
+              ) : (
+                <span className="font-medium text-primaryColor md:text-[18px] sm:text-[14px] flex justify-center items-center h-full text-center">
+                  {trip.message}
                 </span>
-              </div>
+              )}
             </div>
           ))}
         </div>
@@ -175,24 +213,25 @@ const DriverDashboard = () => {
       <div className="w-full pt-[3%] flex flex-col md:flex-row gap-[20px]">
         <div className="flex w-full md:w-[50%]">
           <div className="bg-white shadow-lg rounded-lg md:p-6 sm:p-3 w-full ">
-            <h1 className="text-[18px] font-bold mb-4 text-blackColor">
-              {data?.user.first_name} {data?.user.last_name}
+            <h1 className="md:text-[18px] sm:text-[15px] font-bold mb-4 text-blackColor">
+              {/* {data?.user.first_name} {data?.user.last_name} */} Your
+              Information :
             </h1>
-            <p className="text-gray-700 flex gap-4">
+            <p className="text-gray-700 flex gap-4 md:text-[16px] sm:text-[14px]">
               <strong>ID:</strong>DR-0{data?.driver.driver_id}
             </p>
-            <div className="table w-full">
+            <div className="table w-full md:text-[16px] sm:text-[14px]">
               <div className="table-row">
                 <p className="table-cell font-semibold">Email:</p>
                 <span className="table-cell">{data?.user.email}</span>
               </div>
-              <div className="table-row">
+              <div className="table-row md:text-[16px] sm:text-[14px]">
                 <p className="table-cell font-semibold">Van Assigned:</p>
                 <span className="table-cell">
                   VAN-O{data?.driver.van_id || "N/A"}
                 </span>
               </div>
-              <div className="table-row">
+              <div className="table-row md:text-[16px] sm:text-[14px]">
                 <p className="table-cell font-semibold">Driver Experience:</p>
                 <span className="table-cell">
                   {data?.driver.experience_years === 0
@@ -200,13 +239,13 @@ const DriverDashboard = () => {
                     : `${data?.driver.experience_years} years of Experience`}
                 </span>
               </div>
-              <div className="table-row">
+              <div className="table-row md:text-[16px] sm:text-[14px]">
                 <p className="table-cell font-semibold">Phone Number:</p>
                 <span className="table-cell">
                   {data?.driver.phoneNumber || "N/A"}
                 </span>
               </div>
-              <div className="table-row">
+              <div className="table-row md:text-[16px] sm:text-[14px]">
                 <p className="table-cell font-semibold">Location:</p>
                 <span className="table-cell">
                   {data?.driver.Location || "N/A"}
@@ -227,7 +266,7 @@ const DriverDashboard = () => {
         {/* Van Assigned Section */}
         <div className="w-full md:w-[50%]">
           <div className="bg-white shadow-lg rounded-lg md:p-6 sm:p-3">
-            <h1 className="text-xl font-bold mb-4 text-blackColor">
+            <h1 className="text-xl font-bold mb-4 text-blackColor md:text-[18px] sm:text-[15px]">
               Van Assigned
             </h1>
             {vanData ? (
@@ -240,34 +279,33 @@ const DriverDashboard = () => {
                   height={200}
                 />
                 <div className="table md:w-[80%] sm:w-full">
-                  <div className="table-row">
-                    <p className="table-cell font-semibold">Van ID:</p>
-                    <span className="table-cell">
-                      VAN-O{vanData?.van_id || "N/A"}
-                    </span>
-                  </div>
-                  <div className="table-row">
-                    <p className="table-cell font-semibold">Model:</p>
-                    <span className="table-cell">
-                      {vanData?.van_name || "N/A"}
-                    </span>
-                  </div>
-                  <div className="table-row">
-                    <p className="table-cell font-semibold">Things Capacity:</p>
-                    <span className="table-cell truncate">{`${vanData?.things_capacity} kg`}</span>
-                  </div>
-                  <div className="table-row">
-                    <p className="table-cell font-semibold">
-                      Number of Passenger:
-                    </p>
-                    <span className="table-cell truncate">{`${vanData?.people_capacity}`}</span>
-                  </div>
-                  <div className="table-row">
-                    <p className="table-cell font-semibold">Assigned Date:</p>
-                    <span className="table-cell truncate">
-                      {formatDatePublicRange(vanData?.createdAt || "N/A")}
-                    </span>
-                  </div>
+                  {[
+                    {
+                      label: "Van ID:",
+                      value: `VAN-O${vanData?.van_id || "N/A"}`,
+                    },
+                    { label: "Model:", value: vanData?.van_name || "N/A" },
+                    {
+                      label: "Things Capacity:",
+                      value: `${vanData?.things_capacity} kg`,
+                    },
+                    {
+                      label: "Number of Passenger:",
+                      value: `${vanData?.people_capacity}`,
+                    },
+                    {
+                      label: "Assigned Date:",
+                      value: formatDatePublicRange(vanData?.createdAt || "N/A"),
+                    },
+                  ].map((item, index) => (
+                    <div
+                      className="table-row md:text-[16px] sm:text-[14px]"
+                      key={index}
+                    >
+                      <p className="table-cell font-semibold">{item.label}</p>
+                      <span className="table-cell truncate">{item.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
@@ -296,64 +334,57 @@ const DriverDashboard = () => {
             </p>
           </div>
           <div className="w-full p-4 flex flex-col gap-2">
-            <div className="flex w-full gap-4">
-              <div className="w-full">
+            {[
+              {
+                label: "First Name",
+                value: firstName,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFirstName(e.target.value),
+              },
+              {
+                label: "Last Name",
+                value: lastName,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  setLastName(e.target.value),
+              },
+              {
+                label: "Email",
+                value: email,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value),
+              },
+              {
+                label: "Location",
+                value: location,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  setLocation(e.target.value),
+              },
+              {
+                label: "Phone Number",
+                value: phoneNumber,
+                onChange: handlePhoneNumberChange,
+                maxLength: 11,
+              },
+              {
+                label:
+                  "How many years or months of driving experience do you have?",
+                value: experience,
+                onChange: handleExperienceChange,
+                placeholder: "Enter a number only",
+              },
+            ].map((input, index) => (
+              <div className="w-full" key={index}>
                 <label htmlFor="" className="text-[14px]">
-                  First Name
+                  {input.label}
                 </label>
                 <InputField
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                ></InputField>
+                  value={input.value}
+                  onChange={input.onChange}
+                  maxLength={input.maxLength}
+                  placeholder={input.placeholder}
+                />
               </div>
-              <div className="w-full">
-                <label htmlFor="" className="text-[14px]">
-                  Last Name
-                </label>
-                <InputField
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                ></InputField>
-              </div>
-            </div>
-            <div className="w-full">
-              <label htmlFor="" className="text-[14px]">
-                Email{" "}
-              </label>
-              <InputField
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              ></InputField>
-            </div>
-            <div className="w-full">
-              <label htmlFor="" className="text-[14px]">
-                Location{" "}
-              </label>
-              <InputField
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              ></InputField>
-            </div>
-            <div className="w-full">
-              <label htmlFor="" className="text-[14px]">
-                Phone Number{" "}
-              </label>
-              <InputField
-                value={phoneNumber}
-                onChange={handlePhoneNumberChange}
-                maxLength={11}
-              ></InputField>
-            </div>
-            <div className="w-full">
-              <label htmlFor="" className="text-[14px]">
-                How many years or months of driving experience do you have?
-              </label>
-              <InputField
-                value={experience}
-                onChange={handleExperienceChange}
-                placeholder="Enter a number only"
-              ></InputField>
-            </div>
+            ))}
           </div>
           <div className="w-full flex gap-4 p-2 px-[2rem]">
             <Button name="CANCEL" onClick={handleCloseModal}></Button>

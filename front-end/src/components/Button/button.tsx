@@ -9,10 +9,10 @@ interface Props {
   backgroundColor?: string;
   disabled?: boolean;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   border?: string;
   icon?: IconType; // Optional icon
-  iconPosition?: 'left' | 'right'; // Icon position
+  iconPosition?: "left" | "right"; // Icon position
   iconSize?: string; // Optional icon size
   iconColor?: string; // Optional icon color
 }
@@ -24,30 +24,30 @@ const Button: React.FC<Props> = ({
   height,
   backgroundColor,
   disabled,
-  className = '',
-  type = 'button',
-  border = 'border-none',
+  className = "",
+  type = "button",
+  border = "border-none",
   icon: Icon,
-  iconPosition = 'left',
-  iconSize = '20px', // Default icon size
-  iconColor = 'white', // Default icon color
+  iconPosition = "left",
+  iconSize = "20px", // Default icon size
+  iconColor = "white", // Default icon color
 }) => {
-  let bgColorClass = '';
+  let bgColorClass = "";
 
-  if (backgroundColor === 'success') {
-    bgColorClass = 'bg-[#2ECC71]';
-  } else if (backgroundColor === 'error') {
-    bgColorClass = 'bg-[#FF0000]';
-  } else if (backgroundColor === 'pending') {
-    bgColorClass = 'bg-[#FFD700]';
-  } else if (backgroundColor === 'alert'){
-    bgColorClass = 'bg-[#003459]';
-  }else {
-    bgColorClass = 'bg-[#00A8E8]';
+  if (backgroundColor === "success") {
+    bgColorClass = "bg-[#2ECC71]";
+  } else if (backgroundColor === "error") {
+    bgColorClass = "bg-[#FF0000]";
+  } else if (backgroundColor === "pending") {
+    bgColorClass = "bg-[#FFD700]";
+  } else if (backgroundColor === "alert") {
+    bgColorClass = "bg-[#003459]";
+  } else {
+    bgColorClass = "bg-[#00A8E8]";
   }
 
-  const buttonClass = `flex justify-center items-center font-Poppins  text-[16px] xl:text-[15px] lg:text-[14px] p-1 w-full rounded-[3px] tracking-[2px rounded-[3px] ${bgColorClass} ${border} ${disabled ? 'opacity-50 cursor-not-allowed bg-gray-200 text-blackColor' : ' text-white hover:text-white hover:bg-opacity-75'} transition duration-300 ${className}`;
-  
+  const buttonClass = `flex justify-center items-center font-Poppins  text-[16px] xl:text-[15px] lg:text-[14px] sm:text-[14px] p-1 w-full rounded-[3px] tracking-[2px rounded-[3px] ${bgColorClass} ${border} ${disabled ? "opacity-50 cursor-not-allowed bg-gray-200 text-blackColor" : " text-white hover:text-white hover:bg-opacity-75"} transition duration-300 ${className}`;
+
   return (
     <button
       className={buttonClass}
@@ -56,11 +56,11 @@ const Button: React.FC<Props> = ({
       disabled={disabled}
       type={type}
     >
-      {iconPosition === 'left' && Icon && (
+      {iconPosition === "left" && Icon && (
         <Icon className="mr-2" size={iconSize} color={iconColor} />
       )}
       {name}
-      {iconPosition === 'right' && Icon && (
+      {iconPosition === "right" && Icon && (
         <Icon className="ml-2" size={iconSize} color={iconColor} />
       )}
     </button>
