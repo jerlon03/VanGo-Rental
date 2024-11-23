@@ -64,6 +64,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
   const [barangay, setBarangay] = useState("");
   const [reservationImage, setReservationImage] = useState<File | null>(null);
   const [pickupLocation, setPickupLocation] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading
 
   // Get the list of municipalities from cebuData
   const municipalities = Object.keys(cebuData.CEBU.municipality_list); // Define municipalities
@@ -246,6 +247,9 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
       return; // Exit the function if the user cancels
     }
 
+    // Set loading state to true
+    setIsLoading(true);
+
     // Prepare booking details to send using FormData
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.firstname);
@@ -310,6 +314,9 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
     } catch (error: any) {
       console.error("Error submitting booking:", error); // Log the entire error object
       SweetAlert.showError("Failed to submit booking. Please try again.");
+    } finally {
+      // Reset loading state
+      setIsLoading(false);
     }
 
     // Reset form fields
@@ -718,7 +725,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                   />
                   <Button
                     type="submit"
-                    name="SUBMIT"
+                    name={isLoading ? "Loading..." : "SUBMIT"}
                     width="120px"
                     className="bg-green-500 hover:bg-green-700 text-white"
                   />
