@@ -84,6 +84,21 @@ const fetchBookingStatusCountsByVanId = async (vanId: string | number) => { // N
     }
 }
 
+const sendDeclinedEmail = async (bookingId: number, reason: string) => {
+    try {
+        const response = await Instance.post('/api/booking/send-declined-email', {
+            bookingId,
+            reason
+        });
+
+        console.log('Declined email response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error in sendDeclinedEmail:', error);
+        throw error; // Rethrow the error to be handled by the calling function
+    }
+};
+
 export {
     fetchAllBookings,
     fetchAddBooking,
@@ -91,5 +106,6 @@ export {
     fetchBookingByVanId,
     fetchBookingStatusCounts,
     publicBookingByVanId,
-    fetchBookingStatusCountsByVanId
+    fetchBookingStatusCountsByVanId,
+    sendDeclinedEmail
 }

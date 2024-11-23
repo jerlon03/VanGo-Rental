@@ -1,7 +1,7 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
-import {Users} from '@/lib/types/user.type'
-
+"use client";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
+import axios from "axios";
+import { Users } from "@/lib/types/user.type";
 
 interface AuthContextType {
   user: Users | null;
@@ -23,16 +23,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   // Function to fetch user profile from the Next.js API route
- // components/AuthContext.js
- const fetchUserProfile = async () => {
+  // components/AuthContext.js
+  const fetchUserProfile = async () => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the token is correctly retrieved
+      const token = localStorage.getItem("token"); // Ensure the token is correctly retrieved
       const response = await axios.get(`http://localhost:8080/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` } // Add 'Bearer' if necessary
+        headers: { Authorization: `Bearer ${token}` }, // Add 'Bearer' if necessary
       });
       setUser(response.data.user);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error("Error fetching user profile:", error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Add this new function to update user data
   const updateUserData = (newData: Partial<Users>) => {
-    setUser(prevUser => prevUser ? { ...prevUser, ...newData } : null);
+    setUser((prevUser) => (prevUser ? { ...prevUser, ...newData } : null));
   };
 
   // Fetch user profile when the component is mounted
@@ -51,7 +51,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Provide the user and loading state to the component's children
   return (
-    <AuthContext.Provider value={{ user, loading, fetchUserProfile, updateUserData }}>
+    <AuthContext.Provider
+      value={{ user, loading, fetchUserProfile, updateUserData }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -61,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 export const useAuth = () => {
   const context = React.useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
