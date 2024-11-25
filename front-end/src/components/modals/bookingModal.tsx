@@ -76,16 +76,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (booking && booking.status === "pending") {
-      const pickupDate = new Date(booking.pickup_date_time);
-      const currentDate = new Date();
-
-      if (pickupDate < currentDate) {
-        handleStatusUpdate("declined");
-      }
-    }
-  }, [booking, handleStatusUpdate]);
+  useEffect(() => {}, [booking, handleStatusUpdate]);
 
   const handleDeclineConfirm = async (reason: string) => {
     if (!booking) return;

@@ -198,6 +198,8 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   const handlePickupDateChange = (date: any) => {
     const selectedDate = date.value as Date;
+    // Ensure the selected date is set correctly
+    console.log("Selected Pickup Date:", selectedDate); // Debugging line
     // Check if the selected date is already booked
     if (isDateRangeBooked(selectedDate, selectedDate)) {
       SweetAlert.showError("This date is already booked."); // Show error message
@@ -211,6 +213,8 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   const handleBookingEndDateChange = (date: any) => {
     const selectedDate = date.value as Date;
+    // Ensure the selected date is set correctly
+    console.log("Selected Booking End Date:", selectedDate); // Debugging line
     // Check if the selected date is already booked
     if (isDateRangeBooked(selectedDate, selectedDate)) {
       SweetAlert.showError("This date is already booked."); // Show error message
@@ -237,6 +241,12 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
         SweetAlert.showError("The selected date range is already booked.");
         return; // Exit the function if validation fails
       }
+    }
+
+    // Check if dateOfBirth is set before submission
+    if (!formData.dateOfBirth) {
+      SweetAlert.showError("Date of birth is required.");
+      return; // Exit the function if validation fails
     }
 
     // Confirmation dialog using SweetAlert
@@ -287,7 +297,10 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
     // Additional fields
     formDataToSubmit.append("booking_id", "0");
-    formDataToSubmit.append("date_of_birth", new Date().toISOString());
+    formDataToSubmit.append(
+      "date_of_birth",
+      formData.dateOfBirth.toISOString()
+    );
     formDataToSubmit.append("van_id", van.van_id as any);
     formDataToSubmit.append("created_at", new Date().toISOString());
     formDataToSubmit.append("status", "");
@@ -309,7 +322,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
       }
 
       SweetAlert.showSuccess(
-        "Your rental request has been submitted successfully! Wait 24 hours for confirmation to our Business Owner to your Email Account."
+        "Thank you for submitting your rental request! Please allow up to 24 hours for confirmation to be sent to your email."
       );
     } catch (error: any) {
       console.error("Error submitting booking:", error); // Log the entire error object
@@ -377,7 +390,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                 <span>{van.things_capacity} Bags</span>
               </div>
             </div>
-            <div className="flex items-center mt-4">
+            {/* <div className="flex items-center mt-4">
               <div className="flex items-center text-yellow-500">
                 {Array.from({ length: 5 }, (_, index) => (
                   <i
@@ -387,7 +400,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                 ))}
               </div>
               <span className="ml-2 text-gray-600">{van.reviews} reviews</span>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="flex justify-start items-end md:mt-40 md:ml-6 sm:mt-4">

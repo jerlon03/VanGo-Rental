@@ -133,7 +133,6 @@ const AssignedTrips = () => {
                 ? { ...item, status: "completed" }
                 : item
             );
-
             setData(updatedData as any);
             setView("completed"); // Automatically switch to completed view
             SweetAlert.showSuccess(

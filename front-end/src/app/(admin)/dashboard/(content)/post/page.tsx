@@ -408,71 +408,104 @@ const AdminPost = () => {
                 </form>
               </div>
             </div>
-          ) : (
-            isAddPostModalOpen && ( // Check if it's an add post modal
-              <div className="w-full flex justify-between items-center flex-col">
-                <div className="w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]">
-                  <h2 className="text-[20px] text-white font-medium">
-                    CREATE BLOG POST
-                  </h2>
-                </div>
-                <div className="w-full px-4 p-4">
-                  <form onSubmit={handleSubmit}>
-                    <div className="flex flex-col gap-4">
-                      <div>
-                        <label htmlFor="">
-                          Title{" "}
-                          <span className="text-red-700 font-bold">*</span>
-                        </label>
-                        <InputField
-                          placeholder="Write Here..."
-                          value={title}
-                          onChange={handleTitleChange}
-                        />
-                      </div>
-                      <div className="w-full">
-                        <h2>
-                          Description{" "}
-                          <span className="text-red-700 font-bold">*</span>
-                        </h2>
-                        <TextArea
-                          value={description}
-                          onChange={handleTextChange}
-                          placeholder="Enter your description here"
-                          rows={4}
-                          cols={60}
-                          maxLength={300}
-                        />
-                        <p className="flex w-full justify-end text-[12px] font-medium text-[#cccccc]">
-                          {description.length}/300
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-full flex gap-8 justify-center items-center">
-                      <div className="flex flex-col w-[60%]">
-                        <h2>
-                          Post Image{" "}
-                          <span className="text-red-700 font-bold">*</span>
-                        </h2>
-                        <ImagesUploader onUpload={handleImageUpload} />
-                      </div>
-                      <div className="flex w-[40%] flex-col h-full gap-2">
-                        <Button
-                          name="CANCEL"
-                          onClick={closeModal}
-                          backgroundColor="error"
-                        ></Button>
-                        <Button
-                          name="SUBMIT"
-                          backgroundColor="success"
-                          type="submit"
-                        ></Button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+          ) : isAddPostModalOpen ? ( // Check if it's an add post modal
+            <div className="w-full flex justify-between items-center flex-col">
+              <div className="w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]">
+                <h2 className="text-[20px] text-white font-medium">
+                  CREATE BLOG POST
+                </h2>
               </div>
-            )
+              <div className="w-full px-4 p-4">
+                <form onSubmit={handleSubmit}>
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <label htmlFor="">
+                        Title <span className="text-red-700 font-bold">*</span>
+                      </label>
+                      <InputField
+                        placeholder="Write Here..."
+                        value={title}
+                        onChange={handleTitleChange}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <h2>
+                        Description{" "}
+                        <span className="text-red-700 font-bold">*</span>
+                      </h2>
+                      <TextArea
+                        value={description}
+                        onChange={handleTextChange}
+                        placeholder="Enter your description here"
+                        rows={4}
+                        cols={60}
+                        maxLength={300}
+                      />
+                      <p className="flex w-full justify-end text-[12px] font-medium text-[#cccccc]">
+                        {description.length}/300
+                      </p>
+                    </div>
+                  </div>
+                  <div className="w-full flex gap-8 justify-center items-center">
+                    <div className="flex flex-col w-[60%]">
+                      <h2>
+                        Post Image{" "}
+                        <span className="text-red-700 font-bold">*</span>
+                      </h2>
+                      <ImagesUploader onUpload={handleImageUpload} />
+                    </div>
+                    <div className="flex w-[40%] flex-col h-full gap-2">
+                      <Button
+                        name="CANCEL"
+                        onClick={closeModal}
+                        backgroundColor="error"
+                      ></Button>
+                      <Button
+                        name="SUBMIT"
+                        backgroundColor="success"
+                        type="submit"
+                      ></Button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-[5px] shadow-lg">
+              <div className="flex justify-between items-center bg-primaryColor rounded-t-[5px] p-4">
+                <h2 className="text-[20px] font-semibold text-white">
+                  VIEW POST
+                </h2>
+                <IoClose
+                  onClick={closeModal}
+                  className="text-white cursor-pointer"
+                  size={24}
+                  title="Close"
+                />
+              </div>
+              <div className="p-4">
+                <div className="w-full flex  justify-center  items-center">
+                  <Image
+                    src={selectedPost?.post_image || "/default-image.png"}
+                    alt={`${selectedPost?.title} image`}
+                    className="object-contain rounded-[5px] border aspect-[200/200]"
+                    width={200}
+                    height={200}
+                    onError={(e) => {
+                      e.currentTarget.src = "/default-image.png";
+                    }}
+                  />
+                </div>
+                <h3 className="font-bold">Title:</h3>
+                <p>{selectedPost?.title}</p>
+                <h3 className="font-bold">Description:</h3>
+                <p>{selectedPost?.description}</p>
+                <h3 className="font-bold">Status:</h3>
+                <p>{selectedPost?.status}</p>
+                <h3 className="font-bold">Date Created:</h3>
+                <p>{formatDatePublicRange(selectedPost?.createdAt as any)}</p>
+              </div>
+            </div>
           )}
         </div>
       </Modal>
