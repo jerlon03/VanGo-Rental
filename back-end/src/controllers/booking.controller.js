@@ -23,7 +23,7 @@ const sendConfirmationEmail = async (booking) => {
                         <ul style="list-style-type: none; padding: 0; font-size: 14px; margin: 10px 0;">
                             <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${booking.booking_id}</li>
                             <li style="margin: 8px 0;"><strong>Start Date:</strong> ${booking.pickup_date_time}</li>
-                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.end_date}</li>
+                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.booking_end_date}</li>
                         </ul>
 
                         <p style="font-size: 16px; margin: 10px 0;">Thank you for choosing our service! We look forward to serving you.</p>
@@ -43,7 +43,7 @@ const sendConfirmationEmail = async (booking) => {
     }
 };
 
-const sendDeclinedEmail = async (booking) => {
+const sendDeclinedEmail = async (booking, reason) => {
     try {
         await transporter.sendMail({
             from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
@@ -53,18 +53,13 @@ const sendDeclinedEmail = async (booking) => {
                <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             
                     <div style="background-color: #dc3545; color: #fff; padding: 15px; border-radius: 10px 10px 0 0; text-align: center;">
-                        <h1 style="margin: 0; font-size: 24px;">Booking Update</h1>
+                        <h1 style="margin: 0; font-size: 24px;">Booking Declined</h1>
                     </div>
 
                     <div style="padding: 20px;">
                         <p style="font-size: 16px; margin: 10px 0;">Dear ${booking.first_name} ${booking.last_name},</p>
-                        <p style="font-size: 16px; margin: 10px 0;">We regret to inform you that your booking has been declined.</p>
-
-                        <ul style="list-style-type: none; padding: 0; font-size: 14px; margin: 10px 0;">
-                            <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${booking.booking_id}</li>
-                            <li style="margin: 8px 0;"><strong>Start Date:</strong> ${booking.pickup_date_time}</li>
-                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.end_date}</li>
-                        </ul>
+                        <p style="font-size: 16px; margin: 10px 0;">We regret to inform you that your booking has been declined for the following reason:</p>
+                        <p style="font-size: 16px; margin: 10px 0;"><strong>${reason}</strong></p>
 
                         <p style="font-size: 16px; margin: 10px 0;">If you have any questions, please don't hesitate to contact us.</p>
                     </div>
@@ -105,7 +100,7 @@ const sendCompletedEmail = async (booking) => {
                         <ul style="list-style-type: none; padding: 0; font-size: 14px; margin: 10px 0;">
                             <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${booking.booking_id}</li>
                             <li style="margin: 8px 0;"><strong>Start Date:</strong> ${booking.pickup_date_time}</li>
-                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.end_date}</li>
+                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.booking_end_date}</li>
                         </ul>
 
                         <div style="text-align: center; margin: 30px 0;">
@@ -134,6 +129,7 @@ const sendCompletedEmail = async (booking) => {
         throw error;
     }
 };
+
 
 exports.createBooking = async (req, res) => {
 
@@ -193,7 +189,7 @@ exports.getAllBookings = (req, res) => {
 exports.getBookingById = (req, res) => {
     const bookingId = req.params.id;
 
-    Booking.getBookingById(bookingId, (err, booking) => {
+    Booking.getBookById(bookingId, (err, booking) => {
         if (err) {
             if (err.message === 'Booking not found') {
                 return res.status(404).json({ error: err.message });
@@ -204,43 +200,31 @@ exports.getBookingById = (req, res) => {
     });
 }
 
-exports.updateBookingStatus = (req, res) => {
+exports.updateBookingStatus = async (req, res) => {
     const bookingId = req.params.id;
-    const { status } = req.body;
+    const { status, reason } = req.body;
 
     if (!status) {
         return res.status(400).json({ error: 'Status is required' });
     }
 
-    Booking.updateBookingStatus(bookingId, status, async (err, result) => {
-        if (err) {
-            if (err.message === 'Booking not found') {
-                return res.status(404).json({ error: err.message });
-            }
-            return res.status(500).json({ error: err.message });
-        }
 
-        try {
-            Booking.getBookingById(bookingId, async (err, booking) => {
-                if (err) {
-                    console.error('Error fetching booking details:', err);
-                } else {
-                    const statusLower = status.toLowerCase();
-                    if (statusLower === 'confirmed') {
-                        await sendConfirmationEmail(booking);
-                    } else if (statusLower === 'declined') {
-                        await sendDeclinedEmail(booking);
-                    } else if (statusLower === 'completed') {
-                        await sendCompletedEmail(booking);
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Error sending confirmation, declined, or completed email:', error);
+    try {
+        const result = await Booking.updateBookingStatus(bookingId, status);
+        const booking = await Booking.getBookingById(bookingId);
+
+        const statusLower = status.toLowerCase();
+        if (statusLower === 'confirmed') {
+            await sendConfirmationEmail(booking);
+        } else if (statusLower === 'completed') {
+            await sendCompletedEmail(booking);
         }
 
         res.status(200).json(result);
-    });
+    } catch (error) {
+        console.error('Error updating booking status:', error);
+        res.status(500).json({ error: 'Failed to update booking status.' });
+    }
 };
 
 exports.getBookingsByVanId = (req, res) => {
@@ -281,5 +265,21 @@ exports.getBookingStatusCountsByVan = (req, res) => {
         }
         res.status(200).json(statusCounts); // Return the counts of each status for the specified van
     });
+};
+
+exports.sendDecliningEmail = async (req, res) => {
+    const { bookingId, reason } = req.body;
+
+    try {
+        const booking = await Booking.getBookingById(bookingId);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        await sendDeclinedEmail(booking, reason);
+        res.status(200).json({ message: 'Declined email sent successfully.' });
+    } catch (error) {
+        console.error('Error sending declined email:', error);
+        res.status(500).json({ error: 'Failed to send declined email.' });
+    }
 };
 

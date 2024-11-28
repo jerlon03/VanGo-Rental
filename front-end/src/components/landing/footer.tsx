@@ -1,40 +1,106 @@
-import React from 'react'
-import Image from 'next/image'
+import React from "react";
+import Container from "@/components/landing/Container";
+import Image from "next/image";
+import { GiCheckMark } from "../icons";
 
+const Footer: React.FC = () => {
+  const contactInfo = [
+    {
+      src: "/icon/f7_phone-circle.svg",
+      alt: "Phone Number",
+      text: "Feel Free To Contact Us Now",
+      details: "+ 63 9217244169 - SMART , +63 9166672391 - Globe",
+    },
+    {
+      src: "/icon/email.svg",
+      alt: "Email",
+      text: "Email us at",
+      details: "vango.rental@gmail.com",
+    },
+  ];
 
-const Footer = () => {
   return (
-    <div className='bg-primaryColor  w-full px-[3%] p-[1%] flex flex-col gap-[10px] '>
-      <div className='flex justify-between max-sm:justify-evenly'>
-        <div className=' flex items-center gap-[1rem ] max-sm:pt-[1%]'>
-          <Image src="/logo.svg" width={200} height={150} alt="footer image" className='sm:hidden md:block lg:block xl:block 2xl:block'></Image>
-          <div className='text-white font-Poppins text-[14px] cursor-pointer'>
-            <h2 className='font-semibold text-[18px] max-sm:text-[16px]'>Quick Links</h2>
-            <p>Home</p>
-            <p>About Us</p>
-            <p>Van</p>
-            <p>Blog</p>
-            <p>Contact Us</p>
+    <div className="w-full bg-[#595959] text-white">
+      <Container>
+        <div className="flex flex-col gap-[10px] lg:flex-col md:flex-col md:gap-[20px]">
+          <div className="flex gap-[20px]">
+            {contactInfo.map((contact, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <Image
+                  src={contact.src}
+                  width={47}
+                  height={47}
+                  alt={contact.alt}
+                />
+                <p>{contact.text}</p>
+                <p>{contact.details}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col md:flex-row gap-[20px] py-[20px]">
+            <div>
+              <div className="pb-4">
+                <h3 className="text-yellow border-b-2 w-20 border-yellow font-semibold text-[16px]">
+                  About Us
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-[20px] gap-x-[40px]">
+                {[
+                  "Negotiate Rates",
+                  "Passenger Insurance",
+                  "First Aid kit",
+                  "Professional and Reliable Driver Rates",
+                  " Comfy , Safe, Free Hassle Travel",
+                  "Fire Extinguisher",
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-4 items-center text-[14px]"
+                  >
+                    <GiCheckMark />
+                    <p>{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="pb-4">
+                <h3 className="text-yellow border-b-2 w-28 border-yellow font-semibold text-[16px]">
+                  Our Services
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] gap-x-[40px]">
+                {[
+                  "Company Service",
+                  "Family Trips",
+                  "Outing",
+                  "Wedding Service",
+                  "Balik Probinsyav",
+                  "Private Tours",
+                  "Airport Transfer",
+                  "Hotel Transfer",
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-4 items-center text-[14px]"
+                  >
+                    <GiCheckMark />
+                    <p>{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-        <div className=' flex flex-col items-center justify-center gap-[7px] pe-[1%]'>
-          <h2 className='text-[20px] font-semibold text-white font-Poppins max-sm:text-[16px]'>Follow us</h2>
-          <div className='text-[35px] flex gap-[1rem]'>
-            <Image src="/icon-facebook.svg" width={40} height={35} alt='FACEBOOK' className='max-sm:w-[30px]'></Image>
-            <Image src="/icon-instagram.svg" width={40} height={35} alt='FACEBOOK' className='max-sm:w-[30px]'></Image>
-            <Image src="/icon-twitter.svg" width={40} height={35} alt='FACEBOOK' className='max-sm:w-[30px]'></Image>
-          </div>
-        </div>
-      </div>
-      <div className='border-t w-full  p-[1%]'>
-        <div className='flex justify-between items-center text-white font-Poppins text-[14px]  max-sm:flex-col max-sm:text-[12px]'>
-          <p>VanGO Rental: Effortless Van Hire at Your Fingertips</p>
-          <p>© 2024 | VanGo Rentals| All Rights Reserved.</p>
-        </div>
-      </div>
+      </Container>
+      <div className="border text-white"></div>
+      <Container>
+        <p className="text-center text-[14px] p-2">
+          © 2024 | VanGO Rentals | All Rights Reserved.
+        </p>
+      </Container>
     </div>
-   
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

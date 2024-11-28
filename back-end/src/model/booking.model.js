@@ -93,35 +93,43 @@ const getAllBookings = (callback) => {
     });
 };
 
-const getBookingById = (bookingId, callback) => {
-    const query = `SELECT * FROM bookings WHERE booking_id = ? LIMIT 1`;
-
-    dbConn.query(query, [bookingId], (err, results) => {
-        if (err) {
-            return callback(err, null);
-        }
-        // Check if a booking was found
-        if (results.length === 0) {
-            return callback(new Error('Booking not found'), null);
-        }
-        callback(null, results[0]);
+const getBookingById = (bookingId) => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM bookings WHERE booking_id = ?`;
+        dbConn.query(query, [bookingId], (err, result) => {
+            if (err) {
+                console.error('Error fetching booking:', err);
+                return reject(err);
+            }
+            if (result.length === 0) {
+                return reject(new Error('Booking not found'));
+            }
+            resolve(result[0]); // Assuming you want the first booking
+        });
     });
 };
 
-const updateBookingStatus = (bookingId, status, callback) => {
-    const query = `UPDATE bookings SET status = ? WHERE booking_id = ?`;
-
-    dbConn.query(query, [status, bookingId], (err, result) => {
-        if (err) {
-            console.error('Error updating booking status:', err);
-            return callback(err, null);
-        }
-        
-        if (result.affectedRows === 0) {
-            return callback(new Error('Booking not found'), null);
-        }
-        
-        callback(null, { message: 'Booking status updated successfully' });
+const updateBookingStatus = (bookingId, status) => {
+    return new Promise((resolve, reject) => {
+        getBookingById(bookingId) // Ensure this returns a promise
+            .then(booking => {
+                const query = `UPDATE bookings SET status = ? WHERE booking_id = ?`;
+                dbConn.query(query, [status, bookingId], (err, result) => {
+                    if (err) {
+                        console.error('Error updating booking status:', err);
+                        return reject(new Error('Failed to update booking status.'));
+                    }
+                    
+                    if (result.affectedRows === 0) {
+                        return reject(new Error('Booking not found'));
+                    }
+                    
+                    resolve({ message: 'Booking status updated successfully' });
+                });
+            })
+            .catch(err => {
+                reject(err); // Pass error to the reject
+            });
     });
 };
 
@@ -182,10 +190,23 @@ const getBookingStatusCountsByVan = (vanId, callback) => {
         callback(null, statusCounts); // Return an object with counts for each status
     });
 };
+const getBookById = (bookingId, callback) => {
+    const query = `SELECT * FROM bookings WHERE booking_id = ?`;
+    dbConn.query(query, [bookingId], (err, result) => {
+        if (err) {
+            console.error('Error fetching booking:', err);
+            return callback(err, null);
+        }
+        if (result.length === 0) {
+            return callback(new Error('Booking not found'), null);
+        }
+        callback(null, result[0]); // Return the first booking
+    });
+};
 
 
 module.exports = {
-    checkUserExists,
+    checkUserExists,getBookById,
     createBooking,
     getAllBookings,
     getBookingById,

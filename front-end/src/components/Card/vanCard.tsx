@@ -578,7 +578,7 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
                   </div>
                 </div>
                 <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
-                  Drop-Off Location
+                  Pick Up Location
                 </h1>
                 <div className="w-full grid md:grid-cols-3 md:gap-[30px] text-[15px] sm:grid-cols-1 sm:gap-[15px]">
                   <div className="flex flex-col gap-2">
