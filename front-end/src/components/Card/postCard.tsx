@@ -1,28 +1,33 @@
-import React from 'react';
-import Image from 'next/image'; // Adjust this import based on your setup
-import { BlogPost } from '@/lib/types/posts.type';
+import React from "react";
+import Image from "next/image";
+import { BlogPost as BlogPostType } from "@/lib/types/posts.type"; // Ensure correct import
+import { formatDatePublicRange } from "../date/formatDate";
 
-interface PostsCardProps {
-    posts: BlogPost; // Expecting a prop named 'posts' of type 'BlogPost'
-}
+type BlogPostProps = {
+  post: BlogPostType; // Use the BlogPost type
+  showDescription?: boolean; // Optional prop to show description
+};
 
-const ArticleCard: React.FC<PostsCardProps> = ({ posts }) => {
+const BlogPost: React.FC<BlogPostProps> = ({ post, showDescription }) => {
   return (
-    <div className="flex flex-col gap-[1rem]">
-      {/* <Image
-        src={posts.post_image} // Display the post image
+    <div key={post.post_id} className=" p-[8%] rounded-[10px]">
+      <Image
+        src={post.post_image || "/path/to/default/image.png"}
         width={300}
-        height={300}
-        alt="Article Image"
-        className="w-full"
-      /> */}
-      <h1>{posts.title}</h1>
-      <p className="text-[12px] text-primaryColor font-semibold">
-        {new Date(posts.createdAt).toLocaleDateString()} {/* Format the date */}
+        height={200}
+        alt="BLOG IMAGE"
+        className="w-full h-auto aspect-[300/200] object-fill rounded-[10px]"
+      />
+      <p className="pt-2 text-[14px]">
+        {formatDatePublicRange(post.createdAt as any)}
       </p>
-      <p>{posts.description}</p>
+      <p className="pt-2 text-[15px] font-semibold">{post.title}</p>
+      {showDescription &&
+        post.description && ( // Conditionally render description
+          <p className="pt-2 text-[14px]">{post.description}</p>
+        )}
     </div>
   );
 };
 
-export default ArticleCard;
+export default BlogPost;

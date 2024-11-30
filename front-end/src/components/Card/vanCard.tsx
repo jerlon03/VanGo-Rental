@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Modal from "@/components/modals/modalContainer"; // Adjust the import path if necessary
 import { Van } from "@/lib/types/van.type";
-import Button from "@/components/Button/button";
+import WebButton from "@/components/Button/WebsiteButton";
+import Button from "../Button/button";
 import SweetAlert from "@/components/alert/alert";
 import { termsAndCons } from "@/components/sampledata/sampleData";
 import InputField from "@/components/Form/inputfield";
@@ -14,12 +15,18 @@ import { getPublicAllPayments } from "@/lib/api/payment.api";
 import { Payment } from "@/lib/types/payment.type";
 import { Calendar } from "primereact/calendar";
 import { publicBookingByVanId } from "@/lib/api/booking.api";
+import {
+  TbManualGearboxFilled,
+  IoPerson,
+  BiSolidShoppingBags,
+} from "@/components/icons/index";
 
 interface VanCardProps {
   van: Van; // Expecting a prop named 'van' of type 'Van'
+  showDescription?: boolean; // New optional prop to control description visibility
 }
 
-const VanCard: React.FC<VanCardProps> = ({ van }) => {
+const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
   const [currentModal, setCurrentModal] = useState<null | "terms" | "booking">(
     null
   );
@@ -360,394 +367,379 @@ const VanCard: React.FC<VanCardProps> = ({ van }) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-lg md:p-6 sm:p-2 md:mb-8 sm:mb-0 flex flex-col md:flex-row items-start md:items-center">
-        <Image
-          src={van.van_image || "/default-image.png"}
-          alt={van.van_name}
-          width={300}
-          height={200}
-          className="w-70 h-auto rounded-lg"
-        />
-        <div className="ml-0 md:ml-6 md:mt-100 md:mt-0 flex-1 sm:mt-0">
-          <div className="flex justify-between items-center">
-            <h4 className="text-xl font-semibold uppercase">{van.van_name}</h4>
-            <span className="text-xl font-bold text-gray-700">{van.price}</span>
-          </div>
-          <p className="text-gray-600 mt-2">{van.van_description}</p>
-          <div className="mt-7">
-            <h5 className="font-medium">Details</h5>
-            <div className="flex flex-wrap items-center mt-2 text-gray-600">
-              <div className="flex items-center mr-4 mb-2">
-                <i className="fas fa-user-friends mr-1"></i>
-                <span>{van.people_capacity} People</span>
-              </div>
-              <div className="flex items-center mr-4 mb-2">
-                <i className="fas fa-cogs mr-1"></i>
-                <span>{van.transmission_type}</span>
-              </div>
-              <div className="flex items-center mb-2">
-                <i className="fas fa-suitcase-rolling mr-1"></i>
-                <span>{van.things_capacity} Bags</span>
-              </div>
-            </div>
-            {/* <div className="flex items-center mt-4">
-              <div className="flex items-center text-yellow-500">
-                {Array.from({ length: 5 }, (_, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star${index < Math.floor(van.reviews) ? "" : "-half-alt"}`}
-                  ></i>
-                ))}
-              </div>
-              <span className="ml-2 text-gray-600">{van.reviews} reviews</span>
-            </div> */}
-          </div>
-        </div>
-        <div className="flex justify-start items-end md:mt-40 md:ml-6 sm:mt-4">
-          {vanStatus === "available" && (
-            <Button
-              name="Rent Now"
-              onClick={() => setCurrentModal("terms")}
-              width="120px"
-            />
-          )}
-          {vanStatus === "booked" && (
-            <Button name="Booked" width="120px" disabled />
-          )}
-          {vanStatus === "under maintenance" && (
-            <Button name="Under Maintenance" width="120px" disabled />
-          )}
+      <div className="w-full border border-[#cccccc] rounded-[10px] flex flex-col justify-between">
+        <div className="px-[10%]">
+          <Image
+            src={van.van_image || "/default-image.png"}
+            width={150}
+            height={80}
+            alt="Banner"
+            className="object-contain aspect-[150/80] w-full"
+          />
         </div>
 
-        {/* Modal Logic */}
-        <Modal
-          onClose={() => setCurrentModal(null)}
-          isOpen={currentModal === "terms"}
-          width="800px"
-          height="530px"
-        >
-          <div className="w-full flex flex-col gap-[10px] bg-white rounded-[5px]">
-            <div className="w-full bg-primaryColor h-[80px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]">
-              <h1 className="text-[20px] font-medium">TERMS AND CONDITION</h1>
-              <p className="text-[15px] font-light">
-                Please read these terms and condition carefully before using Our
-                Service.
+        <div className="p-[4%]">
+          <h1 className="font-semibold lg:text-[18px] md:text-[16px]">
+            {van.van_name}
+          </h1>
+          <div className="flex gap-[10px] items-center ">
+            <TbManualGearboxFilled className="lg:text-[24px] md:text-[18px] text-yellow" />
+            <p className="lg:text-[18px] md:text-[14px] font-medium">
+              {van.transmission_type}
+            </p>
+          </div>
+          <div className="flex pt-2 gap-[20px]">
+            <div className="flex gap-[10px] items-center justify-center">
+              <IoPerson className="lg:text-[24px] md:text-[18px] text-yellow" />
+              <p className="lg:text-[18px] md:text-[14px] font-medium">
+                {van.people_capacity} People
               </p>
             </div>
-            <div className="w-full overflow-y-auto max-h-[430px] pl-4 scrollbar-custom">
-              {termsAndCons.map((terms, index) => (
-                <div key={index} className="pe-[20px]">
-                  <h1 className="font-semibold pt-4 text-[18px]">
-                    {terms.TermsHeading}
-                  </h1>
-                  <h1 className="font-semibold pt-4">{terms.Termstitle}</h1>
-                  <ul className="text-[14px]">
-                    <li>{terms.AddedContent}</li>
-                    <li>• {terms.TermsContent}</li>
-                    <li>{terms.AddedContent1}</li>
-                    <li>{terms.AddedContent2}</li>
-                  </ul>
+            <div className="flex gap-[10px] items-center justify-center">
+              <BiSolidShoppingBags className="lg:text-[24px] md:text-[18px] text-yellow" />
+              <p className="lg:text-[18px] md:text-[14px] font-medium">
+                {van.things_capacity} Bags
+              </p>
+            </div>
+          </div>
+          {showDescription && (
+            <p className="mt-2 text-gray-700">{van.van_description}</p> // Assuming 'description' is a property of 'van'
+          )}
+          <div className="pt-[4%]">
+            <WebButton
+              label="Book Now"
+              variant="primary" // Set as primary button
+              width="200px"
+              height="40px"
+              textSize="18px"
+              onClick={() => setCurrentModal("terms")}
+            />
+          </div>
+        </div>
+      </div>
+      {/* Modal Logic */}
+      <Modal
+        onClose={() => setCurrentModal(null)}
+        isOpen={currentModal === "terms"}
+        width="800px"
+        height="530px"
+      >
+        <div className="w-full flex flex-col gap-[10px] bg-white rounded-[5px]">
+          <div className="w-full bg-primaryColor h-[80px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]">
+            <h1 className="text-[20px] font-medium">TERMS AND CONDITION</h1>
+            <p className="text-[15px] font-light">
+              Please read these terms and condition carefully before using Our
+              Service.
+            </p>
+          </div>
+          <div className="w-full overflow-y-auto max-h-[430px] pl-4 scrollbar-custom">
+            {termsAndCons.map((terms, index) => (
+              <div key={index} className="pe-[20px]">
+                <h1 className="font-semibold pt-4 text-[18px]">
+                  {terms.TermsHeading}
+                </h1>
+                <h1 className="font-semibold pt-4">{terms.Termstitle}</h1>
+                <ul className="text-[14px]">
+                  <li>{terms.AddedContent}</li>
+                  <li>• {terms.TermsContent}</li>
+                  <li>{terms.AddedContent1}</li>
+                  <li>{terms.AddedContent2}</li>
+                </ul>
+              </div>
+            ))}
+            <div className="flex p-4 gap-4">
+              <input
+                type="radio"
+                checked={isAgreed}
+                onChange={() => setIsAgreed(true)}
+              />
+              <p className="text-[14px]">
+                {" "}
+                I agree that I have read and accept the terms and conditions and
+                privacy policy.
+              </p>
+            </div>
+            <div className="flex gap-[1rem] p-5 w-full justify-end">
+              <Button
+                name="CANCEL"
+                onClick={() => setCurrentModal(null)}
+                width="120px"
+                className="bg-red-500 hover:bg-red-700 text-white"
+              />
+              <Button
+                name="NEXT"
+                onClick={() => setCurrentModal("booking")}
+                width="120px"
+                disabled={!isAgreed}
+                className="bg-primaryColor hover:bg-blue-700 text-white"
+              />
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        onClose={() => setCurrentModal(null)}
+        isOpen={currentModal === "booking"}
+        width="850px"
+        height="530px"
+      >
+        <div className="w-full h-full flex flex-col justify-between bg-white rounded-[5px]">
+          <div className="w-full bg-primaryColor h-[110px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]">
+            <h1 className="text-[20px] font-medium">BOOKING DETAILS</h1>
+            <p className="text-[15px] font-light">
+              Please fill out the form to apply for VANGO Rental services.
+            </p>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="w-full pt-4 p-2 px-[5%] h-full flex flex-col gap-4 overflow-y-auto max-h-[430px] scrollbar-custom">
+              <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
+                Personal Details
+              </h1>
+              <div className="w-full grid md:grid-cols-3 md:gap-[30px] text-[15px] sm:grid-cols-1 sm:gap-[15px]">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="firstname">
+                    Firstname <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <InputField
+                    name="firstname"
+                    placeholder="Enter your firstname"
+                    value={formData.firstname}
+                    onChange={handleChange}
+                    className={formData.firstname ? "" : "border-red-500"}
+                  />
                 </div>
-              ))}
-              <div className="flex p-4 gap-4">
-                <input
-                  type="radio"
-                  checked={isAgreed}
-                  onChange={() => setIsAgreed(true)}
-                />
-                <p className="text-[14px]">
-                  {" "}
-                  I agree that I have read and accept the terms and conditions
-                  and privacy policy.
-                </p>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="lastname">
+                    Lastname <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <InputField
+                    name="lastname"
+                    placeholder="Enter your lastname"
+                    value={formData.lastname}
+                    onChange={handleChange}
+                    className={formData.lastname ? "" : "border-red-500"}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="email">
+                    Email <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <InputField
+                    name="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={emailError ? "border-red-500" : ""}
+                  />
+                  {emailError && (
+                    <span className="text-red-500 text-[10px]">
+                      {emailError}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="phoneNumber">
+                    Phone Number{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <InputField
+                    name="phoneNumber"
+                    placeholder="Enter your phone number"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    className={phoneError ? "border-red-500" : ""}
+                  />
+                  {phoneError && (
+                    <span className="text-red-500 text-[10px]">
+                      {phoneError}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="dateOfBirth">
+                    Date of Birth{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <Calendar
+                    value={formData.dateOfBirth}
+                    onChange={handleDateOfBirthChange}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${dobError ? "border-red-500" : ""}`}
+                    placeholder="Select Date"
+                  />
+                  {dobError && (
+                    <span className="text-red-500 text-[10px]">{dobError}</span>
+                  )}
+                </div>
+              </div>
+              <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
+                Pick Up Location
+              </h1>
+              <div className="w-full grid md:grid-cols-3 md:gap-[30px] text-[15px] sm:grid-cols-1 sm:gap-[15px]">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="province">
+                    Province <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <Select
+                    options={[{ value: "CEBU", label: "CEBU" }]}
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, province: value }))
+                    }
+                    value={formData.province}
+                    className={formData.province ? "" : "border-red-500"}
+                    disabled
+                  />
+                  <label htmlFor="pickupLocation">
+                    Pick-up Location/ LandMark{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <InputField
+                    name="pickupLocation"
+                    placeholder="Enter Pick-up Location"
+                    value={formData.pickupLocation}
+                    onChange={handleChange}
+                    className={formData.pickupLocation ? "" : "border-red-500"}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="municipality">
+                    City/Municipality{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <Select
+                    options={municipalities.map((muni) => ({
+                      value: muni,
+                      label: muni,
+                    }))} // Populate municipalities
+                    onChange={(value: string) => {
+                      const selectedMunicipality = value; // Use value directly
+                      console.log(
+                        "Selected Municipality:",
+                        selectedMunicipality
+                      ); // Debugging: Log selected municipality
+                      setMunicipality(selectedMunicipality); // Update municipality state
+                      setBarangay(""); // Reset barangay when municipality changes
+                      setFormData((prev) => ({
+                        ...prev,
+                        municipality: selectedMunicipality, // Update municipality in formData
+                      })); // Ensure municipality is set in formData
+                    }}
+                    value={municipality}
+                    className={municipality ? "" : "border-red-500"} // Change border color if empty
+                    disabled={false} // Set to true if you want to disable the select
+                  />
+                  <label htmlFor="pickupDateTime">
+                    Pick-up Date{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <Calendar
+                    value={formData.pickupDateTime}
+                    onChange={handlePickupDateChange}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px] px-2 md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.pickupDateTime ? "" : "border-red-500"}`}
+                    placeholder="Select Date"
+                    minDate={new Date()}
+                    disabledDates={disabledDates} // Disable booked dates
+                  />
+                  <label htmlFor="pickupTime">
+                    Pick-up Time{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <InputField
+                    type="time"
+                    name="pickupTime"
+                    value={formData.pickupTime}
+                    onChange={handleChange}
+                    className={formData.pickupTime ? "" : "border-red-500"}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="barangay">
+                    Barangay <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <Select
+                    options={
+                      municipality
+                        ? cebuData.CEBU.municipality_list[
+                            municipality as keyof typeof cebuData.CEBU.municipality_list
+                          ].barangay_list.map((bgy) => ({
+                            value: bgy,
+                            label: bgy,
+                          }))
+                        : []
+                    }
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, barangay: value }))
+                    }
+                    value={formData.barangay}
+                    className={formData.barangay ? "" : "border-red-500"}
+                  />
+                  <label htmlFor="bookingEndDate">
+                    Booking End Date{" "}
+                    <span className="text-red-700 font-bold">*</span>
+                  </label>
+                  <Calendar
+                    value={formData.bookingEndDate}
+                    onChange={handleBookingEndDateChange}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.bookingEndDate ? "" : "border-red-500"}`}
+                    placeholder="Select Booking End Date"
+                    minDate={new Date()}
+                    disabledDates={disabledDates} // Disable booked dates
+                  />
+                </div>
+              </div>
+              <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
+                Reservation Payment
+              </h1>
+              <div className="w-full">
+                <p>Reservation Free Via</p>
+                <div className="w-full flex md:flex-row sm:flex-col p-2 gap-6 items-center ">
+                  {payments.length > 0 ? (
+                    payments.map((payment) => (
+                      <div
+                        key={payment.payment_id}
+                        className="md:w-[30%] sm:w-full h-[180px] border rounded-md p-1 flex items-center justify-center flex-col"
+                      >
+                        <h1 className="text-[16px] font-semibold tracking-[1px]">
+                          {payment.payment_name}
+                        </h1>
+                        <Image
+                          src={payment.payment_image || ""}
+                          width={110}
+                          height={20}
+                          alt={`${payment.payment_name || "Payment"} QR`}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div>No payment methods available</div>
+                  )}
+                  <div className="flex flex-col md:w-[40%] sm:w-full gap-2">
+                    <h2>
+                      Proof of Payment{" "}
+                      <span className="text-red-700 font-bold">*</span>
+                    </h2>
+                    <ImagesUploader onUpload={handleImageUpload} />
+                  </div>
+                </div>
               </div>
               <div className="flex gap-[1rem] p-5 w-full justify-end">
                 <Button
-                  name="CANCEL"
-                  onClick={() => setCurrentModal(null)}
+                  name="BACK"
+                  onClick={() => setCurrentModal("terms")}
                   width="120px"
-                  className="bg-red-500 hover:bg-red-700 text-white"
+                  className="bg-gray-500 hover:bg-gray-700 text-white"
                 />
                 <Button
-                  name="NEXT"
-                  onClick={() => setCurrentModal("booking")}
+                  type="submit"
+                  name={isLoading ? "Loading..." : "SUBMIT"}
                   width="120px"
-                  disabled={!isAgreed}
-                  className="bg-primaryColor hover:bg-blue-700 text-white"
+                  className="bg-green-500 hover:bg-green-700 text-white"
                 />
               </div>
             </div>
-          </div>
-        </Modal>
-
-        <Modal
-          onClose={() => setCurrentModal(null)}
-          isOpen={currentModal === "booking"}
-          width="850px"
-          height="530px"
-        >
-          <div className="w-full h-full flex flex-col justify-between bg-white rounded-[5px]">
-            <div className="w-full bg-primaryColor h-[110px] text-white flex flex-col justify-center px-[10px] rounded-t-[5px]">
-              <h1 className="text-[20px] font-medium">BOOKING DETAILS</h1>
-              <p className="text-[15px] font-light">
-                Please fill out the form to apply for VANGO Rental services.
-              </p>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="w-full pt-4 p-2 px-[5%] h-full flex flex-col gap-4 overflow-y-auto max-h-[430px] scrollbar-custom">
-                <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
-                  Personal Details
-                </h1>
-                <div className="w-full grid md:grid-cols-3 md:gap-[30px] text-[15px] sm:grid-cols-1 sm:gap-[15px]">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="firstname">
-                      Firstname{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <InputField
-                      name="firstname"
-                      placeholder="Enter your firstname"
-                      value={formData.firstname}
-                      onChange={handleChange}
-                      className={formData.firstname ? "" : "border-red-500"}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="lastname">
-                      Lastname <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <InputField
-                      name="lastname"
-                      placeholder="Enter your lastname"
-                      value={formData.lastname}
-                      onChange={handleChange}
-                      className={formData.lastname ? "" : "border-red-500"}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="email">
-                      Email <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <InputField
-                      name="email"
-                      placeholder="Enter your email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className={emailError ? "border-red-500" : ""}
-                    />
-                    {emailError && (
-                      <span className="text-red-500 text-[10px]">
-                        {emailError}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="phoneNumber">
-                      Phone Number{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <InputField
-                      name="phoneNumber"
-                      placeholder="Enter your phone number"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      className={phoneError ? "border-red-500" : ""}
-                    />
-                    {phoneError && (
-                      <span className="text-red-500 text-[10px]">
-                        {phoneError}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="dateOfBirth">
-                      Date of Birth{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <Calendar
-                      value={formData.dateOfBirth}
-                      onChange={handleDateOfBirthChange}
-                      className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${dobError ? "border-red-500" : ""}`}
-                      placeholder="Select Date"
-                    />
-                    {dobError && (
-                      <span className="text-red-500 text-[10px]">
-                        {dobError}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
-                  Pick Up Location
-                </h1>
-                <div className="w-full grid md:grid-cols-3 md:gap-[30px] text-[15px] sm:grid-cols-1 sm:gap-[15px]">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="province">
-                      Province <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <Select
-                      options={[{ value: "CEBU", label: "CEBU" }]}
-                      onChange={(value) =>
-                        setFormData((prev) => ({ ...prev, province: value }))
-                      }
-                      value={formData.province}
-                      className={formData.province ? "" : "border-red-500"}
-                      disabled
-                    />
-                    <label htmlFor="pickupLocation">
-                      Pick-up Location/ LandMark{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <InputField
-                      name="pickupLocation"
-                      placeholder="Enter Pick-up Location"
-                      value={formData.pickupLocation}
-                      onChange={handleChange}
-                      className={
-                        formData.pickupLocation ? "" : "border-red-500"
-                      }
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="municipality">
-                      City/Municipality{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <Select
-                      options={municipalities.map((muni) => ({
-                        value: muni,
-                        label: muni,
-                      }))} // Populate municipalities
-                      onChange={(value: string) => {
-                        const selectedMunicipality = value; // Use value directly
-                        console.log(
-                          "Selected Municipality:",
-                          selectedMunicipality
-                        ); // Debugging: Log selected municipality
-                        setMunicipality(selectedMunicipality); // Update municipality state
-                        setBarangay(""); // Reset barangay when municipality changes
-                        setFormData((prev) => ({
-                          ...prev,
-                          municipality: selectedMunicipality, // Update municipality in formData
-                        })); // Ensure municipality is set in formData
-                      }}
-                      value={municipality}
-                      className={municipality ? "" : "border-red-500"} // Change border color if empty
-                      disabled={false} // Set to true if you want to disable the select
-                    />
-                    <label htmlFor="pickupDateTime">
-                      Pick-up Date{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <Calendar
-                      value={formData.pickupDateTime}
-                      onChange={handlePickupDateChange}
-                      className={`w-full border font-Poppins text-[14px] rounded-[3px] px-2 md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.pickupDateTime ? "" : "border-red-500"}`}
-                      placeholder="Select Date"
-                      minDate={new Date()}
-                      disabledDates={disabledDates} // Disable booked dates
-                    />
-                    <label htmlFor="pickupTime">
-                      Pick-up Time{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <InputField
-                      type="time"
-                      name="pickupTime"
-                      value={formData.pickupTime}
-                      onChange={handleChange}
-                      className={formData.pickupTime ? "" : "border-red-500"}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="barangay">
-                      Barangay <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <Select
-                      options={
-                        municipality
-                          ? cebuData.CEBU.municipality_list[
-                              municipality as keyof typeof cebuData.CEBU.municipality_list
-                            ].barangay_list.map((bgy) => ({
-                              value: bgy,
-                              label: bgy,
-                            }))
-                          : []
-                      }
-                      onChange={(value) =>
-                        setFormData((prev) => ({ ...prev, barangay: value }))
-                      }
-                      value={formData.barangay}
-                      className={formData.barangay ? "" : "border-red-500"}
-                    />
-                    <label htmlFor="bookingEndDate">
-                      Booking End Date{" "}
-                      <span className="text-red-700 font-bold">*</span>
-                    </label>
-                    <Calendar
-                      value={formData.bookingEndDate}
-                      onChange={handleBookingEndDateChange}
-                      className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.bookingEndDate ? "" : "border-red-500"}`}
-                      placeholder="Select Booking End Date"
-                      minDate={new Date()}
-                      disabledDates={disabledDates} // Disable booked dates
-                    />
-                  </div>
-                </div>
-                <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
-                  Reservation Payment
-                </h1>
-                <div className="w-full">
-                  <p>Reservation Free Via</p>
-                  <div className="w-full flex md:flex-row sm:flex-col p-2 gap-6 items-center ">
-                    {payments.length > 0 ? (
-                      payments.map((payment) => (
-                        <div
-                          key={payment.payment_id}
-                          className="md:w-[30%] sm:w-full h-[180px] border rounded-md p-1 flex items-center justify-center flex-col"
-                        >
-                          <h1 className="text-[16px] font-semibold tracking-[1px]">
-                            {payment.payment_name}
-                          </h1>
-                          <Image
-                            src={payment.payment_image || ""}
-                            width={110}
-                            height={20}
-                            alt={`${payment.payment_name || "Payment"} QR`}
-                          />
-                        </div>
-                      ))
-                    ) : (
-                      <div>No payment methods available</div>
-                    )}
-                    <div className="flex flex-col md:w-[40%] sm:w-full gap-2">
-                      <h2>
-                        Proof of Payment{" "}
-                        <span className="text-red-700 font-bold">*</span>
-                      </h2>
-                      <ImagesUploader onUpload={handleImageUpload} />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-[1rem] p-5 w-full justify-end">
-                  <Button
-                    name="BACK"
-                    onClick={() => setCurrentModal("terms")}
-                    width="120px"
-                    className="bg-gray-500 hover:bg-gray-700 text-white"
-                  />
-                  <Button
-                    type="submit"
-                    name={isLoading ? "Loading..." : "SUBMIT"}
-                    width="120px"
-                    className="bg-green-500 hover:bg-green-700 text-white"
-                  />
-                </div>
-              </div>
-            </form>
-          </div>
-        </Modal>
-      </div>
+          </form>
+        </div>
+      </Modal>
     </>
   );
 };

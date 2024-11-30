@@ -52,9 +52,13 @@ import { FaInstagramSquare } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { FaPhoneAlt } from "react-icons/fa";
+import { BiSolidShoppingBags } from "react-icons/bi";
+import { TbManualGearboxFilled } from "react-icons/tb";
 
 export {
   FaCheckCircle,
+  TbManualGearboxFilled,
+  BiSolidShoppingBags,
   FaInstagramSquare,
   FaTwitter,
   FaFacebook,

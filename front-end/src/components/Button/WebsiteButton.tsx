@@ -15,15 +15,15 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   className,
   width = "200px",
-  height = "50px",
+  height,
   variant = "primary", // Default to primary
-  textSize = "text-[20px]", // Default text size
+  textSize = "lg:text-[20px] md:text-[16px]", // Default text size
 }) => {
-  const baseStyle = `rounded-[5px] ${className} h-[${height}] w-[${width}] ${textSize}`;
+  const baseStyle = `rounded-[5px] ${className} lg:h-[50px] md:h-[40px]  w-[${width}] ${textSize}`;
   const variantStyle =
     variant === "primary"
       ? "bg-websiteBlue text-white"
-      : "border border-yellow text-yellow";
+      : "text-websiteBlue bg-websiteSecondary lg:text-[20px] md:text-[16px]";
 
   return (
     <button onClick={onClick} className={`${baseStyle} ${variantStyle}`}>

@@ -20,7 +20,7 @@ const Header = () => {
 
   const getNavLinkClass = (path: string) => {
     return pathname === path
-      ? " text-yellow border-b-2 border-yellow font-semibold"
+      ? " text-websiteBlue border-b-2 border-websiteBlue font-semibold"
       : "font-Poppins text-websiteBlack font-semibold transition duration-300 hover:text-yellow";
   };
 
@@ -81,11 +81,6 @@ const Header = () => {
             <li>
               <Link href="/van" className={getNavLinkClass("/van")}>
                 VAN
-              </Link>
-            </li>
-            <li>
-              <Link href="/about-us" className={getNavLinkClass("/about-us")}>
-                SERVICES
               </Link>
             </li>
             <li>

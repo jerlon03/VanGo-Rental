@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import QueryProviders from "@/Provider/context/tanstackQuery";
 
 export const metadata: Metadata = {

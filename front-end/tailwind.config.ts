@@ -17,6 +17,7 @@ const config: Config = {
   		colors: {
 			websiteBlue: "#1667A9",
 			websiteBlack: "#595959",
+			websiteSecondary: "#B2CCE0",
 			yellow: "#F8B946",
   			primaryColor: '#003459',
   			blackColor: '#453D3B',

@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { FaAngleDown } from "react-icons/fa6";
 import { FcNext } from "react-icons/fc";
+import { Heading } from "./TextHighlight";
+import { GrNext } from "../icons";
 
 const Faqs = () => {
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
@@ -49,43 +51,39 @@ const Faqs = () => {
   ];
 
   return (
-    <div className="w-full xl:pt-[4%]">
-      <div className=" bg-opacity-45 flex justify-center items-center gap-[1rem] px-[3%]">
-        {/* <div className='basis-[40%] flex justify-center w-full max-md:hidden'>
-          <Image src="/faqs.svg" width={0} height={450} alt='FAQ Image' className='w-full' />
-        </div> */}
-        <div className="basis-[60%] flex w-full flex-col max-md:basis-[100%]">
-          <div className="flex items-center justify-center pt-[3%]">
-            <h1 className="text-[30px] font-bold font-Poppins sm:text-[20px]">
-              Frequently Asked Questions
-            </h1>
-          </div>
-          <div className="py-[2rem] flex flex-col gap-[2rem] font-Poppins">
-            {faqData.map((faq, index) => (
-              <div key={index}>
-                <div
-                  className="flex justify-between font-Poppins p-1 border-b-[2px] border-primaryColor font-semibold text-[18px] items-center cursor-pointer max-sm:text-[15px] max-sm:gap-[5px]"
-                  onClick={() => toggleQuestion(index)}
-                >
-                  <h3 className="md:text-[16px] sm:text-[14px]">
-                    {faq.question}
-                  </h3>
-                  <div className="w-[20px] h-[20px]">
-                    {openQuestion === index ? (
-                      <FaAngleDown className="text-[18px] max-sm:text-[12px] text-button" />
-                    ) : (
-                      <FcNext />
-                    )}
-                  </div>
+    <div className="w-full p-[2%] ">
+      <div className=" max-w-[900px] w-full mx-auto">
+        <div className="flex items-center justify-center pt-[3%]">
+          <Heading
+            text="Frequently Asked Questions"
+            className="lg:text-[32px] md:text-[24px]"
+          />
+        </div>
+        <div className="py-[2rem] flex flex-col gap-[2rem] font-Poppins">
+          {faqData.map((faq, index) => (
+            <div key={index}>
+              <div
+                className="flex justify-between w-full font-Poppins p-1  font-semibold text-[18px]  cursor-pointer max-sm:text-[15px] max-sm:gap-[5px]"
+                onClick={() => toggleQuestion(index)}
+              >
+                <h3 className="font-semibold text-[16px] text-[#595959]">
+                  {faq.question}
+                </h3>
+                <div className="w-[20px] h-[20px]">
+                  {openQuestion === index ? (
+                    <FaAngleDown className="text-[18px] max-sm:text-[12px] text-yellow" />
+                  ) : (
+                    <GrNext className="text-yellow" />
+                  )}
                 </div>
-                {openQuestion === index && (
-                  <div className="p-3 text-justify font-Poppins py-5 font-medium bg-primaryColor bg-opacity-50 text-white max-sm:text-[14px] xl:text-[15px]">
-                    <p>{faq.answer}</p>
-                  </div>
-                )}
               </div>
-            ))}
-          </div>
+              {openQuestion === index && (
+                <div className="border-t-2 border-yellow">
+                  <p className="text-[15px] pl-4 pt-2">{faq.answer}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
