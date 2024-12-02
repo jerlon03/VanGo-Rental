@@ -1,33 +1,35 @@
-const jwt = require('jsonwebtoken');
-const User = require('../model/users.model');
-const Driver = require('../model/driver.model')
-const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+const User = require("../model/users.model");
+const Driver = require("../model/driver.model");
+const bcrypt = require("bcryptjs");
 const saltRounds = 10;
-const transporter = require('../../config/mailer.config')
-const { generateResetToken, verifyResetToken } = require('../../middleware/auth')
-require('dotenv').config();
+const transporter = require("../../config/mailer.config");
+const {
+  generateResetToken,
+  verifyResetToken,
+} = require("../../middleware/auth");
+require("dotenv").config();
 
 exports.findAll = function (req, res) {
   User.findAll(function (err, users) {
     if (err) {
-      res.status(500).send({ error: true, message: 'Error retrieving users' });
+      res.status(500).send({ error: true, message: "Error retrieving users" });
     } else {
       res.status(200).send({ error: false, data: users });
     }
   });
 };
 
-
 exports.createDriver = async function (req, res) {
   const newUser = req.body;
 
   // Define required fields
-  const requiredFields = ['first_name', 'last_name', 'email', 'password'];
+  const requiredFields = ["first_name", "last_name", "email", "password"];
   for (const field of requiredFields) {
     if (!newUser[field]) {
       return res.status(400).send({
         error: true,
-        message: `Please provide ${field}`
+        message: `Please provide ${field}`,
       });
     }
   }
@@ -37,7 +39,7 @@ exports.createDriver = async function (req, res) {
     const existingUser = await new Promise((resolve, reject) => {
       User.getByEmail(newUser.email, (err, user) => {
         if (err) {
-          console.error('Error checking email:', err);
+          console.error("Error checking email:", err);
           return reject(err);
         }
         resolve(user);
@@ -47,7 +49,7 @@ exports.createDriver = async function (req, res) {
     if (existingUser) {
       return res.status(400).send({
         error: true,
-        message: 'Email already exists. Please use a different email.'
+        message: "Email already exists. Please use a different email.",
       });
     }
 
@@ -58,10 +60,10 @@ exports.createDriver = async function (req, res) {
     const userId = await new Promise((resolve, reject) => {
       User.create(newUser, (err, id) => {
         if (err) {
-          console.error('Error adding user:', err);
+          console.error("Error adding user:", err);
           return reject(err);
         }
-        console.log('User created successfully with ID:', id);
+        console.log("User created successfully with ID:", id);
         resolve(id);
       });
     });
@@ -74,24 +76,24 @@ exports.createDriver = async function (req, res) {
     const driverId = await new Promise((resolve, reject) => {
       Driver.createDriver(newDriver, (err, id) => {
         if (err) {
-          console.error('Error adding driver:', err);
+          console.error("Error adding driver:", err);
           return reject(err);
         }
-        console.log('Driver created successfully with ID:', id);
+        console.log("Driver created successfully with ID:", id);
         resolve(id);
       });
     });
 
     res.status(201).send({
       error: false,
-      message: 'User and driver added successfully',
-      data: { userId: userId, driverId: driverId }
+      message: "User and driver added successfully",
+      data: { userId: userId, driverId: driverId },
     });
   } catch (error) {
-    console.error('Error during user/driver creation:', error);
+    console.error("Error during user/driver creation:", error);
     res.status(500).send({
       error: true,
-      message: 'Error creating user and driver'
+      message: "Error creating user and driver",
     });
   }
 };
@@ -101,24 +103,29 @@ exports.updateDriver = async function (req, res) {
   const updatedUserData = req.body;
 
   // Validate required fields
-  const requiredFields = ['first_name', 'last_name', 'email', 'experience_years', 'phoneNumber', 'location'];
+  const requiredFields = [
+    "first_name",
+    "last_name",
+    "email",
+    "experience_years",
+    "phoneNumber",
+    "location",
+  ];
   for (const field of requiredFields) {
     if (!updatedUserData[field]) {
       return res.status(400).send({
         error: true,
-        message: `Please provide ${field}`
+        message: `Please provide ${field}`,
       });
     }
   }
 
   try {
-
-
     // Update user details
     await new Promise((resolve, reject) => {
       User.update(userId, updatedUserData, (err) => {
         if (err) {
-          console.error('Error updating user:', err);
+          console.error("Error updating user:", err);
           return reject(err);
         }
         resolve();
@@ -129,13 +136,13 @@ exports.updateDriver = async function (req, res) {
     const driverData = {
       experience_years: updatedUserData.experience_years,
       phoneNumber: updatedUserData.phoneNumber,
-      location: updatedUserData.location
+      location: updatedUserData.location,
     };
 
     await new Promise((resolve, reject) => {
       Driver.updateDriver(userId, driverData, (err) => {
         if (err) {
-          console.error('Error updating driver:', err);
+          console.error("Error updating driver:", err);
           return reject(err);
         }
         resolve();
@@ -144,13 +151,13 @@ exports.updateDriver = async function (req, res) {
 
     res.status(200).send({
       error: false,
-      message: 'User and driver details updated successfully'
+      message: "User and driver details updated successfully",
     });
   } catch (error) {
-    console.error('Error during update:', error);
+    console.error("Error during update:", error);
     res.status(500).send({
       error: true,
-      message: 'Error updating user and driver details'
+      message: "Error updating user and driver details",
     });
   }
 };
@@ -160,13 +167,15 @@ exports.login = (req, res) => {
 
   // Basic validation
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+    return res
+      .status(400)
+      .json({ message: "Email and password are required." });
   }
 
   // Call model to find the user by email and compare passwords
   User.findByEmailAndPassword(email, password, (err, user) => {
     if (err) {
-      return res.status(400).json({ message: 'Error logging in', error: err }); // Send the error back to the client
+      return res.status(400).json({ message: "Error logging in", error: err }); // Send the error back to the client
     }
 
     if (user) {
@@ -179,17 +188,18 @@ exports.login = (req, res) => {
       // Respond with the token and user role
       res.json({ token, role: user.role });
     } else {
-      res.status(400).json({ message: 'Invalid email or password.' });
+      res.status(400).json({ message: "Invalid email or password." });
     }
   });
 };
-
 
 exports.logout = (req, res) => {
   // Since JWT is stateless, there's no server-side session to destroy
   // Instead, we can just inform the client to remove the token
 
-  res.status(200).json({ message: 'Logout successful. Please remove the token from client storage.' });
+  res.status(200).json({
+    message: "Logout successful. Please remove the token from client storage.",
+  });
 };
 
 // controller/users.controller.js
@@ -198,13 +208,13 @@ exports.getProfile = (req, res) => {
 
   User.findById(userId, (err, user) => {
     if (err) {
-      return res.status(400).json({ status: 'error', message: err.message });
+      return res.status(400).json({ status: "error", message: err.message });
     }
 
     if (user) {
       res.json({ user });
     } else {
-      res.status(404).json({ status: 'error', message: 'User not found' });
+      res.status(404).json({ status: "error", message: "User not found" });
     }
   });
 };
@@ -231,7 +241,7 @@ exports.forgotPassword = (req, res) => {
     const mailOptions = {
       from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
       to: user.email,
-      subject: 'Password Reset Request',
+      subject: "Password Reset Request",
       html: `
         <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         
@@ -240,7 +250,9 @@ exports.forgotPassword = (req, res) => {
             </div>
 
             <div style="padding: 20px;">
-                <p style="font-size: 16px; margin: 10px 0;">Dear ${user.first_name} ${user.last_name},</p>
+                <p style="font-size: 16px; margin: 10px 0;">Dear ${
+                  user.first_name
+                } ${user.last_name},</p>
                 <p style="font-size: 16px; margin: 10px 0;">We received a request to reset your password. Click the link below to reset your password:</p>
 
                 <p style="font-size: 16px; margin: 10px 0;">
@@ -256,15 +268,19 @@ exports.forgotPassword = (req, res) => {
             </div>
 
         </div>
-    `
+    `,
     };
 
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        return res.status(500).send({ message: "Error sending email", details: error });
+        return res
+          .status(500)
+          .send({ message: "Error sending email", details: error });
       }
-      return res.status(200).send({ message: "Password reset email sent successfully" });
+      return res
+        .status(200)
+        .send({ message: "Password reset email sent successfully" });
     });
   });
 };
@@ -274,31 +290,34 @@ exports.changePassword = (req, res) => {
 
   // Validate input
   if (!token || !newPassword) {
-    return res.status(400).json({ message: 'Token and new password are required.' });
+    return res
+      .status(400)
+      .json({ message: "Token and new password are required." });
   }
 
   // Verify the reset token and extract user ID
   const userId = verifyResetToken(token); // Implement this function to decode the token and get userId
 
   if (!userId) {
-    return res.status(400).json({ message: 'Invalid or expired token.' });
+    return res.status(400).json({ message: "Invalid or expired token." });
   }
 
   // Hash the new password
   bcrypt.hash(newPassword, saltRounds, (err, hashedPassword) => {
     if (err) {
-      console.error('Error hashing new password:', err);
-      return res.status(500).send({ message: 'Error hashing new password' });
+      console.error("Error hashing new password:", err);
+      return res.status(500).send({ message: "Error hashing new password" });
     }
 
     // Update the user's password in the database
-    User.updatePassword(userId, hashedPassword, (err) => { // Implement this method in your User model
+    User.updatePassword(userId, hashedPassword, (err) => {
+      // Implement this method in your User model
       if (err) {
-        console.error('Error updating password:', err);
-        return res.status(500).send({ message: 'Error updating password' });
+        console.error("Error updating password:", err);
+        return res.status(500).send({ message: "Error updating password" });
       }
 
-      res.status(200).send({ message: 'Password changed successfully' });
+      res.status(200).send({ message: "Password changed successfully" });
     });
   });
 };
@@ -311,7 +330,7 @@ exports.getDriver = async function (req, res) {
     const user = await new Promise((resolve, reject) => {
       User.findById(userId, (err, user) => {
         if (err) {
-          console.error('Error fetching user:');
+          console.error("Error fetching user:");
           return reject(err);
         }
         resolve(user);
@@ -322,7 +341,7 @@ exports.getDriver = async function (req, res) {
     const driver = await new Promise((resolve, reject) => {
       Driver.getDriverByUserId(userId, (err, driver) => {
         if (err) {
-          console.error('Error fetching driver:', err);
+          console.error("Error fetching driver:", err);
           return reject(err);
         }
         resolve(driver);
@@ -332,20 +351,20 @@ exports.getDriver = async function (req, res) {
     if (!driver) {
       return res.status(404).send({
         error: true,
-        message: 'Driver not found'
+        message: "Driver not found",
       });
     }
 
     res.status(200).send({
       error: false,
       user,
-      driver
+      driver,
     });
   } catch (error) {
-    console.error('Error during fetching driver:', error);
+    console.error("Error during fetching driver:", error);
     res.status(500).send({
       error: true,
-      message: 'Error fetching user and driver details'
+      message: "Error fetching user and driver details",
     });
   }
 };
@@ -356,7 +375,7 @@ exports.setNewPassword = async (req, res) => {
 
   // Validate input
   if (!newPassword) {
-    return res.status(400).json({ message: 'New password is required.' });
+    return res.status(400).json({ message: "New password is required." });
   }
 
   try {
@@ -364,33 +383,28 @@ exports.setNewPassword = async (req, res) => {
     await new Promise((resolve, reject) => {
       User.setNewPassword(userId, newPassword, (err) => {
         if (err) {
-          console.error('Error updating password:', err);
+          console.error("Error updating password:", err);
           return reject(err);
         }
         resolve();
       });
     });
 
-    res.status(200).send({ message: 'Password updated successfully' });
+    res.status(200).send({ message: "Password updated successfully" });
   } catch (error) {
-    console.error('Error during password update:', error);
-    res.status(500).send({ message: 'Error updating password' });
+    console.error("Error during password update:", error);
+    res.status(500).send({ message: "Error updating password" });
   }
 };
 
 exports.countRegisteredDrivers = (req, res) => {
   User.countRegisteredDrivers((err, count) => {
     if (err) {
-      console.error('Error counting registered drivers:', err);
-      return res.status(500).send({ error: true, message: 'Error counting registered drivers' });
+      console.error("Error counting registered drivers:", err);
+      return res
+        .status(500)
+        .send({ error: true, message: "Error counting registered drivers" });
     }
     res.status(200).send({ error: false, count });
   });
 };
-
-
-
-
-
-
-
