@@ -28,11 +28,14 @@ const Van = () => {
     <div className="w-full text-websiteBlack">
       <div
         className="bg-cover bg-center flex items-end pb-[1%]"
-        style={{ backgroundImage: "url(/banner-image.png)", height: "200px" }}
+        style={{
+          backgroundImage: "url(/banner-image.png)",
+          height: window.innerWidth < 640 ? "100px" : "200px",
+        }}
       >
         <Container>
-          <Heading text="Our Van" textSize="text-[28px]" />
-          <p className="text-[15px] font-medium">Home / Van</p>
+          <Heading text="Our Van" className="md:text-[28px] sm:text-[18px]" />
+          <p className="md:text-[15px] sm:text-xs font-medium">Home / Van</p>
         </Container>
       </div>
       <Container>
@@ -41,18 +44,18 @@ const Van = () => {
             <TextHighlight text="CHOOSE YOUR VAN" />
             <Heading
               text="Explore the best options and find the perfect van for your journey."
-              className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
+              className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
             />
           </div>
-          <div className="w-full flex md:gap-[40px] sm:gap-[5px]">
-            <div className="md:w-[75%] sm:w-[60%]">
-              <div className="grid md:grid-cols-2 sm:grid-cols-1 md:gap-[20px] sm:gap-[5px]">
+          <div className="w-full flex md:gap-[40px] sm:gap-[5px] sm:flex-col-reverse md:flex-row">
+            <div className="md:w-[75%] sm:w-full">
+              <div className="grid grid-cols-2  md:gap-[20px] sm:gap-[5px]">
                 {vans.map((van) => (
                   <VanCard key={van.van_id} van={van} showDescription={true} />
                 ))}
               </div>
             </div>
-            <div className="md:w-[25%] sm:w-[40%] flex flex-col ">
+            <div className="md:w-[25%] sm:w-full flex flex-col ">
               <h3 className="text-center font-bold md:text-lg mb-2 sm:text-sm">
                 How to Book Your Van:
               </h3>

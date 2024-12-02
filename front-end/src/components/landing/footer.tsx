@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
           <div className="flex flex-col md:flex-row md:gap-[20px] sm:gap-[10px] md:py-[20px] sm:py-[10px]">
             <div>
               <div className="pb-4">
-                <h3 className="text-yellow border-b-2 lg:w-20 md:w-16  border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px]">
+                <h3 className="text-yellow border-b-2 lg:w-20 md:w-16  sm:w-16 border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px] sm:text-sm">
                   About Us
                 </h3>
               </div>
@@ -66,14 +66,16 @@ const Footer: React.FC = () => {
                     className="flex gap-4 items-center text-[14px]"
                   >
                     <GiCheckMark />
-                    <p className="lg:text-[14px] md:text-[13px]">{item}</p>
+                    <p className="lg:text-[14px] md:text-[13px] sm:text-xs">
+                      {item}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
             <div>
               <div className="pb-4">
-                <h3 className="text-yellow border-b-2 lg:w-28 md:w-24 border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px] tracking-[1px]">
+                <h3 className="text-yellow border-b-2 lg:w-28 md:w-24 sm:w-28 border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px] tracking-[1px] sm:text-sm">
                   Our Services
                 </h3>
               </div>
@@ -93,7 +95,9 @@ const Footer: React.FC = () => {
                     className="flex gap-4 items-center text-[14px]"
                   >
                     <GiCheckMark />
-                    <p className="lg:text-[14px] md:text-[13px]">{item}</p>
+                    <p className="lg:text-[14px] md:text-[13px] sm:text-xs">
+                      {item}
+                    </p>
                   </div>
                 ))}
               </div>

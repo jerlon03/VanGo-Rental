@@ -45,7 +45,6 @@ const SettingsPage = () => {
       progress: undefined,
     });
   };
-
   const fetchPayments = async () => {
     const toastId = showLoadingToast();
 
@@ -71,11 +70,6 @@ const SettingsPage = () => {
       });
     }
   };
-
-  useEffect(() => {
-    fetchPayments();
-  }, []);
-
   const userId = user?.user_id;
   useEffect(() => {
     const fetchAdmin = async () => {

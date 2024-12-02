@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Image from "next/image";
 import Confetti from "react-confetti";
+import { Heading } from "@/components/landing/TextHighlight";
 
 const FeedbackPageClient = ({ params }: any) => {
   const router = useRouter();
@@ -28,7 +29,7 @@ const FeedbackPageClient = ({ params }: any) => {
     const fetchBooking = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/public/booking/${bookingId}`
+          `${process.env.NEXT_PUBLIC_API_URL}/public/booking/${bookingId}`
         );
         const bookingData = await response.json();
 
@@ -127,16 +128,16 @@ const FeedbackPageClient = ({ params }: any) => {
         setTimeout(() => {
           router.push("/");
         }, 2000); // Adjust the delay as needed
-      }, 3000); // Adjust the delay as needed
+      }, 5000); // Adjust the delay as needed
     } catch (error) {
       SweetAlert.showError("Failed to submit feedback. Please try again.");
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 h-screen">
+    <div className="md:container md:mx-auto md:px-4 md:py-8 h-screen sm:px-0 sm:py-0 sm:w-full text-websiteBlack">
       {showConfetti && <Confetti />}
-      <div className="w-full bg-primaryColor text-white p-[1rem] rounded-t-[5px] flex justify-center flex-col ">
+      <div className="w-full bg-primaryColor text-white p-[1rem] md:rounded-t-[5px] sm:rounded-0 flex justify-center flex-col ">
         <div className="flex items-center gap-2">
           <Image
             src="/logo.svg"
@@ -144,11 +145,12 @@ const FeedbackPageClient = ({ params }: any) => {
             height={58}
             alt="VanGo Rental Logo"
           />
-          <h1 className="text-[20px] tracking-[1px] font-semibold">
-            VanGO Rental Customer Feedback Form
-          </h1>
+          <Heading
+            text="VanGO Rental Customer Feedback Form"
+            className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
+          />
         </div>
-        <p className="text-[14px] pl-[4%]">
+        <p className="md:text-[14px] sm:text-xs pl-[4%] tracking-[1px]">
           We are always looking for ways to improve your experience. Please take
           a moment to evaluate and tell us what you think.
         </p>
@@ -161,7 +163,7 @@ const FeedbackPageClient = ({ params }: any) => {
           <h1 className="text-[18px] font-medium">
             We appreciate your feedback
           </h1>
-          <div className="flex gap-4 py-2 w-[70%]">
+          <div className="flex gap-4 py-2 md:w-[70%] sm:w-full">
             <div className="w-full">
               <label htmlFor="" className="text-[14px] font-medium">
                 Full Name

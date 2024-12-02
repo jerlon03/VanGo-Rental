@@ -317,10 +317,13 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
         "Submitting booking with data:",
         Array.from(formDataToSubmit.entries())
       ); // Log FormData contents
-      const response = await fetch("http://localhost:8080/public/booking/", {
-        method: "POST",
-        body: formDataToSubmit,
-      }); // Pass the FormData object
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/public/booking/`,
+        {
+          method: "POST",
+          body: formDataToSubmit,
+        }
+      ); // Pass the FormData object
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -403,7 +406,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
             </div>
           </div>
           {showDescription && (
-            <p className="mt-2 text-gray-700 md:text-[16px] sm:text-xs">
+            <p className="mt-4 md:text-[16px] sm:text-xs font-normal tracking-[.5px]">
               {van.van_description}
             </p> // Assuming 'description' is a property of 'van'
           )}
@@ -435,7 +438,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
               Service.
             </p>
           </div>
-          <div className="w-full overflow-y-auto  pl-4 scrollbar-custom">
+          <div className="w-full overflow-y-auto md:max-h-[430px] sm:max-h-screen pl-4 scrollbar-custom">
             {termsAndCons.map((terms, index) => (
               <div key={index} className="pe-[20px]">
                 <h1 className="font-semibold pt-4 text-[18px]">

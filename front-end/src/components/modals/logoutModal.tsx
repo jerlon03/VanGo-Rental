@@ -35,13 +35,16 @@ const LogoutModal: React.FC = () => {
 
     try {
       // Make a request to the server to perform any necessary server-side logout operations
-      const res = await fetch(`http://localhost:8080/users/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Include any authentication headers if needed
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/logout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Include any authentication headers if needed
+          },
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Logout failed.");

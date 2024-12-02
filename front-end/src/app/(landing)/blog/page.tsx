@@ -31,11 +31,14 @@ const Blog = () => {
     <div className="w-full text-websiteBlack">
       <div
         className="bg-cover bg-center flex items-end pb-[1%]"
-        style={{ backgroundImage: "url(/banner-image.png)", height: "200px" }}
+        style={{
+          backgroundImage: "url(/banner-image.png)",
+          height: window.innerWidth < 640 ? "100px" : "200px",
+        }}
       >
         <Container>
-          <Heading text="Our Blog" textSize="text-[28px]" />
-          <p className="text-[15px] font-medium">Home / Blog</p>
+          <Heading text="Our Blog" className="md:text-[28px] sm:text-[18px]" />
+          <p className="md:text-[15px] sm:text-xs font-medium">Home / Blog</p>
         </Container>
       </div>
       <div className="py-[4%]">
@@ -43,7 +46,7 @@ const Blog = () => {
           <div className="pb-[2%]">
             <Heading
               text="Embark on Unforgettable Adventures: Where Every Moment Counts and Memories Last."
-              className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
+              className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
             />
             <p className="md:text-[15px] sm:text-xs">
               ‘Discover the thrill of adventure where every tale told shows how

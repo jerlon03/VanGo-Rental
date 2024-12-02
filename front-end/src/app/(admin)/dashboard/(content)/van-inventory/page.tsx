@@ -138,13 +138,16 @@ const VanInventory = () => {
         return;
       }
 
-      const res = await fetch("http://localhost:8080/api/van/create", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/van/create`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {

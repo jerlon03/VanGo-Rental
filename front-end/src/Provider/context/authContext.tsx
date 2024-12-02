@@ -27,9 +27,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token"); // Ensure the token is correctly retrieved
-      const response = await axios.get(`http://localhost:8080/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` }, // Add 'Bearer' if necessary
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/profile`,
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Add 'Bearer' if necessary
+        }
+      );
       setUser(response.data.user);
     } catch (error) {
       console.error("Error fetching user profile:", error);

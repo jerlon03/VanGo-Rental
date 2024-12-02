@@ -31,21 +31,16 @@ import { Feedbacks } from "@/lib/types/feedback.type";
 import Link from "next/link";
 import { VanLoader } from "@/components/loading/Loading"; // Import the VanLoader component
 
-type Review = {
-  quote: string;
-  author: string;
-};
-
 const HomePage = () => {
   const services = serviceCardData;
   const chooseUs = chooseUsCard;
 
-  const reviewTemplate = (review: Review) => (
+  const reviewTemplate = (review: Feedbacks) => (
     <div className="mr-4">
       <ReviewCard
-        key={review.author}
-        quote={review.quote}
-        author={review.author}
+        key={review.feedback_id}
+        quote={review.overall_experience}
+        author={review.full_name}
       />
     </div>
   );
@@ -168,7 +163,7 @@ const HomePage = () => {
             <TextHighlight text="OUR VAN" />
             <Heading
               text="Pick your van and hit the road with confidence."
-              className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
+              className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
             />
           </div>
           <div className="grid md:grid-cols-3 md:gap-[20px] sm:gap-[5px] sm:grid-cols-2 ">
@@ -203,7 +198,7 @@ const HomePage = () => {
               <TextHighlight text="EXPLORE OUR SERVICES" />
               <Heading
                 text="Discover Our Comprehensive Van Rental Services"
-                className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
+                className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
               />
             </div>
             <div className="py-[2%]">
@@ -249,7 +244,7 @@ const HomePage = () => {
                 <TextHighlight text="ADVANTAGES" />
                 <Heading
                   text="Why Choose Us ?"
-                  className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
+                  className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
                 />
                 <p className="md:text-[15px] sm:text-xs">
                   We present many guarantees and advantages when you rent a van

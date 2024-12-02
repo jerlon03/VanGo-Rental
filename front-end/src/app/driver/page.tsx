@@ -184,23 +184,23 @@ const DriverDashboard = () => {
           ].map((trip, index) => (
             <div
               key={index}
-              className="border-2 border-primaryColor bg-[#FFFFFF] w-full rounded-[5px] md:h-[100px] sm:h-[90px] flex md:justify-center sm:justify-evenly md:items-center sm:items-start gap-[10px]"
+              className="bg-gradient-to-r from-[#003459] via-[#00698c] to-[#00b0c1] bg-[#FFFFFF] w-full rounded-[5px] md:h-[100px] sm:h-[90px] flex md:justify-center sm:justify-evenly md:items-center sm:items-start gap-[10px]"
             >
-              <div className="border p-2 bg-primaryColor rounded-[3px] md:block sm:hidden">
+              <div className="border p-2 bg-white rounded-full md:block sm:hidden">
                 <FaMapLocationDot
                   size={30}
-                  className={`text-white group-hover:text-button `}
+                  className={`text-yellow group-hover:text-button `}
                 />
               </div>
               {trip.count > 0 ? (
                 <div className="text-[25px] font-semibold flex flex-col justify-center items-center">
                   {trip.count}{" "}
-                  <span className="font-medium text-blackColor md:text-[18px] sm:text-[14px] sm:text-center">
+                  <span className="font-medium text-white md:text-[18px] sm:text-[14px] sm:text-center">
                     {trip.title}
                   </span>
                 </div>
               ) : (
-                <span className="font-medium text-primaryColor md:text-[18px] sm:text-[14px] flex justify-center items-center h-full text-center">
+                <span className="font-medium text-white md:text-[18px] sm:text-[14px] flex justify-center items-center h-full text-center">
                   {trip.message}
                 </span>
               )}

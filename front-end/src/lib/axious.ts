@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Retrieve base URL from environment variables
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 
 const getToken = () => {

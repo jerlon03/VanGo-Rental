@@ -88,7 +88,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     // New fetch request to send the declined email
     try {
       const response = await fetch(
-        "http://localhost:8080/api/booking/send-declined-email",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/booking/send-declined-email`,
         {
           method: "POST",
           headers: {
