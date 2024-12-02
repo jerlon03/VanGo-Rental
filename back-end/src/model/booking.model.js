@@ -74,7 +74,7 @@ const createBooking = (data, callback) => {
       last_name,
       email,
       phone_number,
-      formattedDateOfBirth, // Use the formatted date
+      formattedDateOfBirth, // Use the formatted date of birth
       pickup_location,
       city_or_municipality,
       formattedPickupDateTime, // Use the formatted pickup date time
