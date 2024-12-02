@@ -61,9 +61,11 @@ const HomePage = () => {
     const fetchPosts = async () => {
       try {
         const data = await fetchAllPublicPosts();
-        // Sort posts by post_id in descending order and take the top 3
+        // Sort posts by post_id in descending order and take the top based on window width
         setPosts(
-          data.posts?.sort((a, b) => b.post_id - a.post_id).slice(0, 3) || []
+          data.posts
+            ?.sort((a, b) => b.post_id - a.post_id)
+            .slice(0, window.innerWidth < 768 ? 1 : 3) || []
         );
       } catch (err) {
         setError("Failed to fetch posts"); // Updated error message for clarity
@@ -86,7 +88,7 @@ const HomePage = () => {
         const data = await fetchAllPublicVan();
         const sortedVans = data.data
           .sort((a, b) => b.van_id - a.van_id)
-          .slice(0, 3);
+          .slice(0, window.innerWidth < 767 ? 2 : 3);
         setVans(sortedVans);
       } catch (err) {
         setError("Failed to fetch vans");
@@ -114,11 +116,11 @@ const HomePage = () => {
       <div className="w-full py-2 text-websiteBlack">
         {/* BANNER */}
         <Container>
-          <div className="grid grid-cols-2">
-            <div className="w-full flex flex-col justify-evenly h-full">
+          <div className="flex md:flex-row sm:flex-col-reverse">
+            <div className="w-full flex flex-col justify-evenly ">
               <Heading
                 text="We Have Prepared a Van For Your Trip"
-                textSize="lg:text-[45px] md:text-[28px]"
+                textSize="lg:text-[45px] md:text-[28px] sm:text-[24px]"
               />
               <p className="lg:text-[20px] md:text-[15px]">
                 Rent a van, gather your friends, and let the adventure begin.
@@ -126,8 +128,8 @@ const HomePage = () => {
               <div className="flex gap-[10px]">
                 <Link href="/van">
                   <Button
-                    label="Booking It Now !"
-                    variant="primary" // Set as primary button
+                    label="Book Now !"
+                    variant="primary" // Set as primary butto
                   />
                 </Link>
                 <Button
@@ -140,7 +142,7 @@ const HomePage = () => {
                 />
               </div>
             </div>
-            <div className="w-full relative">
+            <div className="w-full relative sm:px-[15%] md:px-0">
               <Image
                 src="/van-banner.png"
                 width={1000}
@@ -148,7 +150,7 @@ const HomePage = () => {
                 alt="Banner"
                 className="w-full h-auto"
               />
-              <div className="absolute top-0 right-0 md:hidden lg:block">
+              <div className="absolute top-0 right-0 md:hidden sm:hidden lg:block">
                 <Image
                   src="/book-sticker.png"
                   width={120}
@@ -162,14 +164,14 @@ const HomePage = () => {
         </Container>
         {/* VAN */}
         <Container>
-          <div className="py-8">
+          <div className="md:py-8 sm:py-4">
             <TextHighlight text="OUR VAN" />
             <Heading
               text="Pick your van and hit the road with confidence."
-              className="lg:text-[32px] md:text-[24px]"
+              className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
             />
           </div>
-          <div className="grid grid-cols-3 gap-[20px] ">
+          <div className="grid md:grid-cols-3 md:gap-[20px] sm:gap-[5px] sm:grid-cols-2 ">
             {loading // Check if loading
               ? Array.from({ length: 3 }).map(
                   (
@@ -189,7 +191,7 @@ const HomePage = () => {
                 width="200px"
                 height="50px"
                 textSize="18px"
-                className="font-semibold"
+                className="font-semibold sm:text-[14px] md:text-[16px]"
               />
             </Link>
           </div>
@@ -201,7 +203,7 @@ const HomePage = () => {
               <TextHighlight text="EXPLORE OUR SERVICES" />
               <Heading
                 text="Discover Our Comprehensive Van Rental Services"
-                className="lg:text-[32px] md:text-[24px]"
+                className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
               />
             </div>
             <div className="py-[2%]">
@@ -210,7 +212,13 @@ const HomePage = () => {
               ) : (
                 <Carousel
                   value={services}
-                  numVisible={window.innerWidth < 1280 ? 3 : 4}
+                  numVisible={
+                    window.innerWidth < 767
+                      ? 1
+                      : window.innerWidth < 1280
+                        ? 3
+                        : 4
+                  }
                   numScroll={1}
                   circular
                   autoplayInterval={5000}
@@ -241,9 +249,9 @@ const HomePage = () => {
                 <TextHighlight text="ADVANTAGES" />
                 <Heading
                   text="Why Choose Us ?"
-                  className="lg:text-[32px] md:text-[24px]"
+                  className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
                 />
-                <p className="text-[15px]">
+                <p className="md:text-[15px] sm:text-xs">
                   We present many guarantees and advantages when you rent a van
                   with us for your trip. Here are some of the advantages that
                   you will get
@@ -251,16 +259,23 @@ const HomePage = () => {
               </div>
               <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-y-[30px] gap-x-[20px]">
                 {chooseUs.map((about) => (
-                  <div key={about.id} className="flex p-2 gap-[10px]">
+                  <div
+                    key={about.id}
+                    className="flex p-2 md:gap-[10px] sm:gap-[5px]"
+                  >
                     <Image
                       src={about.image}
                       width={90}
                       height={90}
                       alt={about.title}
                     />
-                    <div className="flex flex-col gap-[10px]">
-                      <p className="font-medium text-[16px]">{about.title}</p>
-                      <p className="text-[14px]">{about.description}</p>
+                    <div className="flex flex-col md:gap-[10px] sm:gap-[5px]">
+                      <p className="font-medium md:text-[16px] sm:text-sm">
+                        {about.title}
+                      </p>
+                      <p className="md:text-[14px] sm:text-xs">
+                        {about.description}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -275,10 +290,10 @@ const HomePage = () => {
               <TextHighlight text="OUR BLOG" />
               <Heading
                 text="Explore the Latest Trends, Expert Advice, and Fresh Perspectives"
-                className="lg:text-[32px] md:text-[24px]"
+                className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
               />
             </div>
-            <div className="grid grid-cols-3 lg:gap-[40px] md:gap-[20px]">
+            <div className="grid md:grid-cols-3  lg:gap-[40px] md:gap-[20px]">
               {posts.map((post) => (
                 <div className="bg-white rounded-[10px]">
                   <PostCard
@@ -311,9 +326,9 @@ const HomePage = () => {
               <TextHighlight text="OUR REVIEW" />
               <Heading
                 text="What They Say?"
-                className="lg:text-[32px] md:text-[24px]"
+                className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
               />
-              <p className="text-[15px]">
+              <p className="md:text-[15px] sm:text-xs">
                 Here are some comments from our customers, be one of them
               </p>
             </div>

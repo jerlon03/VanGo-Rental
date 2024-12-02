@@ -379,31 +379,33 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
         </div>
 
         <div className="p-[4%]">
-          <h1 className="font-semibold lg:text-[18px] md:text-[16px]">
+          <h1 className="font-semibold lg:text-[18px] md:text-[16px] sm:text-[14px]">
             {van.van_name}
           </h1>
-          <div className="flex gap-[10px] items-center ">
-            <TbManualGearboxFilled className="lg:text-[24px] md:text-[18px] text-yellow" />
-            <p className="lg:text-[18px] md:text-[14px] font-medium">
+          <div className="flex md:gap-[10px] sm:gap-[5px] items-center ">
+            <TbManualGearboxFilled className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
+            <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
               {van.transmission_type}
             </p>
           </div>
-          <div className="flex pt-2 gap-[20px]">
+          <div className="flex pt-2 md:gap-[20px] sm:gap-[5px]">
             <div className="flex gap-[10px] items-center justify-center">
-              <IoPerson className="lg:text-[24px] md:text-[18px] text-yellow" />
-              <p className="lg:text-[18px] md:text-[14px] font-medium">
+              <IoPerson className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
+              <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
                 {van.people_capacity} People
               </p>
             </div>
             <div className="flex gap-[10px] items-center justify-center">
-              <BiSolidShoppingBags className="lg:text-[24px] md:text-[18px] text-yellow" />
-              <p className="lg:text-[18px] md:text-[14px] font-medium">
-                {van.things_capacity} Bags
+              <BiSolidShoppingBags className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
+              <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
+                {van.things_capacity} KG
               </p>
             </div>
           </div>
           {showDescription && (
-            <p className="mt-2 text-gray-700">{van.van_description}</p> // Assuming 'description' is a property of 'van'
+            <p className="mt-2 text-gray-700 md:text-[16px] sm:text-xs">
+              {van.van_description}
+            </p> // Assuming 'description' is a property of 'van'
           )}
           <div className="pt-[4%]">
             <WebButton
@@ -413,6 +415,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
               height="40px"
               textSize="18px"
               onClick={() => setCurrentModal("terms")}
+              className="sm:w-full sm:text-[15px] md:text-[16px]"
             />
           </div>
         </div>
@@ -432,7 +435,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
               Service.
             </p>
           </div>
-          <div className="w-full overflow-y-auto max-h-[430px] pl-4 scrollbar-custom">
+          <div className="w-full overflow-y-auto  pl-4 scrollbar-custom">
             {termsAndCons.map((terms, index) => (
               <div key={index} className="pe-[20px]">
                 <h1 className="font-semibold pt-4 text-[18px]">

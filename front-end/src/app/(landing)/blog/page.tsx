@@ -43,9 +43,9 @@ const Blog = () => {
           <div className="pb-[2%]">
             <Heading
               text="Embark on Unforgettable Adventures: Where Every Moment Counts and Memories Last."
-              textSize="text-[28px]"
+              className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
             />
-            <p className="text-[15px]">
+            <p className="md:text-[15px] sm:text-xs">
               ‘Discover the thrill of adventure where every tale told shows how
               exploring transforms us, sparking a love for travel and creating
               memories that stay with us forever.’
@@ -53,7 +53,7 @@ const Blog = () => {
           </div>
           <div className="">
             <TextHighlight text="Featured Articles" />
-            <div className="grid grid-cols-3 gap-[40px]">
+            <div className="grid md:grid-cols-3 md:gap-[40px] sm:gap-[20px] ">
               {posts.map((post) => (
                 <PostCard
                   key={post.post_id}

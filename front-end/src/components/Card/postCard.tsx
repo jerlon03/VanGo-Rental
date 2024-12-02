@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import { BlogPost as BlogPostType } from "@/lib/types/posts.type"; // Ensure correct import

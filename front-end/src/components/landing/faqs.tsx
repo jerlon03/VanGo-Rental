@@ -56,7 +56,7 @@ const Faqs = () => {
         <div className="flex items-center justify-center pt-[3%]">
           <Heading
             text="Frequently Asked Questions"
-            className="lg:text-[32px] md:text-[24px]"
+            className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
           />
         </div>
         <div className="py-[2rem] flex flex-col gap-[2rem] font-Poppins">
@@ -66,7 +66,7 @@ const Faqs = () => {
                 className="flex justify-between w-full font-Poppins p-1  font-semibold text-[18px]  cursor-pointer max-sm:text-[15px] max-sm:gap-[5px]"
                 onClick={() => toggleQuestion(index)}
               >
-                <h3 className="font-semibold text-[16px] text-[#595959]">
+                <h3 className="font-semibold md:text-[16px] sm:text-sm text-[#595959]">
                   {faq.question}
                 </h3>
                 <div className="w-[20px] h-[20px]">
@@ -79,7 +79,9 @@ const Faqs = () => {
               </div>
               {openQuestion === index && (
                 <div className="border-t-2 border-yellow">
-                  <p className="text-[15px] pl-4 pt-2">{faq.answer}</p>
+                  <p className="md:text-[15px] sm:text-xs pl-4 pt-2">
+                    {faq.answer}
+                  </p>
                 </div>
               )}
             </div>

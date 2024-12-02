@@ -41,22 +41,22 @@ const Van = () => {
             <TextHighlight text="CHOOSE YOUR VAN" />
             <Heading
               text="Explore the best options and find the perfect van for your journey."
-              textSize="text-[32px]"
+              className="lg:text-[32px] md:text-[24px] sm:text-[20px]"
             />
           </div>
-          <div className="w-full flex gap-[40px]">
-            <div className="w-[75%] ">
-              <div className="grid grid-cols-2 gap-[20px] ">
+          <div className="w-full flex md:gap-[40px] sm:gap-[5px]">
+            <div className="md:w-[75%] sm:w-[60%]">
+              <div className="grid md:grid-cols-2 sm:grid-cols-1 md:gap-[20px] sm:gap-[5px]">
                 {vans.map((van) => (
                   <VanCard key={van.van_id} van={van} showDescription={true} />
                 ))}
               </div>
             </div>
-            <div className="w-[25%] border p-4 bg-white rounded-lg shadow-md flex flex-col h-[330px]">
-              <h3 className="text-center font-bold text-lg mb-2">
+            <div className="md:w-[25%] sm:w-[40%] flex flex-col ">
+              <h3 className="text-center font-bold md:text-lg mb-2 sm:text-sm">
                 How to Book Your Van:
               </h3>
-              <ol className="list-decimal pl-5 space-y-1 text-[15px] flex-grow">
+              <ol className="list-decimal pl-5 space-y-1 md:text-[15px] flex-grow sm:text-xs">
                 <li>Choose a van.</li>
                 <li>Click the "Book Now" button.</li>
                 <li>Read and accept the Terms & Conditions.</li>

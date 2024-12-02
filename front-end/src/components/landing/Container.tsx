@@ -11,7 +11,7 @@ const Container: React.FC<ContainerProps> = ({
 }) => {
   return (
     <div
-      className={`max-w-[1440px] mx-auto w-full  md:px-[4%] 2xl:px-0 ${className}`}
+      className={`max-w-[1440px] mx-auto w-full  md:px-[4%] sm:px-[2%] 2xl:px-0 ${className}`}
       style={style}
     >
       {children}

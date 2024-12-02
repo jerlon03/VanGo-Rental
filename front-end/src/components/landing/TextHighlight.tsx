@@ -8,7 +8,7 @@ interface TextHighlightProps {
 
 const TextHighlight: React.FC<TextHighlightProps> = ({
   text,
-  textSize = "lg:text-[18px] md:text-[16px]",
+  textSize = "lg:text-[18px] md:text-[16px] sm:text-xs",
 }) => {
   return <p className={`${textSize} font-semibold text-websiteBlue`}>{text}</p>;
 };

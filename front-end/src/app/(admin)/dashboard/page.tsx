@@ -15,6 +15,7 @@ import { fetchVanCount, getVanCountByStatus } from "@/lib/api/van.api";
 import { fetchPublishedPostCount } from "@/lib/api/posts.api";
 import { getFeedbackCount } from "@/lib/api/feedback.api";
 import { fetchDriverCount } from "@/lib/api/user.api";
+import { TextHighlight } from "@/components/landing/TextHighlight";
 
 Chart.register(...registerables);
 
@@ -282,25 +283,25 @@ const AdminDashboard = () => {
             {
               title: "Registered Drivers",
               value: driverCount,
-              icon: <IoPerson className="text-[#003459] w-8 h-8" />,
+              icon: <IoPerson className="text-yellow w-8 h-8" />,
               link: "/dashboard/users",
             },
             {
               title: "Customer Feedback",
               value: feedbackCount,
-              icon: <VscFeedback className="text-[#003459] w-8 h-8" />,
+              icon: <VscFeedback className="text-yellow  w-8 h-8" />,
               link: "/dashboard/feedback",
             },
             {
               title: " Publish Blog Post",
               value: blogCount,
-              icon: <GrArticle className="text-[#003459] w-8 h-8" />,
+              icon: <GrArticle className="text-yellow  w-8 h-8" />,
               link: "/dashboard/post",
             },
             {
               title: "Total Van",
               value: vanCount,
-              icon: <FaVanShuttle className="text-[#003459] w-8 h-8" />,
+              icon: <FaVanShuttle className="text-yellow  w-8 h-8" />,
               link: "/dashboard/van-inventory",
             },
           ].map((item, index) => (
@@ -317,7 +318,7 @@ const AdminDashboard = () => {
                   <h2 className="font-medium text-white text-[18]">
                     {item.title}
                   </h2>
-                  <p className="text-[20px] text-white font-bold">
+                  <p className="text-[20px] text-yellow font-bold">
                     {item.value}
                   </p>
                 </div>
@@ -328,16 +329,12 @@ const AdminDashboard = () => {
 
         <div className="flex gap-6 w-full">
           <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-[30%]">
-            <h2 className="font-semibold text-[18px] mb-4 text-center">
-              Van Status Distribution
-            </h2>
+            <TextHighlight text="Van Status Distribution" />
             <Pie data={pieChartData} options={pieChartOptions} />
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow col-span-2 w-[70%]">
-            <h2 className="font-semibold text-[18px] mb-4 text-center">
-              Booking Statistics
-            </h2>
+            <TextHighlight text="Booking Statistics" />
             <Bar data={bookingData} options={options} />
           </div>
         </div>

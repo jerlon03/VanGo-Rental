@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Container from "./Container";
+import { IoMenu, IoCloseSharp } from "react-icons/io5";
+
 import {
   FaFacebook,
   FaInstagramSquare,
@@ -18,6 +20,10 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const getNavLinkClass = (path: string) => {
     return pathname === path
       ? " text-websiteBlue border-b-2 border-websiteBlue font-semibold"
@@ -25,6 +31,7 @@ const Header = () => {
   };
 
   const toggleMenu = () => {
+    console.log("Menu toggled");
     setMenuOpen((prev) => !prev);
   };
 
@@ -38,9 +45,9 @@ const Header = () => {
 
   return (
     <div className="w-full">
-      <div className="bg-[#f2f2f2]/30 text-[13px]">
+      <div className="bg-[#f2f2f2]/30 text-[13px] sm:hidden md:block">
         <Container>
-          <div className="flex justify-between py-4 text-websiteBlack">
+          <div className="flex justify-between py-4 text-websiteBlack ">
             <div className="flex gap-4">
               {contactDetails.map(({ icon: Icon, text }, index) => (
                 <div className="flex gap-4 items-center" key={index}>
@@ -89,33 +96,10 @@ const Header = () => {
               </Link>
             </li>
           </ul>
-          <div className="md:hidden flex items-center">
-            <button
-              className="text-white focus:outline-none"
-              onClick={toggleMenu}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        {isClient && menuOpen && (
-          <div className="absolute top-[72px] right-0 w-[200px] bg-primaryColor md:hidden flex flex-col items-center transition-all duration-300 ease-in-out bg-opacity-90">
-            <ul className="flex flex-col">
-              {["/", "/about-us", "/van", "/blog", "/contact-us"].map(
-                (link) => (
+          {isClient && menuOpen && (
+            <div className="absolute top-[40px] right-0 w-[200px] bg-websiteSecondary md:hidden flex flex-col items-center transition-all duration-300 ease-in-out bg-opacity-90 z-50">
+              <ul className="flex flex-col text-white">
+                {["/", "/van", "/blog"].map((link) => (
                   <li
                     key={link}
                     className="py-2 text-center w-full"
@@ -125,11 +109,21 @@ const Header = () => {
                       {link.replace("/", "").toUpperCase() || "HOME"}
                     </Link>
                   </li>
-                )
-              )}
-            </ul>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="sm:block md:hidden flex items-center">
+            {isClient && menuOpen ? (
+              <IoCloseSharp
+                onClick={toggleMenu}
+                className="text-[24px] flex justify-end w-full"
+              />
+            ) : (
+              <IoMenu onClick={toggleMenu} className="text-[24px]" />
+            )}
           </div>
-        )}
+        </div>
       </Container>
     </div>
   );

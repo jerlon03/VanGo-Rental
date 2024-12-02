@@ -21,9 +21,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Image src={image} width={90} height={90} alt={title} />
-      <p className="text-[20px] font-semibold pt-2">{title}</p>
+      <p className="md:text-[20px] sm:text-[18px] font-semibold pt-2">
+        {title}
+      </p>
       {isHovered && (
-        <div className="absolute text-white bg-blackColor/70 border  p-2 rounded text-[14px] lg:text-[13px] md:text-[12px] h-full">
+        <div className="absolute text-white bg-blackColor/70 border  p-2 rounded text-[14px] lg:text-[13px] md:text-[12x] sm:text-[13px] h-full">
           {description}
         </div>
       )}
