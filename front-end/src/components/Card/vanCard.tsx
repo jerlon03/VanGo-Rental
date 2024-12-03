@@ -697,7 +697,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                 Reservation Payment
               </h1>
               <div className="w-full">
-                <p>Reservation Free Via</p>
+                <p>Reservation Fee Via</p>
                 <div className="w-full flex md:flex-row sm:flex-col p-2 gap-6 items-center ">
                   {payments.length > 0 ? (
                     payments.map((payment) => (

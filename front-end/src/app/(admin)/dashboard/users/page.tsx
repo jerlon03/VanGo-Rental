@@ -141,7 +141,7 @@ const UsersPage: React.FC = () => {
                   placeholder="First Name"
                   value={first_name}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border ${!first_name ? "border-red-500" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
+                  className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
                   required
                 />
               </div>
@@ -150,7 +150,7 @@ const UsersPage: React.FC = () => {
                   placeholder="Last Name"
                   value={last_name}
                   onChange={(e) => setLastName(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border ${!last_name ? "border-red-500" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
+                  className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
                   required
                 />
               </div>
@@ -162,7 +162,7 @@ const UsersPage: React.FC = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-3 rounded-lg border ${!email ? "border-red-500" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
+                className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
                 required
               />
             </div>
@@ -175,7 +175,7 @@ const UsersPage: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border ${!password ? "border-red-500" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
+                  className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
                   required
                 />
               </div>
@@ -185,7 +185,7 @@ const UsersPage: React.FC = () => {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border ${!confirmPassword ? "border-red-500" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
+                  className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
                   required
                 />
               </div>

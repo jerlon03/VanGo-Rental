@@ -51,11 +51,6 @@ const termsAndCons = [
       "Passengers are responsible for their belongings. VanGO is not liable for lost or damaged personal items during the trip.",
   },
   {
-    Termstitle: "Passenger Responsibility:",
-    TermsContent:
-      "Passengers are responsible for their belongings. VanGO is not liable for lost or damaged personal items during the trip.",
-  },
-  {
     Termstitle: "Schedule Changes:",
     TermsContent:
       "Any changes to the schedule must be communicated at least 24 hours in advance. Vango will do its best to accommodate changes, but cannot guarantee availability.",
