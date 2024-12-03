@@ -1,6 +1,6 @@
-const dbConn = require('../../config/db.config');
+const dbConn = require("../../config/db.config");
 
-const Van = function(van) {
+const Van = function (van) {
   this.van_id = van.van_id;
   this.van_name = van.van_name;
   this.van_description = van.van_description;
@@ -8,37 +8,47 @@ const Van = function(van) {
   this.people_capacity = van.people_capacity;
   this.transmission_type = van.transmission_type;
   this.things_capacity = van.things_capacity;
-  this.status = van.status || 'available';
+  this.status = van.status || "available";
 };
 
 Van.create = (newVan, driver_id, result) => {
-    dbConn.query("INSERT INTO van SET ?", newVan, (err, res) => {
+  dbConn.query("INSERT INTO van SET ?", newVan, (err, res) => {
+    if (err) {
+      return dbConn.rollback(() => {
+        console.log("Error inserting van: ", err);
+        result(err, null);
+      });
+    }
+    console.log("Created van: ", { id: res.insertId, ...newVan });
+
+    const driverUpdateQuery =
+      "UPDATE drivers SET van_id = ?, status = 'assigned' WHERE driver_id = ?";
+    dbConn.query(driverUpdateQuery, [res.insertId, driver_id], (err) => {
       if (err) {
         return dbConn.rollback(() => {
-          console.log("Error inserting van: ", err);
+          console.log("Error updating drivers: ", err);
           result(err, null);
         });
       }
-      console.log("Created van: ", { id: res.insertId, ...newVan });
-
-      const driverUpdateQuery = "UPDATE drivers SET van_id = ?, status = 'assigned' WHERE driver_id = ?";
-      dbConn.query(driverUpdateQuery, [res.insertId, driver_id], (err) => {
-        if (err) {
-          return dbConn.rollback(() => {
-            console.log("Error updating drivers: ", err);
-            result(err, null);
-          });
-        }
-        console.log("Updated driver with van_id: ", res.insertId);    
-        result(null, { id: res.insertId, ...newVan });
-      });
+      console.log("Updated driver with van_id: ", res.insertId);
+      result(null, { id: res.insertId, ...newVan });
     });
+  });
 };
 
 Van.update = (van_id, van, result) => {
   dbConn.query(
     "UPDATE van SET van_name = ?, van_description = ?, van_image = ?, people_capacity = ?, transmission_type = ?, things_capacity = ?, status = ? WHERE van_id = ?",
-    [van.van_name, van.van_description, van.van_image, van.people_capacity, van.transmission_type, van.things_capacity, van.status, van_id],
+    [
+      van.van_name,
+      van.van_description,
+      van.van_image,
+      van.people_capacity,
+      van.transmission_type,
+      van.things_capacity,
+      van.status,
+      van_id,
+    ],
     (err, res) => {
       if (err) {
         console.log("error: ", err);

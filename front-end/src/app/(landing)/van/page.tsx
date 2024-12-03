@@ -15,7 +15,7 @@ const Van = () => {
     const fetchVans = async () => {
       try {
         const data = await fetchAllPublicVan();
-        setVans(data.data);
+        setVans(data.data.filter((van) => van.status === "available"));
       } catch (err) {
         setError("Failed to fetch vans");
       } finally {

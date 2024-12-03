@@ -343,7 +343,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium text-[16px] lg:text-[14px] xl:text-[14px] truncate rounded-tl-[3px] border-r",
+                  "px-3 font-medium text-[15px] lg:text-[14px] xl:text-[14px] truncate rounded-tl-[3px] border-r",
               },
             }}
           />
@@ -370,7 +370,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium text-[16px] lg:text-[14px] xl:text-[14px] border-r",
+                  "px-3 font-medium text-[15px] lg:text-[14px] xl:text-[14px] border-r",
               },
             }}
           />
@@ -390,7 +390,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium lg:text-[14px] xl:text-[14px] text-[16px] border-r",
+                  "px-3 font-medium lg:text-[14px] xl:text-[14px] text-[15px] border-r",
               },
             }}
           />
@@ -404,7 +404,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r",
+                  "px-3 font-medium lg:text-[14px] text-[15px] xl:text-[14px]  border-r",
               },
             }}
           />
@@ -418,7 +418,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r",
+                  "px-3 font-medium lg:text-[14px] text-[15px] xl:text-[14px]  border-r",
               },
             }}
           />
@@ -432,7 +432,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r",
+                  "px-3 font-medium lg:text-[14px] text-[15px] xl:text-[14px]  border-r",
               },
             }}
           />
@@ -446,7 +446,7 @@ const VanInventory = () => {
               },
               headerCell: {
                 className:
-                  "px-3 font-medium lg:text-[14px] text-[16px] xl:text-[14px]  border-r",
+                  "px-3 font-medium lg:text-[14px] text-[15px] xl:text-[14px]  border-r",
               },
             }}
           />
@@ -459,13 +459,14 @@ const VanInventory = () => {
               // Apply different styles based on the status value
               switch (rowData.status) {
                 case "available":
-                  statusClass = "bg-yellow-100 text-yellow-800 text-[14px]";
+                  statusClass =
+                    "bg-websiteSecondary text-websiteBlack text-[14px]";
                   break;
                 case "booked":
                   statusClass = "bg-green-100 text-green-800 text-[14px]";
                   break;
                 case "under maintenance":
-                  statusClass = "bg-yellow-100 text-yellow-800";
+                  statusClass = "bg-yellow/50 text-websiteBlack text-[14px]";
                   break;
                 default:
                   statusClass = "bg-gray-100 text-gray-800";
@@ -483,7 +484,7 @@ const VanInventory = () => {
               bodyCell: { className: "border text-blackColor p-2" },
               headerCell: {
                 className:
-                  "px-3 font-medium text-[16px] border-r xl:text-[14px] ",
+                  "px-3 font-medium text-[15px] border-r xl:text-[14px] ",
               },
             }}
           />
@@ -493,7 +494,7 @@ const VanInventory = () => {
               bodyCell: { className: "border-b text-blackColor p-2" },
               headerCell: {
                 className:
-                  "rounded-tr-[3px] px-3 font-medium xl:text-[14px] xl:text-[14px]  text-[16px] border-r",
+                  "rounded-tr-[3px] px-3 font-medium xl:text-[14px] xl:text-[14px]  text-[15px] border-r",
               },
             }}
             body={(rowData) => (

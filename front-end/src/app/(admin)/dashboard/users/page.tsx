@@ -47,24 +47,6 @@ const UsersPage: React.FC = () => {
     setUsers(fetchedUsers);
   }, [fetchedUsers]);
 
-  // actions
-  const onEditClick = (row: any) => {
-    // Handle edit action
-    console.log("Edit:", row);
-    SweetAlert.showConfirm("Are you sure you want to Edit?");
-  };
-
-  const onDeleteClick = async (row: any) => {
-    console.log("Delete:", row);
-    const confirmed = await SweetAlert.showConfirm(
-      "Are you sure you want to Delete?"
-    );
-    if (confirmed) {
-      SweetAlert.showSuccess("You successfully Deleted.");
-    } else {
-      console.log("Deletion canceled.");
-    }
-  };
   // pagination
   const totalPages = Math.ceil(users.length / itemPerPage);
   const handlePageChange = (page: number) => {

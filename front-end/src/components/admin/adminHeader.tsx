@@ -5,6 +5,7 @@ import {
   IoNotifications,
   CgProfile,
   IoIosLogOut,
+  IoPerson,
 } from "@/components/icons/index";
 import Drop from "@/components/admin/drop";
 import { useLogoutContext } from "@/Provider/context/contextProvider";
@@ -31,15 +32,10 @@ const AdminHeader: React.FC<Props> = ({ children }) => {
     <div className="flex justify-between w-full items-center px-[2%] h-[60px] shadow-md">
       <div className="flex items-center gap-[1rem]">{children}</div>
       <div className="flex gap-[5px] items-center">
-        <IoNotifications
-          size={25}
-          className="text-button cursor-pointer"
-          onClick={handleNotificationClick}
-        />
-        <div className="flex items-center relative z-90">
-          {" "}
-          {/* Added z-90 to ensure it is above other elements */}
-          <Image src="/logo.svg" width={30} height={30} alt="Profile" />
+        <div className="flex items-center relative z-90 gap-[5px]">
+          <div className="border-2 p-1 rounded-full border-blackColor ">
+            <IoPerson size={20} className="text-blackColor" />
+          </div>
           <div className="font-Poppins">
             {loading ? (
               <p>Loading...</p>

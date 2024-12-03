@@ -82,6 +82,7 @@ const HomePage = () => {
       try {
         const data = await fetchAllPublicVan();
         const sortedVans = data.data
+          .filter((van) => van.status === "available")
           .sort((a, b) => b.van_id - a.van_id)
           .slice(0, window.innerWidth < 767 ? 2 : 3);
         setVans(sortedVans);

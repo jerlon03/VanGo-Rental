@@ -9,7 +9,7 @@ export interface Feedback {
 }
 export interface Feedbacks {
     feedback_id: number;
-    bookingId: number;
+    booking_id: number;
     full_name: string;
     email: string;
     overall_experience: string;

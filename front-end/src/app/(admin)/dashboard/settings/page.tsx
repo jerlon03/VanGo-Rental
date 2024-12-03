@@ -45,6 +45,7 @@ const SettingsPage = () => {
       progress: undefined,
     });
   };
+
   const fetchPayments = async () => {
     const toastId = showLoadingToast();
 
@@ -70,6 +71,7 @@ const SettingsPage = () => {
       });
     }
   };
+
   const userId = user?.user_id;
   useEffect(() => {
     const fetchAdmin = async () => {
@@ -90,6 +92,7 @@ const SettingsPage = () => {
       // Only fetch if userId exists
       fetchAdmin();
     }
+    fetchPayments();
   }, [userId]);
 
   useEffect(() => {
@@ -273,7 +276,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full text-websiteBlack">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -423,13 +426,13 @@ const SettingsPage = () => {
             </div>
             <div className="w-[30%]">
               <div className="bg-white border rounded-lg px-6 py-4 shadow-sm">
-                <h3 className="text-[18px] font-semibold mb-4 text-gray-800">
+                <h3 className="text-[18px] font-semibold mb-4 ">
                   Account Details
                 </h3>
 
                 {/* Status Badge */}
                 <div className="mb-6">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-websiteSecondary/50 text-websiteBlack">
                     <span className="w-2 h-2 mr-2 rounded-full bg-green-500"></span>
                     Active Account
                   </span>
@@ -439,7 +442,7 @@ const SettingsPage = () => {
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center mb-2">
                     <svg
-                      className="w-5 h-5 mr-2 text-blue-600"
+                      className="w-5 h-5 mr-2 text-yellow"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -452,16 +455,16 @@ const SettingsPage = () => {
                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                       />
                     </svg>
-                    <span className="font-semibold text-gray-700">Role</span>
+                    <span className="font-semibold text-yellow">Role</span>
                   </div>
-                  <p className="text-blue-600 font-medium">Super Admin</p>
+                  <p className="text-yellow font-medium">Super Admin</p>
                 </div>
 
                 {/* Permissions Section */}
                 <div className="space-y-4">
                   <div className="flex items-center mb-2">
                     <svg
-                      className="w-5 h-5 mr-2 text-gray-600"
+                      className="w-5 h-5 mr-2 text-yellow"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -474,9 +477,7 @@ const SettingsPage = () => {
                         d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
                       />
                     </svg>
-                    <span className="font-semibold text-gray-700">
-                      Permissions
-                    </span>
+                    <span className="font-semibold">Permissions</span>
                   </div>
                   <div className="space-y-2 ml-7">
                     {/* Permission Items */}
@@ -492,7 +493,7 @@ const SettingsPage = () => {
                         className="flex items-center text-sm"
                       >
                         <svg
-                          className="w-4 h-4 mr-2 text-green-500"
+                          className="w-4 h-4 mr-2 text-yellow"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"

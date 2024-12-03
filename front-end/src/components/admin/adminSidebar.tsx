@@ -135,7 +135,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 />
                 {!isCollapsed && (
                   <p className="font-Poppins group-hover:font-medium text-[16px] group-hover:text-yellow tracking-[1px]">
-                    Van Inventory
+                    Van
                   </p>
                 )}
               </div>

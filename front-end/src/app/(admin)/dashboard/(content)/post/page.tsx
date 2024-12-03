@@ -105,13 +105,12 @@ const AdminPost = () => {
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const data = await fetchAllPosts(); // Call the function
-        // Sort posts by post_id in descending order
+        const data = await fetchAllPosts(); // Fetch all posts
         const sortedPosts = data.posts.sort(
-          (a: BlogPost, b: BlogPost) => b.post_id - a.post_id // Sort by post_id in descending order
+          (a: BlogPost, b: BlogPost) => b.post_id - a.post_id
         );
 
-        // Filter posts based on selected status and search query
+        // Check if filtering logic is correct
         const filteredPosts =
           selectedStatus === "ALL"
             ? sortedPosts.filter(
@@ -130,22 +129,22 @@ const AdminPost = () => {
                     post.post_id.toString().includes(searchQuery))
               );
 
-        setTotalPosts(filteredPosts.length); // Set total posts from the filtered response
+        setTotalPosts(filteredPosts.length); // Update total posts
         setPosts(
           filteredPosts.slice(
             (currentPage - 1) * postsPerPage,
             currentPage * postsPerPage
           ) || []
-        ); // Ensure this is correctly slicing the filtered posts
+        );
       } catch (err) {
-        setError("Failed to fetch posts"); // Handle error
+        setError("Failed to fetch posts");
       } finally {
-        setLoading(false); // Set loading to false
+        setLoading(false);
       }
     };
 
     loadPosts(); // Load posts for the current page
-  }, [currentPage, selectedStatus, searchQuery]); // Add selectedStatus and searchQuery as dependencies
+  }, [currentPage, selectedStatus, searchQuery]); // Ensure dependencies include searchQuery
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page); // Update the current page state
@@ -327,16 +326,70 @@ const AdminPost = () => {
   const handleEditSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     // Validate required fields
-    if (!title || !description || !postImage) {
-      SweetAlert.showError(
-        "Please fill out all required fields and upload an image."
-      );
+    if (!title && !description && !postImage) {
+      // Check if at least one field is provided
+      SweetAlert.showError("Please fill out at least one field to update.");
       return;
+    }
+
+    // Add SweetAlert confirmation before submission
+    const confirmed = await SweetAlert.showConfirm(
+      "Are you sure you want to update this blog post?"
+    );
+    if (!confirmed) {
+      return; // Exit if the user cancels the submission
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        SweetAlert.showError("You are not authorized. Please log in.");
+        return;
+      }
+
+      const formData = new FormData();
+      if (title) formData.append("title", title); // Only append if the field is not empty
+      if (description) formData.append("description", description);
+      if (postImage) formData.append("post_image", postImage);
+      formData.append("status", selectedStatus); // Include status if needed
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posting/update/${selectedPost?.post_id}`, // Update the URL to include the post ID
+        {
+          method: "PUT", // Use PUT for updating
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        SweetAlert.showSuccess("Post updated successfully");
+        // Reset your form fields as needed
+        setTitle(""); // Reset title
+        setDescription(""); // Reset description
+        setPostsImage(null); // Reset image
+        setIsAddPostModalOpen(false); // Close the modal
+        setIsModalOpen(false); // Close the modal to remove background
+
+        // Fetch updated posts to display
+        const updatedPosts = await fetchAllPosts(); // Fetch updated posts
+        setTotalPosts(updatedPosts.posts.length); // Update total posts
+        setCurrentPage(1); // Reset to the first page
+        setPosts(updatedPosts.posts.slice(0, postsPerPage)); // Set posts for the first page
+      } else {
+        SweetAlert.showError(data.message || "Failed to update post");
+      }
+    } catch (error) {
+      SweetAlert.showError("Failed to update post");
+      console.error("Error:", error);
     }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value); // Update search query state
+    setSearchQuery(e.target.value); // Ensure this updates the search query state
   };
 
   return (
@@ -526,7 +579,8 @@ const AdminPost = () => {
             placeholder="Search ..."
             height="35px"
             width="220px"
-            onChange={handleSearchChange} // Add onChange handler
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
           <Button
             name="ADD POST"
@@ -673,10 +727,11 @@ const AdminPost = () => {
                       statusClass = "bg-green-500 text-white lg:text-[14px]";
                       break;
                     case "DRAFT":
-                      statusClass = "bg-yellow-400 text-white lg:text-[14px]";
+                      statusClass = "bg-yellow text-white lg:text-[14px]";
                       break;
                     case "CLOSED":
-                      statusClass = "bg-yellow-400 text-white lg:text-[14px]";
+                      statusClass =
+                        "bg-websiteSecondary text-white lg:text-[14px]";
                       break;
                     default:
                       statusClass = "bg-gray-100 text-gray-800 lg:text-[14px]";

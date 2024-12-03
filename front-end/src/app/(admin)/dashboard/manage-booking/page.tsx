@@ -228,7 +228,6 @@ const ManageBookings = () => {
           </div>
           <DataTable
             value={sortedAndFilteredBookings}
-            tableStyle={{ minWidth: "50rem" }}
             pt={{
               thead: { className: "bg-primaryColor text-white" },
               tbody: { className: "border" },
@@ -246,12 +245,12 @@ const ManageBookings = () => {
             }
           >
             <Column
-              header="Booking ID"
+              header="ID"
               field="booking_id"
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
@@ -265,25 +264,28 @@ const ManageBookings = () => {
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] rounded-tl-[3px] border-r",
                 },
               }}
             />
             <Column
               header="Email Account"
               field="email"
+              body={(rowData) => (
+                <div className="w-[200px] truncate">{rowData.email}</div>
+              )}
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] rounded-tl-[3px] border-r",
                 },
               }}
             />
@@ -293,11 +295,11 @@ const ManageBookings = () => {
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] rounded-tl-[3px] border-r",
                 },
               }}
             />
@@ -308,11 +310,12 @@ const ManageBookings = () => {
               }
               pt={{
                 bodyCell: {
-                  className: "border text-blackColor p-2 lg:text-[14px]",
+                  className:
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] rounded-tl-[3px] border-r",
                 },
               }}
             />
@@ -324,11 +327,11 @@ const ManageBookings = () => {
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] border-r",
                 },
               }}
             />
@@ -338,11 +341,11 @@ const ManageBookings = () => {
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] border-r",
                 },
               }}
             />
@@ -375,11 +378,11 @@ const ManageBookings = () => {
               pt={{
                 bodyCell: {
                   className:
-                    "border text-blackColor p-2 text-[15px] lg:text-[14px]",
+                    "border text-blackColor p-2 text-[14px] lg:text-[13px]",
                 },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] lg:text-[14px] rounded-tl-[3px] border-r",
+                    "px-3 font-medium text-[15px] lg:text-[13px] rounded-tl-[3px] border-r",
                 },
               }}
             />
@@ -390,22 +393,28 @@ const ManageBookings = () => {
                 let statusClass = "";
                 switch (rowData.status) {
                   case "confirmed":
-                    statusClass = "bg-green-500 text-white";
+                    statusClass =
+                      "bg-green-500 text-white text-[14px] lg:text-[13px]";
                     break;
                   case "pending":
-                    statusClass = "bg-yellow-400 text-white";
+                    statusClass =
+                      "bg-yellow-400 text-yellow text-[14px] lg:text-[13px]";
                     break;
                   case "ongoing":
-                    statusClass = "bg-blue-500 text-white";
+                    statusClass =
+                      "bg-blue-500 text-blue text-[14px] lg:text-[13px]";
                     break;
                   case "declined":
-                    statusClass = "bg-red-500 text-white";
+                    statusClass =
+                      "bg-red-500 text-red text-[14px] lg:text-[13px]";
                     break;
                   case "completed":
-                    statusClass = "bg-purple-500 text-white";
+                    statusClass =
+                      "bg-purple-500 text-white text-[14px] lg:text-[13px]";
                     break;
                   default:
-                    statusClass = "bg-gray-100 text-gray-800";
+                    statusClass =
+                      "bg-gray-100 text-gray-800 text-[14px] lg:text-[13px]";
                 }
 
                 // Add ... only for pending and ongoing statuses
@@ -417,7 +426,7 @@ const ManageBookings = () => {
 
                 return (
                   <span
-                    className={`px-2 py-1 rounded ${statusClass} flex text-center items-center justify-center lg:text-[14px]`}
+                    className={`px-2 py-1 rounded ${statusClass} flex text-center items-center justify-center text-[14px] lg:text-[13px]`}
                   >
                     {displayText}
                   </span>
@@ -427,7 +436,7 @@ const ManageBookings = () => {
                 bodyCell: { className: "border text-blackColor p-2" },
                 headerCell: {
                   className:
-                    "px-3 font-medium text-[16px] border-r lg:text-[14px]",
+                    "px-3 font-medium  border-r text-[15px] lg:text-[13px]",
                 },
               }}
             />
@@ -438,7 +447,7 @@ const ManageBookings = () => {
                   {rowData.status === "confirmed" ? (
                     <FaEye
                       onClick={() => handleViewClick(rowData)}
-                      className="text-primaryColor cursor-pointer lg:size-[25px]"
+                      className="text-primaryColor cursor-pointer lg:size-[20px]"
                       size={30}
                       title="View Post"
                     />
@@ -446,7 +455,7 @@ const ManageBookings = () => {
                     <>
                       <FaEye
                         onClick={() => handleViewClick(rowData)}
-                        className="text-primaryColor cursor-pointer lg:size-[25px]"
+                        className="text-primaryColor cursor-pointer lg:size-[20px]"
                         size={30}
                         title="View Post"
                       />
@@ -458,7 +467,7 @@ const ManageBookings = () => {
                 bodyCell: { className: "border-b text-blackColor p-2" },
                 headerCell: {
                   className:
-                    "rounded-tr-[3px] px-3 font-medium text-[16px] border-r lg:text-[14px]",
+                    "rounded-tr-[3px] px-3 font-medium border-r text-[15px] lg:text-[13px]",
                 },
               }}
             />
