@@ -24,11 +24,6 @@ const updateDriver = async (userId: number, updatedData: {
     return response.data;
 }
 
-// const getAllDriver = async () => {
-//     const response = await Instance.get<Driver>(`/api/driver/`);
-//     return response.data;
-// }
-
 const getAllDriver = async () => {
     try {
         const response = await Instance.get<{ data: Driver[] }>(`/api/driver/drivers/not-assigned`); // Specify the expected response type

@@ -21,9 +21,17 @@ const fetchDriverCount = async (): Promise<number> => { // New function to fetch
   return response.data.count; // Return the count from the response
 }
 
+const fetchAllUserId = async () => {
+  const response = await Instance.get<DataRes<Users[]>>('/users/');
+  const allUsers = response.data.data; // Get all users
+  const driverUsers = allUsers.filter(user => user.role === 'driver'); // Filter users by role
+  return driverUsers.map(user => user.user_id); // Return only the user IDs of drivers
+}
+
 export {
   fetchAllUser,
   addUser,
   NewPassword,
-  fetchDriverCount
+  fetchDriverCount,
+  fetchAllUserId
 }

@@ -261,6 +261,18 @@ const UsersPage: React.FC = () => {
                 }}
               />
               <Column
+                field="sta"
+                header="Assigned or Not Assigned?"
+                pt={{
+                  bodyCell: {
+                    className: "border text-blackColor p-2 text-[14px]",
+                  },
+                  headerCell: {
+                    className: "px-3 font-medium text-[14px] border-r",
+                  },
+                }}
+              />
+              <Column
                 field="role"
                 header="Role"
                 pt={{

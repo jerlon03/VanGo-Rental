@@ -13,6 +13,7 @@ import { Column } from "primereact/column";
 import { formatDatePublicRange } from "@/components/date/formatDate";
 import { MdPublish } from "@/components/icons";
 import SweetAlert from "@/components/alert/alert";
+import InputField from "@/components/Form/inputfield";
 
 const FeedbackPage = () => {
   const [feedbacks, setFeedbacks] = useState<Feedbacks[]>([]);
@@ -120,22 +121,24 @@ const FeedbackPage = () => {
   };
 
   return (
-    <div className="w-full pt-[2%]">
-      <div className="w-full pb-3">
+    <div className="w-full ">
+      <div className="w-full pb-5">
         <AdminHeader>
-          <h1 className="text-[14px] flex h-full items-end text-blackColor/70 tracking-[2px]">
-            <Link href="/dashboard">Dashboard</Link> / Customer Feedback
+          <h1 className="text-[14px] flex items-end  text-blackColor/70 tracking-[2px]">
+            <Link href="/dashboard">Dashboard</Link>/ Customer Feedback
           </h1>
         </AdminHeader>
       </div>
-      <div className="w-full px-[2%]">
-        <input
-          type="text"
-          placeholder="Search by Full Name or Booking ID"
-          value={searchTerm}
-          onChange={handleSearch}
-          className="border p-2 mb-4 w-full text-[15px] lg:text-[14px]"
-        />
+      <div className="w-full p-[2%]">
+        <div className="py-2 flex justify-end">
+          <InputField
+            placeholder="Search ..."
+            height="35px"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
+
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
@@ -164,7 +167,7 @@ const FeedbackPage = () => {
             />
             <Column
               body={(rowData) => `${formatDatePublicRange(rowData.created_at)}`}
-              header="Date Created"
+              header="Feedback Created"
               pt={{
                 bodyCell: {
                   className:

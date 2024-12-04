@@ -31,44 +31,31 @@ const AdminDashboard = () => {
     labels: ["Confirmed", "Pending", "Ongoing", "Completed"],
     datasets: [
       {
-        label: "Bookings",
         data: [0, 0, 0, 0], // Initialize with zeros
         backgroundColor: [
-          "rgba(76, 175, 80, 0.8)", // Confirmed - Green
-          "rgba(255, 193, 7, 0.8)", // Pending - Yellow
-          "rgba(33, 150, 243, 0.8)", // Ongoing - Blue
-          "rgba(244, 67, 54, 0.8)", // Completed - Red
+          "#1667A9", // Confirmed - Green
+          "#B2CCE0", // Pending - Yellow
+          "#1667A9", // Ongoing - Blue
+          "#B2CCE0", // Completed - Red
         ],
-        borderColor: [
-          "#388E3C", // Darker green for confirmed
-          "#F57F17", // Darker yellow for pending
-          "#1976D2", // Darker blue for ongoing
-          "#D32F2F", // Darker red for completed
-        ],
-        borderWidth: 2,
       },
     ],
   });
 
   // State for pie chart data
   const [pieChartData, setPieChartData] = useState({
-    labels: ["Booked", "Available", "Under Maintenance"],
+    labels: ["BOOKED", "AVAILABLE", "UNDER MAINTENANCE"],
     datasets: [
       {
         data: [0, 0, 0], // Initialize with zeros
         backgroundColor: [
-          "#FF6384", // Color for Booked
-          "#36A2EB", // Color for Available
-          "#FFCE56", // Color for Under Maintenance
+          "#1667A9", // Color for Booked
+          "#B2CCE0", // Color for Available
+          "#F8B946", // Color for Under Maintenance
         ],
-        hoverBackgroundColor: [
-          "#FF6384", // Hover color for Booked
-          "#36A2EB", // Hover color for Available
-          "#FFCE56", // Hover color for Under Maintenance
-        ],
-        borderWidth: 3, // Slight border for better separation between segments
+        borderWidth: 10, // Slight border for better separation between segments
         borderColor: "#fff", // White border color for sharp distinction
-        hoverBorderWidth: 2, // Slightly bigger border on hover for emphasis
+        hoverBorderWidth: 1, // Slightly bigger border on hover for emphasis
         hoverBorderColor: "#003459", // Darker border color on hover for contrast
       },
     ],
@@ -154,7 +141,7 @@ const AdminDashboard = () => {
     responsive: true,
     plugins: {
       legend: {
-        display: true,
+        display: false,
         position: "top" as const,
       },
       tooltip: {
@@ -226,15 +213,7 @@ const AdminDashboard = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
-        labels: {
-          font: {
-            size: 14,
-            weight: "bold" as const,
-          },
-          color: "#333",
-          padding: 20,
-        },
+        display: false,
       },
       tooltip: {
         enabled: true,
@@ -245,13 +224,8 @@ const AdminDashboard = () => {
         borderWidth: 1,
         callbacks: {
           label: function (tooltipItem: TooltipItem<"pie">) {
-            const percentage =
-              ((tooltipItem.raw as number) /
-                pieChartData.datasets[0].data.reduce(
-                  (acc, value) => acc + value
-                )) *
-              100;
-            return `${tooltipItem.label}: ${tooltipItem.raw} (${percentage.toFixed(1)}%)`;
+            const value = tooltipItem.raw || 0;
+            return `   ${value}`;
           },
         },
       },
@@ -328,9 +302,28 @@ const AdminDashboard = () => {
         </div>
 
         <div className="flex gap-6 w-full">
-          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-[30%]">
-            <TextHighlight text="Van Status Distribution" />
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 w-[30%]">
+            <TextHighlight text="Van Availability" />
             <Pie data={pieChartData} options={pieChartOptions} />
+            <div className="flex gap-4 text-[14px] mt-4">
+              {[
+                { label: "BOOKED", bgColor: "bg-websiteBlue" },
+                { label: "AVAILABLE", bgColor: "bg-websiteSecondary" },
+                { label: "UNDER MAINTENANCE", bgColor: "bg-yellow" },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className="text-websiteBlack flex items-center"
+                >
+                  <p className={`w-4 h-4 rounded-full ${item.bgColor}`}></p>
+                  <p
+                    className={` p-3 rounded-[5px] font-semibold transition-transform duration-200 transform hover:scale-105 text-[12px]`}
+                  >
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow col-span-2 w-[70%]">
