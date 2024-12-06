@@ -398,7 +398,7 @@ const ManageBookings = () => {
                     break;
                   case "pending":
                     statusClass =
-                      "bg-yellow-400 text-yellow text-[14px] lg:text-[13px]";
+                      "bg-yellow/80 text-white text-[14px] lg:text-[13px]";
                     break;
                   case "ongoing":
                     statusClass =
