@@ -79,12 +79,11 @@ const FeedbackPage = () => {
   };
 
   const handlePublishClick = (feedbackId: number) => {
-    // Optimistically update the status to 'PUBLISH'
-    updateStatusToPublish(feedbackId);
-
     SweetAlert.showConfirm("Do you want to publish this feedback?").then(
       async (result) => {
         if (result) {
+          updateStatusToPublish(feedbackId);
+
           try {
             console.log("Attempting to publish feedback with ID:", feedbackId);
             const response = await updateFeedbackStatus(feedbackId, "PUBLISH");
@@ -249,7 +248,7 @@ const FeedbackPage = () => {
                     statusClass = "bg-green-500 text-white lg:text-[14px]";
                     break;
                   case "UNPUBLISH":
-                    statusClass = "bg-yellow-400 text-white lg:text-[14px]";
+                    statusClass = "bg-yellow text-white lg:text-[14px]";
                     break;
                   default:
                     statusClass = "bg-gray-100 text-gray-800 lg:text-[14px]";
@@ -281,14 +280,9 @@ const FeedbackPage = () => {
                       className="text-green-400 cursor-pointer transform rotate-180"
                     />
                   ) : (
-                    <MdPublish
-                      onClick={() =>
-                        SweetAlert.showSuccess(
-                          "This feedback is already published."
-                        )
-                      }
-                      className="text-gray-400 transform rotate-180"
-                    />
+                    <span className="text-gray-400">
+                      {/* No icon or message */}
+                    </span>
                   )}
                 </div>
               )}

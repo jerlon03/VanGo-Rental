@@ -570,7 +570,7 @@ const VanInventory = () => {
               <div className="flex gap-4 w-full">
                 <div className="w-full">
                   <InputField
-                    type="text"
+                    type="number"
                     name="people_capacity"
                     value={newVan.people_capacity}
                     onChange={handleInputChange}
@@ -585,7 +585,7 @@ const VanInventory = () => {
                 </div>
                 <div className="w-full">
                   <InputField
-                    type="text"
+                    type="number"
                     name="things_capacity"
                     value={newVan.things_capacity}
                     onChange={handleInputChange}
@@ -604,7 +604,7 @@ const VanInventory = () => {
                   name="transmission_type"
                   value={newVan.transmission_type}
                   onChange={handleInputChange}
-                  className="w-full p-2 border rounded text-gray-700 outline-none  "
+                  className={`w-full p-2 border rounded ${newVan.transmission_type ? "text-websiteBlack" : "text-[#cccccc] font-light"} outline-none`}
                 >
                   <option value="" className="text-[#CCCCCC] font-light">
                     Transmission Type:
@@ -621,7 +621,7 @@ const VanInventory = () => {
                 </select>
                 <div className="w-full">
                   <InputField
-                    type="text"
+                    type="number"
                     name="estimate_price"
                     value={newVan.estimate_price}
                     onChange={handleInputChange}

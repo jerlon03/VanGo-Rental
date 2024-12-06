@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import Button from "@/components/Button/button";
 import { formatDatePublicRange } from "@/components/date/formatDate";
 import SweetAlert from "@/components/alert/alert";
+import { GoDotFill } from "react-icons/go";
 import {
   fetchBookingByVanId,
   updateBookingStatus,
@@ -319,9 +320,9 @@ const AssignedTrips = () => {
                                 Pick Up Information
                               </h2>
                             </div>
-                            <div className="space-y-3">
+                            <div className="space-y-3 text-websiteBlack">
                               <div className="grid grid-cols-2 gap-4">
-                                <div className="text-gray-600">Date & Time</div>
+                                <div className=""> Start Date & Time</div>
                                 <div className="font-medium text-gray-800">
                                   {new Date(
                                     trip.pickup_date_time
@@ -331,13 +332,30 @@ const AssignedTrips = () => {
                                     day: "numeric",
                                     hour: "2-digit",
                                     minute: "2-digit",
+                                    timeZone: "Asia/Manila",
                                   })}
                                 </div>
                               </div>
                               <div className="grid grid-cols-2 gap-4">
-                                <div className="text-gray-600">Location</div>
+                                <div className=""> Booking End Date</div>
                                 <div className="font-medium text-gray-800">
-                                  {trip.pickup_location}
+                                  {new Date(
+                                    trip.booking_end_date
+                                  ).toLocaleString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    timeZone: "Asia/Manila",
+                                  })}
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="">Location</div>
+                                <div className="font-medium text-gray-800 flex items-center">
+                                  {trip.pickup_location}{" "}
+                                  <GoDotFill className="text-[#cccccc]" />
+                                  CEBU, {trip.city_or_municipality},{" "}
+                                  {trip.barangay}
                                 </div>
                               </div>
                             </div>
@@ -449,16 +467,34 @@ const AssignedTrips = () => {
                             <div className="grid gap-3 text-sm">
                               <div className="grid grid-cols-2 items-center">
                                 <span className="text-gray-600 font-medium">
-                                  Date & Time:
+                                  Start Date & Time:
                                 </span>
                                 <span className="text-gray-800">
                                   {new Date(
                                     booking.pickup_date_time
-                                  ).toLocaleString()}{" "}
-                                  -{" "}
-                                  {formatDatePublicRange(
-                                    booking.booking_end_date as any
-                                  )}
+                                  ).toLocaleString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    timeZone: "Asia/Manila",
+                                  })}
+                                </span>
+                              </div>
+                              <div className="grid grid-cols-2 items-center">
+                                <span className="text-gray-600 font-medium">
+                                  Start Date & Time:
+                                </span>
+                                <span className="text-gray-800">
+                                  {new Date(
+                                    booking.booking_end_date
+                                  ).toLocaleString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    timeZone: "Asia/Manila",
+                                  })}
                                 </span>
                               </div>
                               <div className="grid grid-cols-2 items-center">

@@ -13,6 +13,8 @@ import { getVanById } from "@/lib/api/driver.api";
 import { DriverDetails } from "@/lib/types/driver.type";
 import { updateBookingStatus, sendDeclinedEmail } from "@/lib/api/booking.api"; // Add this import
 import DeclineReasonModal from "@/components/modals/DeclineReasonModal"; // Import the new modal
+import { IoClose } from "../icons";
+import LoaderModal from "@/components/modals/LoaderModal"; // Import the LoaderModal component
 
 interface BookingDetailsModalProps {
   booking: Booking | null;
@@ -32,6 +34,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
   const [showDeclineTextarea, setShowDeclineTextarea] =
     useState<boolean>(false); // State to show textarea
   const [isDeclineModalOpen, setDeclineModalOpen] = useState<boolean>(false); // State for decline modal
+  const [isLoading, setIsLoading] = useState<boolean>(false); // State for loading
 
   useEffect(() => {
     if (booking && booking.van_id) {
@@ -63,6 +66,8 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
   const handleStatusUpdate = async (newStatus: string) => {
     if (!booking) return;
 
+    setIsLoading(true); // Show loader when starting the update
+
     try {
       await updateBookingStatus(booking.booking_id, newStatus);
       SweetAlert.showSuccess(`Booking has been ${newStatus}`);
@@ -73,6 +78,8 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     } catch (error) {
       console.error("Error updating booking status:", error);
       SweetAlert.showError("Failed to update booking status");
+    } finally {
+      setIsLoading(false); // Hide loader after the update
     }
   };
 
@@ -124,9 +131,12 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
           ref={modalRef}
           className="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl mx-auto text-gray-800"
         >
-          <h2 className="text-[18px] font-semibold text-center ">
-            Booking Details
-          </h2>
+          <div className="w-full flex justify-between items-center">
+            <h2 className="text-[18px] font-semibold text-center flex-1">
+              Booking Details
+            </h2>
+            <IoClose className="text-[30px] text-yellow" onClick={onClose} />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
             <div className="col-span-2 text-center w-full">
@@ -138,7 +148,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
             {/* Personal Information Section */}
             <div className="w-full text-[14px]">
-              <h3 className="text-[18px] font-semibold mb-2">
+              <h3 className="text-[16px] font-semibold mb-2">
                 Personal Information
               </h3>
               <p>
@@ -157,29 +167,50 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
               </p>
               <p>
                 <span className="font-medium">Date of Birth:</span>{" "}
-                {formatDateRange(booking.date_of_birth as any)}
+                {new Date(booking.date_of_birth).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  timeZone: "Asia/Manila",
+                })}
               </p>
             </div>
 
             {/* Pickup Information Section */}
             <div className="text-[14px] w-full">
-              <h3 className="text-[18px] font-semibold mb-2">
+              <h3 className="text-[16px font-semibold mb-2">
                 Pickup Information
               </h3>
               <p>
-                <span className="font-medium">Location:</span>{" "}
-                {booking.province}, {booking.city_or_municipality},{" "}
-                {booking.barangay}, {booking.pickup_location}
+                <span className="font-medium">Location:</span> CEBU,{" "}
+                {booking.city_or_municipality}, {booking.barangay},{" "}
+                {booking.pickup_location}
               </p>
               <p>
                 <span className="font-medium">Pickup Date & Time:</span>{" "}
-                {formatDatePublicRange(booking.pickup_date_time as any)}
+                {new Date(booking.pickup_date_time).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  timeZone: "Asia/Manila",
+                })}
+              </p>
+              <p>
+                <span className="font-medium">Booking End Date</span>{" "}
+                {new Date(booking.booking_end_date).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  timeZone: "Asia/Manila",
+                })}
               </p>
             </div>
 
             {/* Proof of Payment Section */}
             <div className="w-full">
-              <h3 className="text-[18px] font-semibold mb-2">
+              <h3 className="text-[16px font-semibold mb-2">
                 Proof of Payment
               </h3>
               {booking.proof_of_payment ? (
@@ -208,7 +239,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             {/* Driver Details Section - Conditionally Rendered */}
             {data && (
               <div className="w-full text-[14px]">
-                <h3 className="text-[18px] font-semibold mb-2">
+                <h3 className="text-[16px font-semibold mb-2">
                   Driver Details
                 </h3>
                 <p>
@@ -231,13 +262,18 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
             {/* Booking Status & Created Time */}
             <div className="col-span-2 text-center w-full">
-              <p className="text-[16px]">
+              <p className="text-[14px]">
                 <span className="font-medium">Booking Status:</span>{" "}
                 {booking.status}
               </p>
-              <p className="text-[16px]">
+              <p className="text-[14px]">
                 <span className="font-medium">Booking Created:</span>{" "}
-                {formatDateRange(booking.created_at as any)}
+                {new Date(booking.created_at).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  timeZone: "Asia/Manila",
+                })}
               </p>
             </div>
           </div>
@@ -267,22 +303,18 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                 />
               </>
             )}
-            <Button
-              name="Close"
-              onClick={onClose}
-              width="120px"
-              backgroundColor="alert"
-            />
           </div>
         </div>
       </ModalContainer>
-
       {/* Decline Reason Modal */}
       <DeclineReasonModal
         isOpen={isDeclineModalOpen}
         onClose={() => setDeclineModalOpen(false)}
         onConfirm={handleDeclineConfirm}
       />
+      {/* Loader Modal */}
+      <LoaderModal isOpen={isLoading} />{" "}
+      {/* Show loader when isLoading is true */}
     </>
   );
 };

@@ -17,6 +17,7 @@ export interface Booking {
   created_at: Date;
   status: string;
   driver_id: number;
+  booking_end_date: Date;
 }
 
 

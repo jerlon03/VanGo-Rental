@@ -1,6 +1,7 @@
 // src/controllers/booking.controller.js
 const Booking = require("../model/booking.model");
 const transporter = require("../../config/mailer.config");
+const moment = require("moment-timezone"); // Import moment-timezone
 
 const sendConfirmationEmail = async (booking) => {
   try {
@@ -162,6 +163,15 @@ exports.createBooking = async (req, res) => {
   const bookingData = {
     ...req.body,
     proof_of_payment: imagePath,
+    pickup_date_time: moment
+      .tz(req.body.pickup_date_time, "Asia/Manila")
+      .toISOString(), // Convert to Asia/Manila timezone
+    booking_end_date: moment
+      .tz(req.body.booking_end_date, "Asia/Manila")
+      .toISOString(), // Convert to Asia/Manila timezone
+    date_of_birth: moment
+      .tz(req.body.date_of_birth, "Asia/Manila")
+      .toISOString(), // Convert to Asia/Manila timezone
   };
 
   // Ensure all required fields are included in bookingData

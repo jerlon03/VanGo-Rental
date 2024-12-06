@@ -34,11 +34,12 @@ const DriverDashboard = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>(
     data?.driver.phoneNumber || ""
   ); // Added state for phone number
-  const [experience, setExperience] = useState<string>(""); // Added state for experience
+  const [experience, setExperience] = useState<number>(0); // Set default value to 0
   const [vanId, setVanId] = useState<string | null>(null);
   const [bookingStatusCounts, setBookingStatusCounts] = useState<{
     [key: string]: number;
   } | null>(null); // Added state for booking status counts
+  const [phoneNumberError, setPhoneNumberError] = useState<string | null>(null); // State for phone number error
 
   useEffect(() => {
     if (!authLoading && userId) {
@@ -83,15 +84,14 @@ const DriverDashboard = () => {
       setLocation(data.driver.Location);
       setPhoneNumber(data.driver.phoneNumber);
       setExperience(
-        data.driver.experience_years === 0
-          ? ""
-          : `${data.driver.experience_years}`
+        data.driver.experience_years != null ? data.driver.experience_years : 0
       );
       setVanId(data.driver.van_id as any);
     }
   }, [data]);
 
   const handleOpenModal = () => {
+    setPhoneNumber(data?.driver.phoneNumber || ""); // Set the phone number when opening the modal
     setIsModalOpen(true);
   };
 
@@ -99,11 +99,32 @@ const DriverDashboard = () => {
     setIsModalOpen(false);
   };
 
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const cleaned = value.replace(/\D/g, "");
+
+    // Check if the number is valid
+    if (cleaned.length < 10) return cleaned; // Return if less than 10 digits
+
+    // Format the number
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return `+63 ${match[1]} ${match[2]} ${match[3]}`;
+    }
+
+    return value; // Return unformatted if it doesn't match
+  };
+
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Allow only numbers
-    if (/^\d*$/.test(value)) {
-      setPhoneNumber(value);
+    // Allow only numeric input
+    const cleaned = value.replace(/\D/g, ""); // Clean non-digit characters
+    setPhoneNumber(cleaned); // Update phone number state with cleaned input
+
+    if (cleaned.length < 10) {
+      setPhoneNumberError("Please use this format: 09254416169");
+    } else {
+      setPhoneNumberError(null); // Clear error if the format is correct
     }
   };
 
@@ -111,7 +132,14 @@ const DriverDashboard = () => {
     const value = e.target.value;
     // Allow only numbers
     if (/^\d*$/.test(value)) {
-      setExperience(value);
+      const experienceValue = parseInt(value);
+      if (!isNaN(experienceValue)) {
+        setExperience(experienceValue);
+      } else {
+        setExperience(0); // Set to 0 if parsing fails
+      }
+    } else {
+      setExperience(0); // Reset to 0 if input is invalid
     }
   };
 
@@ -122,15 +150,55 @@ const DriverDashboard = () => {
     );
     if (!confirmUpdate) return; // Exit if the user cancels
 
-    const updatedData = {
+    // Validate required fields
+    if (!firstName) {
+      SweetAlert.showWarning("First name is required.");
+      return;
+    }
+
+    if (!lastName) {
+      SweetAlert.showWarning("Last name is required.");
+      return;
+    }
+
+    if (!email) {
+      SweetAlert.showWarning("Email is required.");
+      return;
+    }
+
+    if (!location) {
+      SweetAlert.showWarning("Location is required.");
+      return;
+    }
+
+    if (!phoneNumber) {
+      SweetAlert.showWarning("Phone number is required.");
+      return;
+    }
+
+    if (experience <= 0) {
+      // Check if experience is not greater than 0
+      SweetAlert.showWarning(
+        "Experience is required and must be greater than 0."
+      );
+      return;
+    }
+
+    const updatedData: any = {
       first_name: firstName,
       last_name: lastName,
       email: email,
-      experience_years: experience ? parseInt(experience) : 0,
       vehicle_assigned: "VAN-05",
       phoneNumber: phoneNumber,
       location: location,
     };
+
+    // Only add experience_years if it's greater than 0
+    if (experience > 0) {
+      updatedData.experience_years = experience;
+    }
+
+    console.log("Updated Data:", updatedData); // Debugging line
 
     try {
       await updateDriver(userId as any, updatedData);
@@ -139,7 +207,7 @@ const DriverDashboard = () => {
       setData(result);
       toast.success("Information updated successfully!");
     } catch (err) {
-      setError("Error updating driver information");
+      SweetAlert.showWarning("Error updating driver information");
       console.error(err);
     }
   };
@@ -238,7 +306,8 @@ const DriverDashboard = () => {
               <div className="table-row md:text-[16px] sm:text-[14px]">
                 <p className="table-cell font-semibold">Driver Experience:</p>
                 <span className="table-cell">
-                  {data?.driver.experience_years === 0
+                  {data?.driver.experience_years == null ||
+                  data.driver.experience_years === 0
                     ? "N/A"
                     : `${data?.driver.experience_years} years of Experience`}
                 </span>
@@ -246,7 +315,9 @@ const DriverDashboard = () => {
               <div className="table-row md:text-[16px] sm:text-[14px]">
                 <p className="table-cell font-semibold">Phone Number:</p>
                 <span className="table-cell">
-                  {data?.driver.phoneNumber || "N/A"}
+                  {data?.driver.phoneNumber
+                    ? formatPhoneNumber(data.driver.phoneNumber)
+                    : "N/A"}
                 </span>
               </div>
               <div className="table-row md:text-[16px] sm:text-[14px]">
@@ -367,14 +438,15 @@ const DriverDashboard = () => {
                 label: "Phone Number",
                 value: phoneNumber,
                 onChange: handlePhoneNumberChange,
-                maxLength: 11,
+                maxLength: 13,
               },
               {
                 label:
-                  "How many years or months of driving experience do you have?",
-                value: experience,
+                  "How many years or months of driving experience do you have? (required)",
+                value: experience.toString(),
                 onChange: handleExperienceChange,
                 placeholder: "Enter a number only",
+                required: true, // Make the input required
               },
             ].map((input, index) => (
               <div className="w-full" key={index}>
@@ -382,11 +454,16 @@ const DriverDashboard = () => {
                   {input.label}
                 </label>
                 <InputField
+                  type="tel"
                   value={input.value}
                   onChange={input.onChange}
                   maxLength={input.maxLength}
                   placeholder={input.placeholder}
+                  required={input.required}
                 />
+                {input.label === "Phone Number" && phoneNumberError && (
+                  <p className="text-red-500 text-[12px]">{phoneNumberError}</p>
+                )}
               </div>
             ))}
           </div>

@@ -186,18 +186,20 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
   const handleDateOfBirthChange = (selectedDate: any) => {
     const dateOfBirth = selectedDate.value as Date;
-    setFormData((prev) => ({ ...prev, dateOfBirth }));
+    // Adjust for UTC+8
+    const localDate = new Date(dateOfBirth.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
+    setFormData((prev) => ({ ...prev, dateOfBirth: localDate })); // Adjust for local time
 
     // Validate date of birth only if it's not null
-    if (dateOfBirth) {
+    if (localDate) {
       const today = new Date();
-      const age = today.getFullYear() - dateOfBirth.getFullYear();
+      const age = today.getFullYear() - localDate.getFullYear();
       const isValidAge =
         age > 18 ||
-        (age === 18 && today.getMonth() > dateOfBirth.getMonth()) ||
+        (age === 18 && today.getMonth() > localDate.getMonth()) ||
         (age === 18 &&
-          today.getMonth() === dateOfBirth.getMonth() &&
-          today.getDate() >= dateOfBirth.getDate());
+          today.getMonth() === localDate.getMonth() &&
+          today.getDate() >= localDate.getDate());
       setDobError(
         isValidAge ? null : "You must be at least 18 years old to book."
       );
@@ -219,9 +221,11 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     if (isDateRangeBooked(selectedDate, selectedDate)) {
       SweetAlert.showError("This date is already booked."); // Show error message
     } else {
+      // Adjust for UTC+8
+      const localDate = new Date(selectedDate.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
       setFormData((prev) => ({
         ...prev,
-        pickupDateTime: selectedDate,
+        pickupDateTime: localDate,
       }));
     }
   };
@@ -230,15 +234,18 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     const selectedDate = date.value as Date;
     console.log("Selected Booking End Date:", selectedDate); // Debugging log
 
+    // Adjust for UTC+8
+    const localDate = new Date(selectedDate.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
+
     // Update the form data
     setFormData((prev) => ({
       ...prev,
-      bookingEndDate: selectedDate,
+      bookingEndDate: localDate,
     }));
 
     // Validate the booking end date against the pickup date
-    if (selectedDate && formData.pickupDateTime) {
-      if (selectedDate < formData.pickupDateTime) {
+    if (localDate && formData.pickupDateTime) {
+      if (localDate < formData.pickupDateTime) {
         setBookingEndDateError(
           "Booking end date must be after the pickup date."
         ); // Set error message
@@ -294,12 +301,22 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     formDataToSubmit.append("city_or_municipality", formData.municipality);
     formDataToSubmit.append("barangay", formData.barangay);
     formDataToSubmit.append("pickup_location", formData.pickupLocation);
-    formDataToSubmit.append(
-      "pickup_date_time",
-      formData.pickupDateTime
-        ? formData.pickupDateTime.toISOString()
-        : new Date().toISOString()
-    ); // Ensure it's in ISO format
+
+    // Ensure pickup time is set correctly
+    if (formData.pickupTime) {
+      const [hours, minutes] = formData.pickupTime.split(":").map(Number);
+      const pickupDateTime = new Date(formData.pickupDateTime as any);
+      pickupDateTime.setHours(hours, minutes); // Set the hours and minutes based on user input
+      formDataToSubmit.append(
+        "pickup_date_time",
+        pickupDateTime.toISOString() // Ensure it's in ISO format
+      );
+    } else {
+      formDataToSubmit.append(
+        "pickup_date_time",
+        new Date().toISOString() // Default to current date if not set
+      );
+    }
 
     // Include booking_end_date
     formDataToSubmit.append(
@@ -683,6 +700,10 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     value={formData.pickupTime}
                     onChange={handleChange}
                     className={formData.pickupTime ? "" : ""}
+                    disabled={
+                      new Date().getHours() >
+                      parseInt(formData.pickupTime.split(":")[0])
+                    } // Disable if current hour is greater than selected hour
                   />
                 </div>
                 <div className="flex flex-col gap-2">

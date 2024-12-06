@@ -1,10 +1,9 @@
-import React from 'react';
-import Image from 'next/image';
-import LoginComponent from '@/components/landing/login';
-
+"use client";
+import React from "react";
+import Image from "next/image";
+import LoginComponent from "@/components/landing/login";
 
 const Login = () => {
-
   return (
     <>
       <LoginComponent />
@@ -13,4 +12,4 @@ const Login = () => {
 };
 
 export default Login;
-0
+0;
