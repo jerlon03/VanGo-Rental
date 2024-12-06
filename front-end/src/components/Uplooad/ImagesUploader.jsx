@@ -6,10 +6,12 @@ import Image from 'next/image'; // Import the Image component from next/image
 const ImagesUploader = ({ onUpload }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null); // Create a ref for the file input
+  const [proofOfPayment, setProofOfPayment] = useState(null);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      setProofOfPayment(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
@@ -29,10 +31,10 @@ const ImagesUploader = ({ onUpload }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className={`relative w-full h-[120px] border-2 ${previewImage ? 'border-gray-300' : 'border-red-500'} border-dashed rounded-lg mb-4 flex items-center justify-center`}>
+      <div className={`relative w-full h-[200px] border-2 ${previewImage ? 'border-gray-300' : ''} border-dashed rounded-lg mb-4 flex items-center justify-center`}>
         {previewImage ? (
           <>
-            <Image src={previewImage} alt="Preview" className="object-contain  h-full" width={100} height={80} />
+            <Image src={previewImage} alt="Preview" className="object-fill w-full  h-full" width={100} height={80} />
             <IoMdCloseCircle onClick={handleRemoveImage} className='text-red-500 hover:text-red-800 absolute top-[-10px] right-[-10px] size-[25px]' />
           </>
         ) : (

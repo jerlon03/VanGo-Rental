@@ -91,7 +91,10 @@ const getDriverByUserId = (userId, callback) => {
         return callback(err); // Handle any errors that occur during the query
       }
       if (results.length === 0) {
-        return callback(new Error("No driver found with the provided user_id")); // Handle case where no driver exists
+        console.error(`No driver found for user_id: ${userId}`); // Log the missing driver
+        return callback(
+          new Error(`No driver found with the provided user_id: ${userId}`)
+        ); // More informative error
       }
       callback(null, results[0]); // Return the driver details
     }

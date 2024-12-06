@@ -73,6 +73,10 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
   const [pickupLocation, setPickupLocation] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false); // State to manage loading
 
+  const [bookingEndDateError, setBookingEndDateError] = useState<string | null>(
+    null
+  ); // New state for booking end date error
+
   // Get the list of municipalities from cebuData
   const municipalities = Object.keys(cebuData.CEBU.municipality_list); // Define municipalities
   const barangays = municipality
@@ -182,18 +186,20 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     const dateOfBirth = selectedDate.value as Date;
     setFormData((prev) => ({ ...prev, dateOfBirth }));
 
-    // Validate date of birth
-    const today = new Date();
-    const age = today.getFullYear() - dateOfBirth.getFullYear();
-    const isValidAge =
-      age > 18 ||
-      (age === 18 && today.getMonth() > dateOfBirth.getMonth()) ||
-      (age === 18 &&
-        today.getMonth() === dateOfBirth.getMonth() &&
-        today.getDate() >= dateOfBirth.getDate());
-    setDobError(
-      isValidAge ? null : "You must be at least 18 years old to book."
-    );
+    // Validate date of birth only if it's not null
+    if (dateOfBirth) {
+      const today = new Date();
+      const age = today.getFullYear() - dateOfBirth.getFullYear();
+      const isValidAge =
+        age > 18 ||
+        (age === 18 && today.getMonth() > dateOfBirth.getMonth()) ||
+        (age === 18 &&
+          today.getMonth() === dateOfBirth.getMonth() &&
+          today.getDate() >= dateOfBirth.getDate());
+      setDobError(
+        isValidAge ? null : "You must be at least 18 years old to book."
+      );
+    }
   };
 
   const isDateRangeBooked = (startDate: Date, endDate: Date): boolean => {
@@ -220,16 +226,25 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
   const handleBookingEndDateChange = (date: any) => {
     const selectedDate = date.value as Date;
-    // Ensure the selected date is set correctly
-    console.log("Selected Booking End Date:", selectedDate); // Debugging line
-    // Check if the selected date is already booked
-    if (isDateRangeBooked(selectedDate, selectedDate)) {
-      SweetAlert.showError("This date is already booked."); // Show error message
+    console.log("Selected Booking End Date:", selectedDate); // Debugging log
+
+    // Update the form data
+    setFormData((prev) => ({
+      ...prev,
+      bookingEndDate: selectedDate,
+    }));
+
+    // Validate the booking end date against the pickup date
+    if (selectedDate && formData.pickupDateTime) {
+      if (selectedDate < formData.pickupDateTime) {
+        setBookingEndDateError(
+          "Booking end date must be after the pickup date."
+        ); // Set error message
+      } else {
+        setBookingEndDateError(null); // Clear error if valid
+      }
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        bookingEndDate: selectedDate,
-      }));
+      setBookingEndDateError(null); // Clear error if no date is selected
     }
   };
 
@@ -367,7 +382,6 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     console.log("Uploaded file:", file); // Debugging: Log the uploaded file
     setReservationImage(file); // Set the file directly in the state
   };
-
   return (
     <>
       <div className="w-full border border-[#cccccc] rounded-[10px] flex flex-col justify-between">
@@ -512,7 +526,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     placeholder="Enter your firstname"
                     value={formData.firstname}
                     onChange={handleChange}
-                    className={formData.firstname ? "" : "border-red-500"}
+                    className=""
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -524,7 +538,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     placeholder="Enter your lastname"
                     value={formData.lastname}
                     onChange={handleChange}
-                    className={formData.lastname ? "" : "border-red-500"}
+                    className=""
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -536,7 +550,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={emailError ? "border-red-500" : ""}
+                    className=""
                   />
                   {emailError && (
                     <span className="text-red-500 text-[10px]">
@@ -554,7 +568,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     placeholder="Enter your phone number"
                     value={formData.phoneNumber}
                     onChange={handleChange}
-                    className={phoneError ? "border-red-500" : ""}
+                    className=""
                   />
                   {phoneError && (
                     <span className="text-red-500 text-[10px]">
@@ -570,7 +584,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                   <Calendar
                     value={formData.dateOfBirth}
                     onChange={handleDateOfBirthChange}
-                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${dobError ? "border-red-500" : ""}`}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor`}
                     placeholder="Select Date"
                   />
                   {dobError && (
@@ -592,8 +606,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                       setFormData((prev) => ({ ...prev, province: value }))
                     }
                     value={formData.province}
-                    className={formData.province ? "" : "border-red-500"}
-                    disabled
+                    className={formData.province ? "" : ""}
                   />
                   <label htmlFor="pickupLocation">
                     Pick-up Location/ LandMark{" "}
@@ -604,7 +617,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     placeholder="Enter Pick-up Location"
                     value={formData.pickupLocation}
                     onChange={handleChange}
-                    className={formData.pickupLocation ? "" : "border-red-500"}
+                    className={formData.pickupLocation ? "" : ""}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -631,7 +644,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                       })); // Ensure municipality is set in formData
                     }}
                     value={municipality}
-                    className={municipality ? "" : "border-red-500"} // Change border color if empty
+                    className={municipality ? "" : ""}
                     disabled={false} // Set to true if you want to disable the select
                   />
                   <label htmlFor="pickupDateTime">
@@ -641,10 +654,16 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                   <Calendar
                     value={formData.pickupDateTime}
                     onChange={handlePickupDateChange}
-                    className={`w-full border font-Poppins text-[14px] rounded-[3px] px-2 md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.pickupDateTime ? "" : "border-red-500"}`}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px]  md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.pickupDateTime ? "" : ""}`}
                     placeholder="Select Date"
                     minDate={new Date()}
                     disabledDates={disabledDates} // Disable booked dates
+                    pt={{
+                      input: {
+                        className:
+                          "p-2 border flex w-full items-center placeholder:text-[#CCCCCC] placeholder:font-light",
+                      },
+                    }}
                   />
                   <label htmlFor="pickupTime">
                     Pick-up Time{" "}
@@ -655,7 +674,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     name="pickupTime"
                     value={formData.pickupTime}
                     onChange={handleChange}
-                    className={formData.pickupTime ? "" : "border-red-500"}
+                    className={formData.pickupTime ? "" : ""}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -677,7 +696,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                       setFormData((prev) => ({ ...prev, barangay: value }))
                     }
                     value={formData.barangay}
-                    className={formData.barangay ? "" : "border-red-500"}
+                    className={formData.barangay ? "" : ""}
                   />
                   <label htmlFor="bookingEndDate">
                     Booking End Date{" "}
@@ -686,11 +705,16 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                   <Calendar
                     value={formData.bookingEndDate}
                     onChange={handleBookingEndDateChange}
-                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.bookingEndDate ? "" : "border-red-500"}`}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor `}
                     placeholder="Select Booking End Date"
                     minDate={new Date()}
                     disabledDates={disabledDates} // Disable booked dates
                   />
+                  {bookingEndDateError && ( // Display error message if exists
+                    <span className="text-red-500 text-[10px]">
+                      {bookingEndDateError}
+                    </span>
+                  )}
                 </div>
               </div>
               <h1 className="text-[16px] font-medium p-2 bg-gray-500 text-white rounded-[3px]">
@@ -703,9 +727,9 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     payments.map((payment) => (
                       <div
                         key={payment.payment_id}
-                        className="md:w-[30%] sm:w-full h-[180px] border rounded-md p-1 flex items-center justify-center flex-col"
+                        className="md:w-[30%] sm:w-full  rounded-md flex items-center justify-center flex-col"
                       >
-                        <h1 className="text-[16px] font-semibold tracking-[1px]">
+                        <h1 className="text-[14px] font-semibold tracking-[1px]">
                           {payment.payment_name}
                         </h1>
                         <Image
@@ -713,6 +737,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                           width={110}
                           height={20}
                           alt={`${payment.payment_name || "Payment"} QR`}
+                          className="w-full h-auto "
                         />
                       </div>
                     ))
@@ -740,6 +765,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                   name={isLoading ? "Loading..." : "SUBMIT"}
                   width="120px"
                   className="bg-green-500 hover:bg-green-700 text-white"
+                  disabled={isLoading}
                 />
               </div>
             </div>

@@ -1,15 +1,14 @@
 // src/controllers/booking.controller.js
-const Booking = require('../model/booking.model');
-const transporter = require('../../config/mailer.config');
+const Booking = require("../model/booking.model");
+const transporter = require("../../config/mailer.config");
 
 const sendConfirmationEmail = async (booking) => {
-
-    try {
-        await transporter.sendMail({
-            from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
-            to: booking.email,
-            subject: 'Booking Confirmation',
-            html: `
+  try {
+    await transporter.sendMail({
+      from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
+      to: booking.email,
+      subject: "Booking Confirmation",
+      html: `
                <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             
                     <div style="background-color: #003459; color: #fff; padding: 15px; border-radius: 10px 10px 0 0; text-align: center;">
@@ -17,13 +16,21 @@ const sendConfirmationEmail = async (booking) => {
                     </div>
 
                     <div style="padding: 20px;">
-                        <p style="font-size: 16px; margin: 10px 0;">Dear ${booking.first_name} ${booking.last_name},</p>
+                        <p style="font-size: 16px; margin: 10px 0;">Dear ${
+                          booking.first_name
+                        } ${booking.last_name},</p>
                         <p style="font-size: 16px; margin: 10px 0;">Your booking has been confirmed. Below are your booking details:</p>
 
                         <ul style="list-style-type: none; padding: 0; font-size: 14px; margin: 10px 0;">
-                            <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${booking.booking_id}</li>
-                            <li style="margin: 8px 0;"><strong>Start Date:</strong> ${booking.pickup_date_time}</li>
-                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.booking_end_date}</li>
+                            <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${
+                              booking.booking_id
+                            }</li>
+                            <li style="margin: 8px 0;"><strong>Start Date:</strong> ${
+                              booking.pickup_date_time
+                            }</li>
+                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${
+                              booking.booking_end_date
+                            }</li>
                         </ul>
 
                         <p style="font-size: 16px; margin: 10px 0;">Thank you for choosing our service! We look forward to serving you.</p>
@@ -35,21 +42,21 @@ const sendConfirmationEmail = async (booking) => {
                     </div>
 
                 </div>
-            `
-        });
-    } catch (error) {
-        console.error('Error sending email:', error);
-        throw error;
-    }
+            `,
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
 };
 
 const sendDeclinedEmail = async (booking, reason) => {
-    try {
-        await transporter.sendMail({
-            from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
-            to: booking.email,
-            subject: 'Booking Declined',
-            html: `
+  try {
+    await transporter.sendMail({
+      from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
+      to: booking.email,
+      subject: "Booking Declined",
+      html: `
                <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             
                     <div style="background-color: #dc3545; color: #fff; padding: 15px; border-radius: 10px 10px 0 0; text-align: center;">
@@ -57,7 +64,9 @@ const sendDeclinedEmail = async (booking, reason) => {
                     </div>
 
                     <div style="padding: 20px;">
-                        <p style="font-size: 16px; margin: 10px 0;">Dear ${booking.first_name} ${booking.last_name},</p>
+                        <p style="font-size: 16px; margin: 10px 0;">Dear ${
+                          booking.first_name
+                        } ${booking.last_name},</p>
                         <p style="font-size: 16px; margin: 10px 0;">We regret to inform you that your booking has been declined for the following reason:</p>
                         <p style="font-size: 16px; margin: 10px 0;"><strong>${reason}</strong></p>
 
@@ -70,23 +79,23 @@ const sendDeclinedEmail = async (booking, reason) => {
                     </div>
 
                 </div>
-            `
-        });
-    } catch (error) {
-        console.error('Error sending declined email:', error);
-        throw error;
-    }
+            `,
+    });
+  } catch (error) {
+    console.error("Error sending declined email:", error);
+    throw error;
+  }
 };
 
 const sendCompletedEmail = async (booking) => {
-    try {
-        const feedbackLink = `${process.env.FRONTEND_URL}/feedback/${booking.booking_id}`;
-        
-        await transporter.sendMail({
-            from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
-            to: booking.email,
-            subject: 'Booking Completed - Share Your Experience',
-            html: `
+  try {
+    const feedbackLink = `${process.env.FRONTEND_URL}/feedback/${booking.booking_id}`;
+
+    await transporter.sendMail({
+      from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
+      to: booking.email,
+      subject: "Booking Completed - Share Your Experience",
+      html: `
                <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             
                     <div style="background-color: #28a745; color: #fff; padding: 15px; border-radius: 10px 10px 0 0; text-align: center;">
@@ -94,13 +103,21 @@ const sendCompletedEmail = async (booking) => {
                     </div>
 
                     <div style="padding: 20px;">
-                        <p style="font-size: 16px; margin: 10px 0;">Dear ${booking.first_name} ${booking.last_name},</p>
+                        <p style="font-size: 16px; margin: 10px 0;">Dear ${
+                          booking.first_name
+                        } ${booking.last_name},</p>
                         <p style="font-size: 16px; margin: 10px 0;">Thank you for choosing VanGO Rental Services. Your booking has been completed.</p>
 
                         <ul style="list-style-type: none; padding: 0; font-size: 14px; margin: 10px 0;">
-                            <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${booking.booking_id}</li>
-                            <li style="margin: 8px 0;"><strong>Start Date:</strong> ${booking.pickup_date_time}</li>
-                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.booking_end_date}</li>
+                            <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${
+                              booking.booking_id
+                            }</li>
+                            <li style="margin: 8px 0;"><strong>Start Date:</strong> ${
+                              booking.pickup_date_time
+                            }</li>
+                            <li style="margin: 8px 0;"><strong>End Date:</strong> ${
+                              booking.booking_end_date
+                            }</li>
                         </ul>
 
                         <div style="text-align: center; margin: 30px 0;">
@@ -122,164 +139,165 @@ const sendCompletedEmail = async (booking) => {
                     </div>
 
                 </div>
-            `
-        });
-    } catch (error) {
-        console.error('Error sending completed email:', error);
-        throw error;
-    }
+            `,
+    });
+  } catch (error) {
+    console.error("Error sending completed email:", error);
+    throw error;
+  }
 };
 
-
 exports.createBooking = async (req, res) => {
+  // Check if the file is uploaded
+  if (!req.file) {
+    return res
+      .status(400)
+      .json({ error: "Proof of payment image is required." });
+  }
 
+  // Get the URL of the uploaded image
+  const imagePath = req.file.path; // Ensure this is the correct path
 
-    // Check if the file is uploaded
-    if (!req.file) {
-        return res.status(400).json({ error: 'Proof of payment image is required.' });
+  // Set the proof_of_payment and ensure van_id and booking_end_date are included
+  const bookingData = {
+    ...req.body,
+    proof_of_payment: imagePath,
+  };
+
+  // Ensure all required fields are included in bookingData
+  const requiredFields = [
+    "first_name",
+    "last_name",
+    "email",
+    "phone_number",
+    "date_of_birth",
+    "pickup_location",
+    "city_or_municipality",
+    "pickup_date_time",
+    "barangay",
+    "van_id",
+    "booking_end_date", // Added booking_end_date to required fields
+  ];
+  for (const field of requiredFields) {
+    if (!bookingData[field]) {
+      return res
+        .status(400)
+        .json({ error: `${field.replace("_", " ")} is required.` });
     }
+  }
 
-    // Get the URL of the uploaded image
-    const imagePath = req.file.path; // Ensure this is the correct path
-
-    // Set the proof_of_payment and ensure van_id and booking_end_date are included
-    const bookingData = { 
-        ...req.body, 
-        proof_of_payment: imagePath 
-    };
-
-    // Ensure all required fields are included in bookingData
-    const requiredFields = [
-        'first_name', 
-        'last_name', 
-        'email', 
-        'phone_number', 
-        'date_of_birth', 
-        'pickup_location', 
-        'city_or_municipality', 
-        'pickup_date_time', 
-        'barangay', 
-        'van_id',
-        'booking_end_date' // Added booking_end_date to required fields
-    ];
-    for (const field of requiredFields) {
-        if (!bookingData[field]) {
-            return res.status(400).json({ error: `${field.replace('_', ' ')} is required.` });
-        }
+  Booking.createBooking(bookingData, (err, bookingId) => {
+    if (err) {
+      console.error("Database Error:", err); // Log the error
+      return res.status(400).json({ error: err.message });
     }
-
-    Booking.createBooking(bookingData, (err, bookingId) => {
-        if (err) {
-            console.error('Database Error:', err); // Log the error
-            return res.status(400).json({ error: err.message });
-        }
-        res.status(201).json({ bookingId });
-    });
+    res.status(201).json({ bookingId });
+  });
 };
 
 exports.getAllBookings = (req, res) => {
-    Booking.getAllBookings((err, bookings) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(bookings);
-    });
+  Booking.getAllBookings((err, bookings) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json(bookings);
+  });
 };
 
 exports.getBookingById = (req, res) => {
-    const bookingId = req.params.id;
+  const bookingId = req.params.id;
 
-    Booking.getBookById(bookingId, (err, booking) => {
-        if (err) {
-            if (err.message === 'Booking not found') {
-                return res.status(404).json({ error: err.message });
-            }
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(booking);
-    });
-}
+  Booking.getBookById(bookingId, (err, booking) => {
+    if (err) {
+      if (err.message === "Booking not found") {
+        return res.status(404).json({ error: err.message });
+      }
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json(booking);
+  });
+};
 
 exports.updateBookingStatus = async (req, res) => {
-    const bookingId = req.params.id;
-    const { status, reason } = req.body;
+  const bookingId = req.params.id;
+  const { status, reason } = req.body;
 
-    if (!status) {
-        return res.status(400).json({ error: 'Status is required' });
+  if (!status) {
+    return res.status(400).json({ error: "Status is required" });
+  }
+
+  try {
+    const result = await Booking.updateBookingStatus(bookingId, status);
+    const booking = await Booking.getBookingById(bookingId);
+
+    const statusLower = status.toLowerCase();
+    if (statusLower === "confirmed") {
+      await sendConfirmationEmail(booking);
+    } else if (statusLower === "completed") {
+      await sendCompletedEmail(booking);
+    } else if (statusLower === "declined") {
+      await sendDeclinedEmail(booking, reason);
     }
 
-
-    try {
-        const result = await Booking.updateBookingStatus(bookingId, status);
-        const booking = await Booking.getBookingById(bookingId);
-
-        const statusLower = status.toLowerCase();
-        if (statusLower === 'confirmed') {
-            await sendConfirmationEmail(booking);
-        } else if (statusLower === 'completed') {
-            await sendCompletedEmail(booking);
-        }
-
-        res.status(200).json(result);
-    } catch (error) {
-        console.error('Error updating booking status:', error);
-        res.status(500).json({ error: 'Failed to update booking status.' });
-    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating booking status:", error);
+    res.status(500).json({ error: "Failed to update booking status." });
+  }
 };
 
 exports.getBookingsByVanId = (req, res) => {
-    const vanId = req.params.vanId;
-    if (!vanId) {
-        return res.status(400).json({ error: 'Van ID is required' });
-    }
+  const vanId = req.params.vanId;
+  if (!vanId) {
+    return res.status(400).json({ error: "Van ID is required" });
+  }
 
-    Booking.getBookingsByVanId(vanId, (err, bookings) => {
-        if (err) {
-            console.error('Error fetching bookings by van ID:', err);
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(bookings);
-    });
+  Booking.getBookingsByVanId(vanId, (err, bookings) => {
+    if (err) {
+      console.error("Error fetching bookings by van ID:", err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json(bookings);
+  });
 };
 
 exports.getBookingStatusCounts = (req, res) => {
-    Booking.getBookingStatusCounts((err, statusCounts) => {
-        if (err) {
-            console.error('Error fetching booking status counts:', err);
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(statusCounts); // Return the counts of each status
-    });
+  Booking.getBookingStatusCounts((err, statusCounts) => {
+    if (err) {
+      console.error("Error fetching booking status counts:", err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json(statusCounts); // Return the counts of each status
+  });
 };
 
 exports.getBookingStatusCountsByVan = (req, res) => {
-    const vanId = req.params.vanId; // Get the van ID from the request parameters
-    if (!vanId) {
-        return res.status(400).json({ error: 'Van ID is required' });
-    }
+  const vanId = req.params.vanId; // Get the van ID from the request parameters
+  if (!vanId) {
+    return res.status(400).json({ error: "Van ID is required" });
+  }
 
-    Booking.getBookingStatusCountsByVan(vanId, (err, statusCounts) => {
-        if (err) {
-            console.error('Error fetching booking status counts by van:', err);
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(statusCounts); // Return the counts of each status for the specified van
-    });
+  Booking.getBookingStatusCountsByVan(vanId, (err, statusCounts) => {
+    if (err) {
+      console.error("Error fetching booking status counts by van:", err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json(statusCounts); // Return the counts of each status for the specified van
+  });
 };
 
 exports.sendDecliningEmail = async (req, res) => {
-    const { bookingId, reason } = req.body;
+  const { bookingId, reason } = req.body;
 
-    try {
-        const booking = await Booking.getBookingById(bookingId);
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
-        await sendDeclinedEmail(booking, reason);
-        res.status(200).json({ message: 'Declined email sent successfully.' });
-    } catch (error) {
-        console.error('Error sending declined email:', error);
-        res.status(500).json({ error: 'Failed to send declined email.' });
+  try {
+    const booking = await Booking.getBookingById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
     }
+    await sendDeclinedEmail(booking, reason);
+    res.status(200).json({ message: "Declined email sent successfully." });
+  } catch (error) {
+    console.error("Error sending declined email:", error);
+    res.status(500).json({ error: "Failed to send declined email." });
+  }
 };
-

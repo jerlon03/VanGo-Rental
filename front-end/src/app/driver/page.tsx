@@ -14,6 +14,8 @@ import { Van } from "@/lib/types/van.type";
 import { getVanDetailsById } from "@/lib/api/van.api";
 import { formatDatePublicRange } from "@/components/date/formatDate";
 import { fetchBookingStatusCountsByVanId } from "@/lib/api/booking.api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DriverDashboard = () => {
   const [data, setData] = useState<ApiResponse | null>(null);
@@ -135,6 +137,7 @@ const DriverDashboard = () => {
       setIsModalOpen(false);
       const result = await getDriver(userId as any);
       setData(result);
+      toast.success("Information updated successfully!");
     } catch (err) {
       setError("Error updating driver information");
       console.error(err);
@@ -158,6 +161,7 @@ const DriverDashboard = () => {
 
   return (
     <div className="w-full">
+      <ToastContainer />
       {error && <p className="text-red-500">{error}</p>}
       <p className="p-2 tracking-[1px]">
         Welcome ,
@@ -193,7 +197,7 @@ const DriverDashboard = () => {
                 />
               </div>
               {trip.count > 0 ? (
-                <div className="text-[25px] font-semibold flex flex-col justify-center items-center">
+                <div className="text-[25px] font-semibold flex flex-col justify-center items-center text-yellow">
                   {trip.count}{" "}
                   <span className="font-medium text-white md:text-[18px] sm:text-[14px] sm:text-center">
                     {trip.title}

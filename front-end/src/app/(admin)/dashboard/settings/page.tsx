@@ -414,11 +414,12 @@ const SettingsPage = () => {
                     />
                   </div>
 
-                  <div className="pt-4">
+                  <div className="pt-4 flex justify-center">
                     <Button
                       name="Save Changes"
                       backgroundColor="alert"
                       onClick={handleSaveChanges}
+                      width="150px"
                     />
                   </div>
                 </div>
@@ -599,15 +600,14 @@ const SettingsPage = () => {
                           </div>
                         )}
                       </div>
-                      {form.paymentName !== payments[index]?.payment_name &&
-                        form.paymentName !== "" &&
-                        form.qrImage !== null && (
-                          <Button
-                            name="Update Payment Method"
-                            backgroundColor="alert"
-                            onClick={() => handleSinglePaymentUpdate(index)}
-                          />
-                        )}
+                      {(form.paymentName !== payments[index]?.payment_name ||
+                        form.qrImage !== null) && (
+                        <Button
+                          name="Update Payment Method"
+                          backgroundColor="alert"
+                          onClick={() => handleSinglePaymentUpdate(index)}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -644,11 +644,12 @@ const SettingsPage = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)} // Update state on change
                 />
               </div>
-              <div className="pt-4">
+              <div className="pt-4 flex justify-center">
                 <Button
                   name="Change Password"
                   backgroundColor="alert"
                   onClick={handleChangePassword} // Add onClick handler
+                  width="150px"
                 />
               </div>
             </div>

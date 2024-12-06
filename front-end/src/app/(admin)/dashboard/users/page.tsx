@@ -3,7 +3,7 @@ import AdminHeader from "@/components/admin/adminHeader";
 import Button from "@/components/Button/button";
 import { FaRegEdit, IoClose, MdDeleteOutline } from "@/components/icons";
 import Modal from "@/components/modals/modalContainer";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "@/components/Form/inputfield";
 import SweetAlert from "@/components/alert/alert";
 import Pagination from "@/components/pagination/pagination";
@@ -16,6 +16,8 @@ import {
   formatDateRange,
   formatDatePublicRange,
 } from "@/components/date/formatDate";
+import { Password } from "primereact/password";
+import { getDriver } from "@/lib/api/driver.api";
 
 const UsersPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,18 +56,43 @@ const UsersPage: React.FC = () => {
   };
   const startIndex = (currentPage - 1) * itemPerPage;
   const endIndex = startIndex + itemPerPage;
-  const currentItems = users
-    .filter((user) => user.role === "driver") // Filter users to only include drivers
-    .filter(
-      (
-        user // Add filtering based on search term
-      ) =>
-        `${user.first_name} ${user.last_name}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .slice(startIndex, endIndex);
+
+  // State to hold current items
+  const [currentItems, setCurrentItems] = useState<any[]>([]);
+
+  // useEffect to fetch current items
+  useEffect(() => {
+    const fetchCurrentItems = async () => {
+      try {
+        const items = await Promise.all(
+          users
+            .filter((user) => user.role === "driver") // Filter users to only include drivers
+            .map(async (user) => {
+              try {
+                const driverData = await getDriver(user.user_id); // Fetch driver data
+                return {
+                  ...user,
+                  Driverstatus: driverData?.driver?.status, // Add the driver's status to the user object
+                };
+              } catch (error) {
+                console.error(
+                  `Error fetching driver for user ${user.user_id}:`,
+                  error
+                );
+                return { ...user }; // Handle error by setting status to "unknown"
+              }
+            })
+        );
+        setCurrentItems(items);
+      } catch (error) {
+        console.error("Error fetching current items:", error);
+        // Optionally, you can set currentItems to an empty array or show an error message
+        setCurrentItems([]);
+      }
+    };
+
+    fetchCurrentItems(); // Call the async function
+  }, [users, currentPage]); // Dependencies: run effect when users or currentPage changes
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault(); // Prevent default form submission
@@ -91,6 +118,12 @@ const UsersPage: React.FC = () => {
       // Update users state with the new user
       setUsers((prevUsers) => [...prevUsers, newUser]); // Add new user to the users state
 
+      // Update currentItems to include the new user with active status
+      setCurrentItems((prevItems) => [
+        ...prevItems,
+        { ...newUser }, // Add new user with Driverstatus as unknown temporarily
+      ]);
+
       // Clear input fields after successful submission
       setFirstName("");
       setLastName("");
@@ -104,7 +137,7 @@ const UsersPage: React.FC = () => {
     } catch (error: any) {
       // Check if the error response has a status code of 400
       if (error.response && error.response.status === 400) {
-        SweetAlert.showError(
+        SweetAlert.showWarning(
           error.response.data.message || "Failed to add user."
         ); // Show specific error message
       } else {
@@ -155,7 +188,6 @@ const UsersPage: React.FC = () => {
                 />
               </div>
             </div>
-
             {/* Section: Email */}
             <div className="mb-6">
               <InputField
@@ -169,26 +201,35 @@ const UsersPage: React.FC = () => {
 
             {/* Section: Password */}
             <div className="flex gap-6 mb-6">
-              <div className="flex-1">
-                <InputField
-                  placeholder="Password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <InputField
-                  placeholder="Confirm Password"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
-                  required
-                />
-              </div>
+              <Password
+                value={password}
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+                feedback={false}
+                tabIndex={1}
+                toggleMask
+                pt={{
+                  input: {
+                    className:
+                      "p-2 border flex w-full items-center placeholder:text-[#CCCCCC] placeholder:font-light",
+                  },
+                }}
+              />
+              <Password
+                value={confirmPassword}
+                placeholder="Confirm Password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                feedback={false}
+                tabIndex={1}
+                toggleMask
+                pt={{
+                  input: {
+                    className:
+                      "p-2 border flex w-full items-center placeholder:text-[#CCCCCC] placeholder:font-light",
+                  },
+                }}
+                className="placeholder:text-websiteBlack"
+              />
             </div>
 
             {/* Submit Button */}
@@ -261,8 +302,17 @@ const UsersPage: React.FC = () => {
                 }}
               />
               <Column
-                field="sta"
-                header="Assigned or Not Assigned?"
+                field=""
+                header="Van Assignment Status"
+                body={(rowData) => {
+                  return (
+                    <span>
+                      {rowData.Driverstatus === "assigned"
+                        ? "Assigned"
+                        : "Not Assigned"}
+                    </span>
+                  );
+                }}
                 pt={{
                   bodyCell: {
                     className: "border text-blackColor p-2 text-[14px]",
@@ -312,9 +362,6 @@ const UsersPage: React.FC = () => {
                     case "inactive":
                       statusClass = "bg-red-100 text-red-800";
                       break;
-                    // case 'pending':
-                    //   statusClass = 'bg-yellow-100 text-yellow-800';
-                    //   break;
                     default:
                       statusClass = "bg-gray-100 text-gray-800";
                   }

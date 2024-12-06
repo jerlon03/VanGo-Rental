@@ -11,6 +11,7 @@ const getDriver = async (userId: number) => {
         throw error; // Rethrow the error to be handled in the calling function
     }
 }
+
 const updateDriver = async (userId: number, updatedData: {
     first_name: string;
     last_name: string;

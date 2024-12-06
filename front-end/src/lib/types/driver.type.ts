@@ -23,6 +23,7 @@ interface User {
     first_name: string; // Added first name
     last_name: string;  // Added last name
     full_name: string; 
+    status: string;
   }
 
   export interface DriverDetails {

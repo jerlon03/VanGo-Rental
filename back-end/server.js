@@ -57,6 +57,14 @@ app.use("*", (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  // Log specific connection errors
+  if (err.code === "ECONNRESET") {
+    console.error("Connection reset error:", err);
+    return res
+      .status(500)
+      .json({ error: true, message: "Connection reset error!" });
+  }
+
   console.error("Error:", err.stack);
   res.status(500).json({ error: true, message: "Something went wrong!" });
 });

@@ -49,6 +49,8 @@ const ForgotPassword = () => {
             text: "The entered email does not exist in our records.",
             icon: "warning",
             confirmButtonText: "try Again",
+          }).then(() => {
+            setIsModalOpen(true); // Reopen the modal
           });
         } else {
           Swal.fire({
@@ -73,11 +75,7 @@ const ForgotPassword = () => {
         icon: "success",
         confirmButtonText: "Continue",
       }).then(() => {
-        // Open the link in a new tab
-        window.open(
-          "https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&emr=1&ltmpl=default&ltmplcache=2&osid=1&passive=true&rm=false&scc=1&service=mail&ss=1&ifkv=AcMMx-fPoSa09y4KG-adLY-xsoE1sS7VDGgi7IP1SWTfl4tnqRZkw336VuOSUv8Iy-RoLi4-s2Fp&ddm=0&flowName=GlifWebSignIn&flowEntry=ServiceLogin",
-          "_blank"
-        );
+        router.push("/login");
       });
     } catch (error) {
       console.error("Error sending request:", error);
