@@ -8,6 +8,7 @@ const Van = function (van) {
   this.people_capacity = van.people_capacity;
   this.transmission_type = van.transmission_type;
   this.things_capacity = van.things_capacity;
+  this.estimate_price = van.estimate_price;
   this.status = van.status || "available";
 };
 

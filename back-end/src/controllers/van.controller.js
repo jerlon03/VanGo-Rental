@@ -10,6 +10,7 @@ exports.createVan = (req, res) => {
     transmission_type,
     things_capacity,
     driver_id,
+    estimate_price,
   } = req.body; // Extract driver_id
   const imagePath = req.file?.path || null;
 
@@ -25,6 +26,7 @@ exports.createVan = (req, res) => {
     people_capacity,
     transmission_type,
     things_capacity,
+    estimate_price: estimate_price || 0,
   });
 
   // Save the Van object to the database

@@ -13,6 +13,7 @@
     status: 'booked' | 'available' | 'under maintenance'; 
     createdAt: string; 
     driver_id: number;
+    estimate_price: number;
 }
 
   

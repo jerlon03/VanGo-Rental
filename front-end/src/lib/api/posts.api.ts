@@ -16,7 +16,7 @@ const fetchAllPosts = async () => { // Changed function name to camelCase
 }
 
 const fetchUpdatePosts = async (postId: number, updatedData: any) => { // Accept postId and updatedData as parameters
-    const response = await Instance.put<PostsResponse>(`/api/posting/${postId}`, updatedData); // Use PUT method for updating
+    const response = await Instance.put<PostsResponse>(`/api/posting/update/${postId}`, updatedData); // Use PUT method for updating
     return response.data;
 }
 const fetchCreatePost = async (data: FormData) => { // Ensure the parameter type is FormData

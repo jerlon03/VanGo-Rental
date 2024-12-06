@@ -23,6 +23,7 @@ import { Driver } from "@/lib/types/driver.type";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import TextArea from "@/components/Form/textarea";
 import { getAllDriver, getVanById } from "@/lib/api/driver.api";
+import { TbCurrencyPeso } from "react-icons/tb";
 
 const VanInventory = () => {
   const [vans, setVans] = useState<Van[]>([]);
@@ -34,6 +35,7 @@ const VanInventory = () => {
     people_capacity: "",
     transmission_type: "",
     things_capacity: "",
+    estimate_price: "",
   });
   const [vanImage, setVanImage] = useState<File | null>(null);
   const [inputErrors, setInputErrors] = useState({
@@ -107,6 +109,7 @@ const VanInventory = () => {
       !newVan.people_capacity ||
       !newVan.transmission_type ||
       !newVan.things_capacity ||
+      !newVan.estimate_price ||
       !selectedDriver
     ) {
       SweetAlert.showError(
@@ -152,7 +155,7 @@ const VanInventory = () => {
       const data = await res.json();
       if (res.ok) {
         SweetAlert.showSuccess("Van added successfully");
-        setNewVan(initialVanState);
+        setNewVan(initialVanState as any);
         setVanImage(null);
         setSelectedDriver(null); // Reset the selected driver after submission
         setIsModalOpen(false);
@@ -395,6 +398,26 @@ const VanInventory = () => {
             }}
           />
           <Column
+            field="estimate_price"
+            header="Estimate Price"
+            body={(rowData) => (
+              <div className="flex items-center justify-center">
+                <TbCurrencyPeso className="mr-1" />
+                {rowData.estimate_price}
+              </div>
+            )}
+            pt={{
+              bodyCell: {
+                className:
+                  "border text-blackColor p-2 text-[15px] text-center lg:text-[13px]",
+              },
+              headerCell: {
+                className:
+                  "px-3 font-medium lg:text-[14px] text-[15px] xl:text-[14px]  border-r",
+              },
+            }}
+          />
+          <Column
             field="people_capacity"
             header="People Capacity"
             pt={{
@@ -575,28 +598,45 @@ const VanInventory = () => {
                     </p>
                   )}
                 </div>
+              </div>
+              <div className="flex gap-4">
                 <select
                   name="transmission_type"
                   value={newVan.transmission_type}
                   onChange={handleInputChange}
-                  className="w-full p-2 border rounded text-gray-700 outline-none"
+                  className="w-full p-2 border rounded text-gray-700 outline-none  "
                 >
-                  <option value="">Transmission Type:</option>
-                  <option value="Manual" className="text-[13px]">
+                  <option value="" className="text-[#CCCCCC] font-light">
+                    Transmission Type:
+                  </option>
+                  <option value="Manual" className="text-[13px] text-[#CCCCCC]">
                     Manual
                   </option>
-                  <option value="Automatic" className="text-[13px]">
+                  <option
+                    value="Automatic"
+                    className="text-[13px] text-[#CCCCCC]"
+                  >
                     Automatic
                   </option>
                 </select>
+                <div className="w-full">
+                  <InputField
+                    type="text"
+                    name="estimate_price"
+                    value={newVan.estimate_price}
+                    onChange={handleInputChange}
+                    placeholder="Estimate Price"
+                    inputMode="numeric"
+                  />
+                </div>
               </div>
               <div className="flex w-full justify-between gap-4">
                 <div className="flex flex-col gap-[.5rem] w-[55%]">
-                  <p>Van Image</p>
+                  <p className="text-[#CCCCCC] font-light">Van Image</p>
                   <ImagesUploader onUpload={handleImageUpload} />
                 </div>
                 <div className="w-[45%] gap-[.5rem] flex flex-col">
-                  <p>Driver Assignee</p>
+                  <p className="text-[#CCCCCC] font-light">Driver Assignee</p>
                   {loadingDrivers ? ( // Show loading state
                     <p>Loading drivers...</p>
                   ) : (
@@ -658,7 +698,7 @@ const VanInventory = () => {
                   height={300}
                 />
               </div>
-              <div className="p-3 flex w-full items-start justify-between gap-[20px]">
+              <div className="p-3 flex w-full items-start justify-between gap-[20px] text-[14px]">
                 <div className="flex flex-col w-[50%]">
                   <p>
                     <strong>Van Name:</strong> {selectedVan.van_name}
@@ -677,6 +717,11 @@ const VanInventory = () => {
                   <p>
                     <strong>Transmission Type:</strong>{" "}
                     {selectedVan.transmission_type}
+                  </p>
+                  <p className="flex items-center">
+                    <strong>Estimate Price:</strong>{" "}
+                    <TbCurrencyPeso className="mr-1" />
+                    {selectedVan.estimate_price}
                   </p>
                   <p>
                     <strong>Status:</strong> {selectedVan.status}

@@ -15,6 +15,8 @@ import { getPublicAllPayments } from "@/lib/api/payment.api";
 import { Payment } from "@/lib/types/payment.type";
 import { Calendar } from "primereact/calendar";
 import { publicBookingByVanId } from "@/lib/api/booking.api";
+import { TbCurrencyPeso } from "react-icons/tb";
+
 import {
   TbManualGearboxFilled,
   IoPerson,
@@ -399,6 +401,12 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
           <h1 className="font-semibold lg:text-[18px] md:text-[16px] sm:text-[14px]">
             {van.van_name}
           </h1>
+          <div className="flex md:gap-[10px] sm:gap-[5px] items-center ">
+            <TbCurrencyPeso className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
+            <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
+              {van.estimate_price} Estimate Price A Day
+            </p>
+          </div>
           <div className="flex md:gap-[10px] sm:gap-[5px] items-center ">
             <TbManualGearboxFilled className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
             <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
