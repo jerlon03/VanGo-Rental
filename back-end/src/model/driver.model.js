@@ -140,6 +140,22 @@ const getAllDriversWithStatusNotAssigned = (callback) => {
   );
 };
 
+const updateDriverStatusToNotAssigned = (userId, callback) => {
+  return dbConn.query(
+    `UPDATE drivers SET status = 'not assigned' WHERE driver_id = ?`,
+    [userId],
+    (err, results) => {
+      if (err) {
+        return callback(err); // Handle any errors that occur during the query
+      }
+      if (results.affectedRows === 0) {
+        return callback(new Error("No driver found with the provided user_id")); // Handle case where no driver exists
+      }
+      callback(null, results.affectedRows); // Return the number of affected rows
+    }
+  );
+};
+
 module.exports = {
   updateDriver,
   getDriverProfile,
@@ -148,4 +164,5 @@ module.exports = {
   getAllDrivers,
   getDriverById,
   getAllDriversWithStatusNotAssigned,
+  updateDriverStatusToNotAssigned,
 };

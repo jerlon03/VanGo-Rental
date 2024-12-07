@@ -1,4 +1,5 @@
 const dbConn = require("../../config/db.config");
+const Driver = require("./driver.model");
 
 const Van = function (van) {
   this.van_id = van.van_id;
@@ -13,6 +14,7 @@ const Van = function (van) {
 };
 
 Van.create = (newVan, driver_id, result) => {
+  // Step 1: Insert the new van into the van table
   dbConn.query("INSERT INTO van SET ?", newVan, (err, res) => {
     if (err) {
       return dbConn.rollback(() => {
@@ -22,17 +24,31 @@ Van.create = (newVan, driver_id, result) => {
     }
     console.log("Created van: ", { id: res.insertId, ...newVan });
 
-    const driverUpdateQuery =
-      "UPDATE drivers SET van_id = ?, status = 'assigned' WHERE driver_id = ?";
-    dbConn.query(driverUpdateQuery, [res.insertId, driver_id], (err) => {
+    // Step 2: Automatically insert into driver_van table using the newly created van_id
+    const driverVanInsertQuery =
+      "INSERT INTO driver_van (driver_id, van_id) VALUES (?, ?)";
+    dbConn.query(driverVanInsertQuery, [driver_id, res.insertId], (err) => {
       if (err) {
         return dbConn.rollback(() => {
-          console.log("Error updating drivers: ", err);
+          console.log("Error inserting into driver_van: ", err);
           result(err, null);
         });
       }
-      console.log("Updated driver with van_id: ", res.insertId);
-      result(null, { id: res.insertId, ...newVan });
+      console.log("Inserted into driver_van with van_id: ", res.insertId);
+
+      // Step 3: Update the driver's status
+      const driverUpdateQuery =
+        "UPDATE drivers SET van_id = ?, status = 'assigned' WHERE driver_id = ?";
+      dbConn.query(driverUpdateQuery, [res.insertId, driver_id], (err) => {
+        if (err) {
+          return dbConn.rollback(() => {
+            console.log("Error updating drivers: ", err);
+            result(err, null);
+          });
+        }
+        console.log("Updated driver with van_id: ", res.insertId);
+        result(null, { id: res.insertId, ...newVan });
+      });
     });
   });
 };
@@ -164,6 +180,73 @@ Van.getCount = (result) => {
     }
     result(null, res[0].total_count);
   });
+};
+
+Van.delete = (van_id, result) => {
+  // First, find the driver associated with the van in the association table
+  dbConn.query(
+    "SELECT driver_id FROM driver_van WHERE van_id = ?",
+    [van_id],
+    (err, res) => {
+      if (err) {
+        console.log("Error retrieving driver association: ", err);
+        result(err, null);
+        return;
+      }
+
+      let driver_id = null; // Initialize driver_id
+      if (res.length > 0) {
+        driver_id = res[0].driver_id; // Get the associated driver_id
+      }
+
+      // Proceed to delete the association from the driver_van table
+      dbConn.query(
+        "DELETE FROM driver_van WHERE van_id = ?",
+        [van_id],
+        (err) => {
+          if (err) {
+            console.log("Error deleting driver association: ", err);
+            result(err, null);
+            return;
+          }
+
+          // Proceed to delete the van
+          dbConn.query(
+            "DELETE FROM van WHERE van_id = ?",
+            [van_id],
+            (err, res) => {
+              if (err) {
+                console.log("Error deleting van: ", err);
+                result(err, null);
+                return;
+              }
+
+              if (res.affectedRows == 0) {
+                // Van with the id not found
+                result({ kind: "not_found" }, null);
+                return;
+              }
+
+              console.log("Deleted van with id: ", van_id);
+
+              // If a driver was associated, update their status to 'not assigned'
+              if (driver_id) {
+                // Call the Driver model's method to update the driver's status
+                Driver.updateDriverStatusToNotAssigned(driver_id, (err) => {
+                  if (err) {
+                    console.log("Error updating driver status: ", err);
+                    // You may choose to handle this error differently
+                  }
+                });
+              }
+
+              result(null, { driver_id }); // Return the driver_id for further processing if needed
+            }
+          );
+        }
+      );
+    }
+  );
 };
 
 module.exports = Van;

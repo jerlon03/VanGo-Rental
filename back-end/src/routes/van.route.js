@@ -17,5 +17,6 @@ router.get("/van/:van_id", vanController.getVanByID);
 router.get("/vans/count-by-status", vanController.getCountByStatus);
 router.put("/update-status/:van_id", vanController.updateVanStatus);
 router.get("/vans/count", vanController.getTotalVansCount);
+router.delete("/delete/:van_id", vanController.deleteVan);
 
 module.exports = router;

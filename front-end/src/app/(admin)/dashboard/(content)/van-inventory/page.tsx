@@ -6,6 +6,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
   fetchAllVan,
+  fetchDeleteVan,
   fetchUpdateVan,
   fetchUpdateVanStatus,
 } from "@/lib/api/van.api";
@@ -24,6 +25,7 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import TextArea from "@/components/Form/textarea";
 import { getAllDriver, getVanById } from "@/lib/api/driver.api";
 import { TbCurrencyPeso } from "react-icons/tb";
+import { fetchBookingStatusCountsByVanId } from "@/lib/api/booking.api";
 
 const VanInventory = () => {
   const [vans, setVans] = useState<Van[]>([]);
@@ -49,6 +51,9 @@ const VanInventory = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control the edit modal
   const [loadingDrivers, setLoadingDrivers] = useState(true); // New loading state
   const [driverDetails, setDriverDetails] = useState<Driver | null>(null); // New state for driver details
+  const [bookingStatusMap, setBookingStatusMap] = useState<{
+    [key: string]: { confirmed: number; ongoing: number; pending: number };
+  }>({}); // State to hold booking statuses
 
   const initialVanState = {
     van_name: "",
@@ -181,10 +186,38 @@ const VanInventory = () => {
     const fetchVans = async () => {
       try {
         const vanData = await fetchAllVan();
-        // Sort vans by van_id in descending order
         const sortedVans = vanData.data.sort(
           (a: Van, b: Van) => b.van_id - a.van_id
         );
+
+        // Fetch booking status for each van
+        const statusPromises = sortedVans.map(async (van) => {
+          const statusCounts = await fetchBookingStatusCountsByVanId(
+            van.van_id
+          );
+          return { vanId: van.van_id, statusCounts }; // Return the van ID and its status counts
+        });
+
+        const statuses = await Promise.all(statusPromises);
+        const statusMap = statuses.reduce(
+          (acc, { vanId, statusCounts }) => {
+            acc[vanId] = {
+              confirmed: statusCounts.confirmed || 0,
+              ongoing: statusCounts.ongoing || 0,
+              pending: statusCounts.pending || 0,
+            }; // Ensure all required properties are present
+            return acc;
+          },
+          {} as {
+            [key: string]: {
+              confirmed: number;
+              ongoing: number;
+              pending: number;
+            };
+          }
+        );
+
+        setBookingStatusMap(statusMap as any); // Set the booking status map
         setVans(sortedVans); // Set the sorted vans to state
       } catch (error) {
         setError("Failed to fetch vans.");
@@ -217,9 +250,12 @@ const VanInventory = () => {
         formData.append(key, value.toString());
       });
 
-      // // {{ edit_1 }} - Call the new fetchUpdateVan function
-      // const updatedVan = await fetchUpdateVan(selectedVan?.van_id as any, newVan as any);
-      // // {{ edit_1 }}
+      // {{ edit_1 }} - Call the new fetchUpdateVan function
+      const updatedVan = await fetchUpdateVan(
+        selectedVan?.van_id as any,
+        newVan as any
+      );
+      // {{ edit_1 }}
 
       SweetAlert.showSuccess("Van updated successfully");
       setIsEditModalOpen(false);
@@ -242,15 +278,32 @@ const VanInventory = () => {
     }
   };
 
-  const handleDelete = (vanId: string) => {
-    const confirmed = SweetAlert.showConfirm(
+  const handleDelete = async (vanId: number) => {
+    const confirmed = await SweetAlert.showConfirm(
       "Are you sure you want to delete this van?"
     );
-    if (!confirmed) {
-      console.log(`Van with ID ${vanId} would be deleted.`);
-      SweetAlert.showSuccess("Van deleted successfully (static action)");
-      // Here you can also update the state to remove the van from the list if needed
-      // setVans(prevVans => prevVans.filter(van => van.van_id !== vanId));
+    if (confirmed) {
+      const bookingStatus = bookingStatusMap[vanId];
+      if (
+        bookingStatus &&
+        (bookingStatus.confirmed > 0 ||
+          bookingStatus.ongoing > 0 ||
+          bookingStatus.pending > 0)
+      ) {
+        SweetAlert.showWarning(
+          "This van cannot be deleted because it has active bookings."
+        );
+        return; // Exit if there are active bookings
+      }
+      try {
+        await fetchDeleteVan(vanId); // Call the fetchDeleteVan function
+        SweetAlert.showSuccess("Van deleted successfully");
+        setVans((prevVans) => prevVans.filter((van) => van.van_id !== vanId)); // Update the state to remove the deleted van
+        setIsDetailsModalOpen(false); // Close the details modal after deletion
+      } catch (error) {
+        SweetAlert.showError("Failed to delete van");
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -279,6 +332,20 @@ const VanInventory = () => {
       return; // Exit if the van is already under maintenance
     }
 
+    // Check booking status counts
+    const bookingStatus = bookingStatusMap[vanId];
+    if (
+      bookingStatus &&
+      (bookingStatus.confirmed > 0 ||
+        bookingStatus.ongoing > 0 ||
+        bookingStatus.pending > 0)
+    ) {
+      SweetAlert.showWarning(
+        "This van cannot be marked as under maintenance because it has active bookings."
+      );
+      return; // Exit if there are active bookings
+    }
+
     const confirmed = await SweetAlert.showConfirm(
       "Are you sure you want to mark this van as under maintenance?"
     );
@@ -296,6 +363,36 @@ const VanInventory = () => {
 
         if (response) {
           SweetAlert.showSuccess("Van status updated to under maintenance");
+          const updatedVans = await fetchAllVan(); // Refresh the van list
+          setVans(updatedVans.data); // Update the state with the new list of vans
+        } else {
+          SweetAlert.showError("Failed to update van status");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        SweetAlert.showError("Failed to update van status");
+      }
+    }
+  };
+
+  const handleVanAvailable = async (vanId: number) => {
+    const confirmed = await SweetAlert.showConfirm(
+      "Are you sure you want to mark this van as available?"
+    );
+    if (confirmed) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          SweetAlert.showError("You are not authorized. Please log in.");
+          return;
+        }
+
+        // Call the new fetchUpdateVanStatus function to set the status to available
+        const response = await fetchUpdateVanStatus(vanId, "available");
+        console.log("Update Response:", response); // Log the response
+
+        if (response) {
+          SweetAlert.showSuccess("Van status updated to available");
           const updatedVans = await fetchAllVan(); // Refresh the van list
           setVans(updatedVans.data); // Update the state with the new list of vans
         } else {
@@ -475,7 +572,7 @@ const VanInventory = () => {
           />
           <Column
             field="status"
-            header="Status"
+            header="Van Status"
             body={(rowData) => {
               let statusClass = "";
 
@@ -698,51 +795,96 @@ const VanInventory = () => {
                   height={300}
                 />
               </div>
-              <div className="p-3 flex w-full items-start justify-between gap-[20px] text-[14px]">
-                <div className="flex flex-col w-[50%]">
-                  <p>
-                    <strong>Van Name:</strong> {selectedVan.van_name}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {selectedVan.van_description}
-                  </p>
-                  <p>
-                    <strong>People Capacity:</strong>{" "}
-                    {selectedVan.people_capacity}
-                  </p>
-                  <p>
-                    <strong>Things Capacity:</strong>{" "}
-                    {selectedVan.things_capacity}
-                  </p>
-                  <p>
-                    <strong>Transmission Type:</strong>{" "}
-                    {selectedVan.transmission_type}
-                  </p>
-                  <p className="flex items-center">
-                    <strong>Estimate Price:</strong>{" "}
-                    <TbCurrencyPeso className="mr-1" />
-                    {selectedVan.estimate_price}
-                  </p>
-                  <p>
-                    <strong>Status:</strong> {selectedVan.status}
-                  </p>
-                  <p>
-                    <strong>Date Created:</strong>{" "}
-                    {formatDateRange(selectedVan.createdAt)}
-                  </p>
+              <div className="p-3 flex w-full items-start justify-between gap-[20px] text-[14px] bg-gray-100 rounded-lg shadow-md">
+                <div className="flex flex-col w-[50%] bg-white p-4 rounded-lg shadow-sm">
+                  <h2 className="text-[16px] font-semibold mb-2 text-websiteBlack">
+                    Van Details
+                  </h2>
+                  {[
+                    { label: "Van Name", value: selectedVan.van_name },
+                    {
+                      label: "Description",
+                      value: selectedVan.van_description,
+                    },
+                    {
+                      label: "People Capacity",
+                      value: selectedVan.people_capacity,
+                    },
+                    {
+                      label: "Things Capacity",
+                      value: selectedVan.things_capacity,
+                    },
+                    {
+                      label: "Transmission Type",
+                      value: selectedVan.transmission_type,
+                    },
+                    {
+                      label: "Estimate Price",
+                      value: (
+                        <>
+                          <TbCurrencyPeso className="mr-1" />
+                          {selectedVan.estimate_price}
+                        </>
+                      ),
+                    },
+                    { label: "Status", value: selectedVan.status },
+                    {
+                      label: "Date Created",
+                      value: formatDateRange(selectedVan.createdAt),
+                    },
+                  ].map(({ label, value }) => (
+                    <p key={label} className="py-1 flex gap-4">
+                      <p className="font-medium">{label}:</p> {value}
+                    </p>
+                  ))}
                 </div>
                 {driverDetails && (
-                  <div className="w-[50%]">
-                    <p>
-                      <strong>Driver Name:</strong> {driverDetails.first_name}{" "}
-                      {driverDetails.last_name}
-                    </p>
-                    <p>
-                      <strong>Driver ID:</strong> DR-O{driverDetails.driver_id}
-                    </p>
-                    <p>
-                      <strong>Phone Number:</strong> {driverDetails.phoneNumber}
-                    </p>
+                  <div className="w-[50%] flex flex-col bg-white p-4 rounded-lg shadow-sm">
+                    <h2 className="text-[16px] font-semibold mb-[2px] text-websiteBlack">
+                      Driver Details
+                    </h2>
+                    {[
+                      {
+                        label: "Driver Name",
+                        value: `${driverDetails.first_name} ${driverDetails.last_name}`,
+                      },
+                      {
+                        label: "Driver ID",
+                        value: `DR-O${driverDetails.driver_id}`,
+                      },
+                      {
+                        label: "Phone Number",
+                        value: driverDetails.phoneNumber,
+                      },
+                    ].map(({ label, value }) => (
+                      <p key={label} className="py-1">
+                        <p className="font-medium">{label}:</p> {value}
+                      </p>
+                    ))}
+                    <h2 className="text-[16px] font-semibold mt-2 text-websiteBlack">
+                      Active Booking Status
+                    </h2>
+                    {[
+                      {
+                        label: "Confirmed",
+                        value:
+                          bookingStatusMap[selectedVan.van_id]?.confirmed || 0,
+                      },
+                      {
+                        label: "Ongoing",
+                        value:
+                          bookingStatusMap[selectedVan.van_id]?.ongoing || 0,
+                      },
+                      {
+                        label: "Pending",
+                        value:
+                          bookingStatusMap[selectedVan.van_id]?.pending || 0,
+                      },
+                    ].map(({ label, value }) => (
+                      <p key={label} className="py-1 flex gap-4">
+                        <p className="font-medium">{label}:</p> {value}
+                      </p>
+                    ))}
                   </div>
                 )}
               </div>
@@ -750,50 +892,61 @@ const VanInventory = () => {
           )}
           <div className="py-2 px-6 border-t">
             <div className="flex justify-end space-x-2">
-              {selectedVan?.status === "available" && ( // Show edit and delete buttons only if available
-                <>
-                  {[
-                    {
-                      icon: <FaRegEdit size={18} />,
-                      onClick: () => handleEditConfirmation(selectedVan!),
-                      tooltip: "Edit",
-                      color: "text-primaryColor",
-                    },
-                    {
-                      icon: <MdDeleteOutline size={22} />,
-                      onClick: () => handleDelete(selectedVan?.van_id as any),
-                      tooltip: "Delete",
-                      color: "text-red-400",
-                    },
-                    {
-                      icon: <FaTools size={22} />,
-                      onClick: () =>
-                        handleVanMaintenance(selectedVan?.van_id as any),
-                      tooltip: "Under Maintenance",
-                      color: "text-yellow",
-                    },
-                  ].map((button, index) => (
-                    <div
-                      key={index}
-                      className="p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor group hover:bg-primaryColor transition-colors duration-200"
-                    >
-                      <div className="relative group">
-                        <div
-                          className="flex justify-center items-center h-full cursor-pointer"
-                          onClick={button.onClick}
-                        >
-                          {React.cloneElement(button.icon, {
-                            className: `${button.color} group-hover:text-white`,
-                          })}
-                        </div>
-                        {/* Tooltip */}
-                        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2">
-                          {button.tooltip}
+              {selectedVan &&
+                selectedVan.status === "available" && ( // Show edit and delete buttons only if available
+                  <>
+                    {[
+                      {
+                        icon: <FaRegEdit size={18} />,
+                        onClick: () => handleEditConfirmation(selectedVan!),
+                        tooltip: "Edit",
+                        color: "text-primaryColor",
+                      },
+                      {
+                        icon: <MdDeleteOutline size={22} />,
+                        onClick: () => handleDelete(selectedVan?.van_id as any),
+                        tooltip: "Delete",
+                        color: "text-red-400",
+                      },
+                      {
+                        icon: <FaTools size={22} />,
+                        onClick: () =>
+                          handleVanMaintenance(selectedVan?.van_id as any),
+                        tooltip: "Under Maintenance",
+                        color: "text-yellow",
+                      },
+                    ].map((button, index) => (
+                      <div
+                        key={index}
+                        className="p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor group hover:bg-primaryColor transition-colors duration-200"
+                      >
+                        <div className="relative group">
+                          <div
+                            className="flex justify-center items-center h-full cursor-pointer"
+                            onClick={button.onClick}
+                          >
+                            {React.cloneElement(button.icon, {
+                              className: `${button.color} group-hover:text-white`,
+                            })}
+                          </div>
+                          {/* Tooltip */}
+                          <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2">
+                            {button.tooltip}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </>
+                    ))}
+                  </>
+                )}
+              {selectedVan && selectedVan.status === "under maintenance" && (
+                <div className="flex justify-end p-2">
+                  <FaTools
+                    onClick={() => handleVanAvailable(selectedVan.van_id)}
+                    className="text-blue-400 cursor-pointer"
+                    size={22}
+                    title="Mark as Available"
+                  />
+                </div>
               )}
               <div className="relative group">
                 <div className="p-2 border-2 w-[40px] flex justify-center rounded-[5px] border-primaryColor hover:bg-primaryColor transition-colors duration-200">

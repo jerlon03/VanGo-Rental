@@ -23,6 +23,8 @@ import {
   BiSolidShoppingBags,
 } from "@/components/icons/index";
 
+import LoaderModal from "@/components/modals/LoaderModal"; // Import the LoaderModal
+
 interface VanCardProps {
   van: Van; // Expecting a prop named 'van' of type 'Van'
   showDescription?: boolean; // New optional prop to control description visibility
@@ -259,6 +261,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsLoading(true); // Set loading state to true
 
     // Validate pick-up location
     if (!formData.pickupLocation) {
@@ -293,9 +296,6 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     if (!isConfirmed) {
       return; // Exit the function if the user cancels
     }
-
-    // Set loading state to true
-    setIsLoading(true);
 
     // Prepare booking details to send using FormData
     const formDataToSubmit = new FormData();
@@ -378,8 +378,8 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
       console.error("Error submitting booking:", error); // Log the entire error object
       SweetAlert.showError("Failed to submit booking. Please try again.");
     } finally {
-      // Reset loading state
-      setIsLoading(false);
+      setIsLoading(false); // Reset loading state
+      setCurrentModal(null); // Close the modal after submission
     }
 
     // Reset form fields
@@ -398,9 +398,6 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
       reservationImage: null,
       municipality: "",
     });
-
-    // Optionally close the modal
-    setCurrentModal(null); // Close the modal
   };
 
   const handleImageUpload = (file: File) => {
@@ -528,7 +525,6 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
           </div>
         </div>
       </Modal>
-
       <Modal
         onClose={() => setCurrentModal(null)}
         isOpen={currentModal === "booking"}
@@ -807,6 +803,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
           </form>
         </div>
       </Modal>
+      <LoaderModal isOpen={isLoading} /> {/* Show LoaderModal when loading */}
     </>
   );
 };

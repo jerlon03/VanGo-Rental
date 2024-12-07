@@ -53,8 +53,14 @@ const fetchVanCount = async () => {
     return response.data.total_count; // Return the total_count from the response
 }
 
+const fetchDeleteVan = async (id: number) => {
+    const response = await Instance.delete<DataRes<{ status: string; message: string; driver_id: number }>>(`/api/van/delete/${id}`);
+    return response.data;
+}
+
 export {
     fetchAllVan,
+    fetchDeleteVan,
     fetchAddVan,
     fetchAllPublicVan,
     fetchUpdateVan,

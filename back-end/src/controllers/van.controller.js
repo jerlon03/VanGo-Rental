@@ -1,6 +1,4 @@
 const Van = require("../model/van.model");
-// const multer = require('multer')
-// const cloudinary = require('../../utils/cloudinary')
 
 exports.createVan = (req, res) => {
   const {
@@ -37,7 +35,19 @@ exports.createVan = (req, res) => {
         .status(500)
         .json({ status: "error", message: "Failed to create van" });
     }
-    res.status(201).json({ status: "ok", data: data });
+
+    // Retrieve the van_id and driver_id from the created data
+    const { id: van_id } = data; // Assuming data contains the created van's id
+    const responseData = {
+      status: "ok",
+      data: {
+        van_id,
+        driver_id,
+        ...data, // Include any other data returned from the create method
+      },
+    };
+
+    res.status(201).json(responseData);
   });
 };
 
@@ -182,5 +192,32 @@ exports.getTotalVansCount = (req, res) => {
       });
     }
     res.status(200).json({ status: "ok", total_count: count });
+  });
+};
+
+exports.deleteVan = (req, res) => {
+  const van_id = req.params.van_id; // Assuming the van_id is passed as a URL parameter
+
+  // Call the model's delete method
+  Van.delete(van_id, (err, result) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        return res.status(404).send({
+          status: "error",
+          message: `Van with id ${van_id} not found.`,
+        });
+      }
+      console.error("Failed to delete van:", err);
+      return res.status(500).send({
+        status: "error",
+        message: "Failed to delete van",
+      });
+    }
+
+    res.status(200).json({
+      status: "ok",
+      message: "Van deleted successfully",
+      driver_id: result.driver_id, // Optionally return the driver_id
+    });
   });
 };
