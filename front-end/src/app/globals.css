@@ -267,3 +267,6 @@
     transform: rotate(360deg);
   }
 }
+
+.password_container div {width: 100%;  }
+.password_container div input {  width: 100%; padding-left: 40px;}

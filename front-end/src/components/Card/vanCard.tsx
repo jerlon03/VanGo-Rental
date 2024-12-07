@@ -260,6 +260,12 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Validate pick-up location
+    if (!formData.pickupLocation) {
+      SweetAlert.showError("Pick-up Location is required."); // Show error if location is not provided
+      return; // Exit the function if validation fails
+    }
+
     // Validate booking end date
     if (formData.bookingEndDate && formData.pickupDateTime) {
       if (formData.bookingEndDate < formData.pickupDateTime) {

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Password } from "primereact/password";
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -118,30 +119,39 @@ const LoginPage = () => {
                   </p>
                 )}
               </div>
-              <InputField
-                id="email"
-                type="email"
-                placeholder="Enter your Email / Username"
-                icon={
-                  <MdEmail
-                    className={`${email ? "text-primaryColor" : "text-[#CCCCCC]"} size-[20px]`}
-                  />
-                }
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} // Update email state on input change
-              />
-              <InputField
-                id="password"
-                type="password"
-                placeholder="Enter your Password"
-                icon={
+              <div className="flex flex-col gap-[20px]">
+                <InputField
+                  id="email"
+                  type="email"
+                  placeholder="Enter your Email / Username"
+                  icon={
+                    <MdEmail
+                      className={`${email ? "text-primaryColor" : "text-[#CCCCCC]"} size-[20px]`}
+                    />
+                  }
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)} // Update email state on input change
+                />
+                <div className="relative w-full flex items-center ">
                   <IoMdLock
-                    className={`${password ? "text-primaryColor" : "text-[#CCCCCC]"} size-[20px]`}
+                    className={`ml-[10px] z-10 ${password ? "text-primaryColor" : "text-[#CCCCCC]"} size-[20px] `}
                   />
-                }
-                onChange={(e) => setPassword(e.target.value)}
-                value={password} // Update email state on input change
-              />
+                  <Password
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)} // Update password state on input change
+                    feedback={false}
+                    placeholder="Enter your password"
+                    toggleMask // This will toggle the visibility of the password
+                    pt={{
+                      input: {
+                        className:
+                          "py-2 border rounded-[3px] placeholder:text-[#CCCCCC] placeholder:font-light focus:ring-0 ",
+                      },
+                    }}
+                    className="absolute left-0 w-full password_container"
+                  />
+                </div>
+              </div>
               <p className="text-[14px]">
                 Forgot your password ?{" "}
                 <Link href="/forgot-password">

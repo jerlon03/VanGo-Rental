@@ -5,12 +5,14 @@ type ServiceCardProps = {
   image: string;
   title: string;
   description: string;
+  onClick?: () => void;
 };
 
 const ServiceCard: React.FC<ServiceCardProps> = ({
   image,
   title,
   description,
+  onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -19,6 +21,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       className="border-2 border-yellow rounded-[5px] py-10 flex justify-center items-center flex-col relative w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
       <Image src={image} width={90} height={90} alt={title} />
       <p className="md:text-[20px] sm:text-[18px] font-semibold pt-2">

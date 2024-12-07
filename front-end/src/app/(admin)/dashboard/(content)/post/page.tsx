@@ -544,7 +544,7 @@ const AdminPost = () => {
                   <Image
                     src={selectedPost?.post_image || "/default-image.png"}
                     alt={`${selectedPost?.title} image`}
-                    className="object-contain rounded-[5px] border aspect-[200/200]"
+                    className="object-contain rounded-[5px] "
                     width={200}
                     height={200}
                     onError={(e) => {

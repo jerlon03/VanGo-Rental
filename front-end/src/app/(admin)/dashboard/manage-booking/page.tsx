@@ -306,7 +306,7 @@ const ManageBookings = () => {
             <Column
               header="Pick up Location "
               body={(rowData) =>
-                `${rowData.province} , ${rowData.city_or_municipality}, ${rowData.barangay}, ${rowData.pickup_location} `
+                `CEBU , ${rowData.city_or_municipality}, ${rowData.barangay}, ${rowData.pickup_location} `
               }
               pt={{
                 bodyCell: {

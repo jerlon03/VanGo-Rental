@@ -689,7 +689,7 @@ const VanInventory = () => {
           </div>
           {selectedVan && (
             <div className="w-full">
-              <div className=" flex justify-center">
+              <div className=" flex justify-center pt-4">
                 <Image
                   src={selectedVan.van_image || "/default-image.png"}
                   alt={`${selectedVan.van_name} image`}
@@ -770,7 +770,7 @@ const VanInventory = () => {
                       onClick: () =>
                         handleVanMaintenance(selectedVan?.van_id as any),
                       tooltip: "Under Maintenance",
-                      color: "text-yellow-400",
+                      color: "text-yellow",
                     },
                   ].map((button, index) => (
                     <div

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "@/components/landing/header";
 import Footer from "@/components/landing/footer";
 import Container from "@/components/landing/Container";
@@ -51,6 +51,22 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const [posts, setPosts] = useState<BlogPost[]>([]); // Ensure posts is initialized as an empty array
   const [customerReviews, setCustomerReviews] = useState<Feedbacks[]>([]);
+  const carouselRef = useRef<Carousel | null>(null);
+  const [isAutoplay, setIsAutoplay] = useState(true); // State to manage autoplay
+
+  const handleMouseEnter = () => {
+    setIsAutoplay(false); // Stop autoplay on hover
+  };
+
+  const handleMouseLeave = () => {
+    setIsAutoplay(true); // Restart autoplay on mouse leave
+  };
+
+  const handleServiceClick = (service: any) => {
+    // Define what happens when a service card is clicked
+    console.log("Service clicked:", service);
+    // You can add more logic here, like navigating to a service detail page
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -207,6 +223,7 @@ const HomePage = () => {
                 <p>Loading services...</p> // Display loading message
               ) : (
                 <Carousel
+                  ref={carouselRef}
                   value={services}
                   numVisible={
                     window.innerWidth < 767
@@ -217,7 +234,9 @@ const HomePage = () => {
                   }
                   numScroll={1}
                   circular
-                  autoplayInterval={5000}
+                  autoplayInterval={isAutoplay ? 5000 : 0} // Control autoplay based on state
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                   itemTemplate={(service) => (
                     <div className="flex justify-center mr-[4%]">
                       <ServiceCard
@@ -225,6 +244,7 @@ const HomePage = () => {
                         image={service.image}
                         title={service.title}
                         description={service.description}
+                        onClick={() => handleServiceClick(service)}
                       />
                     </div>
                   )}
