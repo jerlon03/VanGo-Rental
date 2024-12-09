@@ -226,6 +226,7 @@ const HomePage = () => {
                 <p>Loading services...</p> // Display loading message
               ) : (
                 <Carousel
+                  className="carousel"
                   ref={carouselRef}
                   value={services}
                   numVisible={
@@ -241,7 +242,7 @@ const HomePage = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   itemTemplate={(service) => (
-                    <div className="flex justify-center mr-[4%]">
+                    <div className="flex justify-center mr-[4%] ">
                       <ServiceCard
                         key={service.title}
                         image={service.image}
@@ -252,8 +253,10 @@ const HomePage = () => {
                     </div>
                   )}
                   pt={{
-                    previousButton: { className: "hidden" },
-                    nextButton: { className: "hidden" },
+                    previousButton: {
+                      className: "scale-[200%] min-w-[4rem] ",
+                    },
+                    nextButton: { className: "scale-[200%] min-w-[4rem] " },
                   }}
                 />
               )}

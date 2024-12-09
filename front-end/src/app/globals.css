@@ -17,6 +17,16 @@
   height: 158px;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .scrollbar-custom::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
@@ -323,4 +333,12 @@ input[type="datetime-local"]::placeholder {
   display: block;
   padding: 8px;
   font-size: 14px;
+}
+
+.carousel .p-carousel-content {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.carousel .p-carousel-content::-webkit-scrollbar {
+  display: none;
 }
