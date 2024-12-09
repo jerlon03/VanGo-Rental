@@ -268,5 +268,59 @@
   }
 }
 
-.password_container div {width: 100%;  }
-.password_container div input {  width: 100%; padding-left: 40px;}
+.password_container div {
+  width: 100%;
+}
+.password_container div input {
+  width: 100%;
+  padding-left: 40px;
+}
+
+input[type="datetime-local"] {
+  background-color: #f9f9f9; /* Light background for the input */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Padding for better spacing */
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s; /* Smooth transition for focus effects */
+}
+
+input[type="datetime-local"]:focus {
+  border-color: #007bff; /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+}
+
+input[type="datetime-local"]::placeholder {
+  color: #aaa; /* Placeholder color */
+}
+
+/* Custom select styles */
+.custom-select {
+  width: 200px; /* Adjust as needed */
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+/* Custom dropdown options container */
+.custom-select option {
+  padding: 8px;
+}
+
+/* Split the AM and PM times into two columns */
+.custom-select optgroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 10px;
+  margin: 10px 0;
+}
+
+/* Option styles */
+.custom-select option {
+  display: block;
+  padding: 8px;
+  font-size: 14px;
+}

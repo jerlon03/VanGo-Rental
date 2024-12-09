@@ -228,7 +228,7 @@ const DriverDashboard = () => {
   }, [vanId]);
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <ToastContainer />
       {error && <p className="text-red-500">{error}</p>}
       <p className="p-2 tracking-[1px]">

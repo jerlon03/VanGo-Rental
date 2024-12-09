@@ -26,8 +26,8 @@ const Header = () => {
 
   const getNavLinkClass = (path: string) => {
     return pathname === path
-      ? " text-websiteBlue border-b-2 border-websiteBlue font-semibold"
-      : "font-Poppins text-websiteBlack font-semibold transition duration-300 hover:text-yellow";
+      ? " text-yellow border-b-2 border-yellow font-semibold"
+      : "font-Poppins text-white font-medium transition duration-300 hover:text-yellow";
   };
 
   const toggleMenu = () => {
@@ -44,13 +44,16 @@ const Header = () => {
   const socialMediaIcons = [FaFacebook, FaTwitter, FaInstagramSquare];
 
   return (
-    <div className="w-full">
-      <div className="bg-[#f2f2f2]/30 text-[13px] sm:hidden md:block">
+    <div className="w-full bg-primaryColor shadow-md fixed top-0 left-0 z-50">
+      {/* <div className="bg-[#f2f2f2]/30 text-[13px] sm:hidden md:block">
         <Container>
           <div className="flex justify-between py-4 text-websiteBlack ">
             <div className="flex gap-4">
               {contactDetails.map(({ icon: Icon, text }, index) => (
-                <div className="flex gap-4 items-center" key={index}>
+                <div
+                  className="flex gap-4 items-center hover:text-websiteBlue transition duration-300"
+                  key={index}
+                >
                   <Icon />
                   <p>{text}</p>
                 </div>
@@ -58,27 +61,29 @@ const Header = () => {
             </div>
             <div className="flex gap-[30px] items-center">
               {socialMediaIcons.map((Icon, index) => (
-                <div key={index}>
+                <div
+                  key={index}
+                  className="hover:text-websiteBlue transition duration-300"
+                >
                   <Icon />
                 </div>
               ))}
             </div>
           </div>
         </Container>
-      </div>
+      </div> */}
 
       <Container>
-        <div className="flex items-center justify-between w-full">
-          <div className="flex-shrink-0">
-            <Link href="/">
-              <Image
-                src="/temporary-logo.png"
-                width={100}
-                height={58}
-                alt="VanGo Rental Logo"
-              />
-            </Link>
-          </div>
+        <div className="flex items-center justify-between w-full p-1">
+          <Link href="/">
+            <Image
+              src="/second-log.png"
+              width={50}
+              height={60}
+              alt="VanGo Rental Logo"
+              className="transition-transform duration-300 hover:scale-105 object-contain h-auto w-full"
+            />
+          </Link>
           <ul className="hidden md:flex gap-[10%] justify-center flex-grow">
             <li>
               <Link href="/" className={getNavLinkClass("/")}>
@@ -102,7 +107,7 @@ const Header = () => {
                 {["/", "/van", "/blog"].map((link) => (
                   <li
                     key={link}
-                    className="py-2 text-center w-full"
+                    className="py-2 text-center w-full hover:bg-websiteBlue transition duration-300"
                     onClick={toggleMenu}
                   >
                     <Link href={link} className={getNavLinkClass(link)}>
@@ -117,10 +122,13 @@ const Header = () => {
             {isClient && menuOpen ? (
               <IoCloseSharp
                 onClick={toggleMenu}
-                className="text-[24px] flex justify-end w-full"
+                className="text-[24px] flex justify-end w-full text-websiteBlue hover:cursor-pointer"
               />
             ) : (
-              <IoMenu onClick={toggleMenu} className="text-[24px]" />
+              <IoMenu
+                onClick={toggleMenu}
+                className="text-[24px] text-websiteBlue hover:cursor-pointer"
+              />
             )}
           </div>
         </div>

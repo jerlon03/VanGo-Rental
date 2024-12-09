@@ -241,7 +241,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
+    <div className="bg-gray-100  flex flex-col w-full">
       <AdminHeader>
         <h1 className="font-semibold text-[24px] text-blackColor">
           Hello, Admin!
@@ -250,7 +250,6 @@ const AdminDashboard = () => {
           <CurrentDate />
         </p>
       </AdminHeader>
-
       <div className="flex-1 p-6 w-full">
         <div className="flex gap-4 pb-4 w-full ">
           {[
@@ -284,7 +283,7 @@ const AdminDashboard = () => {
               className="bg-gradient-to-r from-[#003459] via-[#00698c] to-[#00b0c1] p-6 rounded-xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl w-full flex items-center cursor-pointer"
               onClick={() => item.link && (window.location.href = item.link)}
             >
-              <div className="flex items-center space-x-4 justify-center w-full ">
+              <div className="flex items-center gap-[10px] justify-center w-full ">
                 <div className="bg-white rounded-full shadow-md lg:p-1 xl:p-2 2xl:p-3 md:p-2">
                   {item.icon}
                 </div>
@@ -301,11 +300,16 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <div className="flex gap-6 w-full">
-          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 w-[30%]">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-6 w-full">
+          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow col-span-7 md:col-span-5">
+            <TextHighlight text="Booking Statistics" />
+            <Bar data={bookingData} options={options} />
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 col-span-7 md:col-span-2">
             <TextHighlight text="Van Availability" />
             <Pie data={pieChartData} options={pieChartOptions} />
-            <div className="flex gap-4 text-[14px] mt-4">
+            <div className="flex flex-wrap text-[14px] ">
               {[
                 { label: "BOOKED", bgColor: "bg-websiteBlue" },
                 { label: "AVAILABLE", bgColor: "bg-websiteSecondary" },
@@ -313,22 +317,17 @@ const AdminDashboard = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="text-websiteBlack flex items-center"
+                  className="text-websiteBlack flex items-center w-full "
                 >
                   <p className={`w-4 h-4 rounded-full ${item.bgColor}`}></p>
                   <p
-                    className={` p-3 rounded-[5px] font-semibold transition-transform duration-200 transform hover:scale-105 text-[12px]`}
+                    className={`p-3 rounded-[5px] font-semibold transition-transform duration-200 transform hover:scale-105 text-[12px]`}
                   >
                     {item.label}
                   </p>
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow col-span-2 w-[70%]">
-            <TextHighlight text="Booking Statistics" />
-            <Bar data={bookingData} options={options} />
           </div>
         </div>
       </div>

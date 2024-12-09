@@ -20,7 +20,7 @@ export default function LandingLayout({
       {isMounted && (
         <div>
           <Header />
-          <div>{children}</div>
+          <div className="mt-[70px]">{children}</div>
           <Footer />
         </div>
       )}

@@ -125,10 +125,10 @@ const HomePage = () => {
   return (
     <>
       <Header />
-      <div className="w-full py-2 text-websiteBlack">
+      <div className="w-full py-2 text-websiteBlack mt-[100px]">
         {/* BANNER */}
         <Container>
-          <div className="flex md:flex-row sm:flex-col-reverse">
+          <div className="flex md:flex-row sm:flex-col-reverse pb-[5%]">
             <div className="w-full flex flex-col justify-evenly ">
               <Heading
                 text="We Have Prepared a Van For Your Trip"
@@ -175,39 +175,42 @@ const HomePage = () => {
           </div>
         </Container>
         {/* VAN */}
-        <Container>
-          <div className="md:py-8 sm:py-4">
-            <TextHighlight text="OUR VAN" />
-            <Heading
-              text="Pick your van and hit the road with confidence."
-              className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
-            />
-          </div>
-          <div className="grid md:grid-cols-3 md:gap-[20px] sm:gap-[5px] sm:grid-cols-2 ">
-            {loading // Check if loading
-              ? Array.from({ length: 3 }).map(
-                  (
-                    _,
-                    index // Create an array of 3 loaders
-                  ) => (
-                    <VanLoader key={index} /> // Render a VanLoader for each expected van
-                  )
-                )
-              : vans.map((van) => <VanCard key={van.van_id} van={van} />)}
-          </div>
-          <div className="pt-[2%] flex justify-center">
-            <Link href="/van">
-              <Button
-                label="SEE ALL VANS"
-                variant="primary" // Set as primary button
-                width="200px"
-                height="50px"
-                textSize="18px"
-                className="font-semibold sm:text-[14px] md:text-[16px]"
+        <div className="bg-websiteSecondary/30 py-2">
+          <Container>
+            <div className="md:py-8 sm:py-4">
+              <TextHighlight text="OUR VAN" />
+              <Heading
+                text="Pick your van and hit the road with confidence."
+                className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
               />
-            </Link>
-          </div>
-        </Container>
+            </div>
+            <div className="grid md:grid-cols-3 md:gap-[20px] sm:gap-[5px] sm:grid-cols-2 ">
+              {loading // Check if loading
+                ? Array.from({ length: 3 }).map(
+                    (
+                      _,
+                      index // Create an array of 3 loaders
+                    ) => (
+                      <VanLoader key={index} /> // Render a VanLoader for each expected van
+                    )
+                  )
+                : vans.map((van) => <VanCard key={van.van_id} van={van} />)}
+            </div>
+            <div className="pt-[2%] flex justify-center">
+              <Link href="/van">
+                <Button
+                  label="SEE ALL VANS"
+                  variant="primary" // Set as primary button
+                  width="200px"
+                  height="50px"
+                  textSize="18px"
+                  className="font-semibold sm:text-[14px] md:text-[16px]"
+                />
+              </Link>
+            </div>
+          </Container>
+        </div>
+
         {/* SERVICES */}
         <Container>
           <div className="py-[5%]">

@@ -24,6 +24,8 @@ import {
 } from "@/components/icons/index";
 
 import LoaderModal from "@/components/modals/LoaderModal"; // Import the LoaderModal
+import moment from "moment-timezone"; // Import moment-timezone
+import { format } from "date-fns-tz"; // Adjust the import based on your setup
 
 interface VanCardProps {
   van: Van; // Expecting a prop named 'van' of type 'Van'
@@ -80,6 +82,8 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
   const [bookingEndDateError, setBookingEndDateError] = useState<string | null>(
     null
   ); // New state for booking end date error
+
+  const [pickupTimeError, setPickupTimeError] = useState<string | null>(null); // New state for pickup time error
 
   // Get the list of municipalities from cebuData
   const municipalities = Object.keys(cebuData.CEBU.municipality_list); // Define municipalities
@@ -167,6 +171,35 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
+    // Validate pickupTime specifically for 5 AM to 8 PM
+    if (name === "pickupTime") {
+      // Ensure the value is in the format "hh:mm AM/PM"
+      const [time, period] = value.split(" "); // Split time and period (AM/PM)
+      const [hours, minutes] = time.split(":").map(Number);
+
+      // Store the original value (e.g., "7:10 AM" or "7:10 PM")
+      setFormData((prev) => ({
+        ...prev,
+        pickupTime: value, // Store the original value
+      }));
+
+      // Convert to 24-hour format for validation
+      let adjustedHours = hours;
+      if (period === "PM" && hours < 12) {
+        adjustedHours += 12; // Convert PM hours to 24-hour format
+      } else if (period === "AM" && hours === 12) {
+        adjustedHours = 0; // Convert 12 AM to 0 hours
+      }
+
+      const timeInHours = adjustedHours + minutes / 60; // Convert time to hours
+      if (timeInHours < 5 || timeInHours > 20) {
+        // Check if time is outside 5 AM to 8 PM
+        setPickupTimeError("Pickup time must be between 5 AM and 8 PM.");
+      } else {
+        setPickupTimeError(null); // Clear error if valid
+      }
+    }
+
     // Validate email
     if (name === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -188,8 +221,10 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
   const handleDateOfBirthChange = (selectedDate: any) => {
     const dateOfBirth = selectedDate.value as Date;
-    // Adjust for UTC+8
-    const localDate = new Date(dateOfBirth.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
+    // Format date to Asia/Manila timezone
+    const localDate = new Date(
+      dateOfBirth.toLocaleString("en-US", { timeZone: "Asia/Manila" })
+    );
     setFormData((prev) => ({ ...prev, dateOfBirth: localDate })); // Adjust for local time
 
     // Validate date of birth only if it's not null
@@ -217,37 +252,34 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
   const handlePickupDateChange = (date: any) => {
     const selectedDate = date.value as Date;
-    // Ensure the selected date is set correctly
-    console.log("Selected Pickup Date:", selectedDate); // Debugging line
-    // Check if the selected date is already booked
-    if (isDateRangeBooked(selectedDate, selectedDate)) {
-      SweetAlert.showError("This date is already booked."); // Show error message
-    } else {
-      // Adjust for UTC+8
-      const localDate = new Date(selectedDate.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
-      setFormData((prev) => ({
-        ...prev,
-        pickupDateTime: localDate,
-      }));
-    }
+    // Use getTimezoneOffset to adjust the date
+    const timezoneOffset = selectedDate.getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+    const adjustedDate = new Date(selectedDate.getTime() - timezoneOffset); // Adjust for timezone
+    console.log("Selected Pickup Date:", adjustedDate); // Debugging line
+
+    // Set the pickup date in formData
+    setFormData((prev) => ({
+      ...prev,
+      pickupDateTime: adjustedDate, // Store the adjusted date
+    }));
   };
 
   const handleBookingEndDateChange = (date: any) => {
     const selectedDate = date.value as Date;
-    console.log("Selected Booking End Date:", selectedDate); // Debugging log
-
-    // Adjust for UTC+8
-    const localDate = new Date(selectedDate.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
+    // Use getTimezoneOffset to adjust the date
+    const timezoneOffset = selectedDate.getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+    const adjustedDate = new Date(selectedDate.getTime() - timezoneOffset); // Adjust for timezone
+    console.log("Selected Booking End Date:", adjustedDate); // Debugging log
 
     // Update the form data
     setFormData((prev) => ({
       ...prev,
-      bookingEndDate: localDate,
+      bookingEndDate: adjustedDate,
     }));
 
     // Validate the booking end date against the pickup date
-    if (localDate && formData.pickupDateTime) {
-      if (localDate < formData.pickupDateTime) {
+    if (adjustedDate && formData.pickupDateTime) {
+      if (adjustedDate < formData.pickupDateTime) {
         setBookingEndDateError(
           "Booking end date must be after the pickup date."
         ); // Set error message
@@ -261,7 +293,15 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsLoading(true); // Set loading state to true
+
+    // Log formData to check values
+    console.log("Form Data Before Submission:", formData);
+
+    // Check if pickupDateTime is set
+    if (!formData.pickupDateTime) {
+      SweetAlert.showError("Pickup date_time is required."); // Show error if pickupDateTime is not set
+      return; // Exit the function if validation fails
+    }
 
     // Validate pick-up location
     if (!formData.pickupLocation) {
@@ -286,6 +326,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     // Check if dateOfBirth is set before submission
     if (!formData.dateOfBirth) {
       SweetAlert.showError("Date of birth is required.");
+      setIsLoading(false); // Reset loading state
       return; // Exit the function if validation fails
     }
 
@@ -294,10 +335,10 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
       "Are you sure you want to submit your booking?"
     );
     if (!isConfirmed) {
+      setIsLoading(false); // Reset loading state
       return; // Exit the function if the user cancels
     }
 
-    // Prepare booking details to send using FormData
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.firstname);
     formDataToSubmit.append("last_name", formData.lastname);
@@ -308,14 +349,17 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     formDataToSubmit.append("barangay", formData.barangay);
     formDataToSubmit.append("pickup_location", formData.pickupLocation);
 
-    // Ensure pickup time is set correctly
+    // Ensure pickup time is set correctly and convert to UTC
     if (formData.pickupTime) {
       const [hours, minutes] = formData.pickupTime.split(":").map(Number);
-      const pickupDateTime = new Date(formData.pickupDateTime as any);
-      pickupDateTime.setHours(hours, minutes); // Set the hours and minutes based on user input
+      const pickupDateTime = new Date(formData.pickupDateTime as any); // Create a Date object directly from the form data
+      pickupDateTime.setHours(hours + 4, minutes); // Add 4 hours to the pickup time
+
+      // Convert to UTC using convertToUTC function
+      const utcPickupDateTime = convertToUTC(pickupDateTime); // Call convertToUTC
       formDataToSubmit.append(
         "pickup_date_time",
-        pickupDateTime.toISOString() // Ensure it's in ISO format
+        utcPickupDateTime // Use the converted UTC time
       );
     } else {
       formDataToSubmit.append(
@@ -328,7 +372,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     formDataToSubmit.append(
       "booking_end_date",
       formData.bookingEndDate
-        ? formData.bookingEndDate.toISOString()
+        ? moment.tz(formData.bookingEndDate, "Asia/Manila").utc().toISOString() // Convert to UTC
         : new Date().toISOString() // Default to current date if not set
     );
 
@@ -404,16 +448,23 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
     console.log("Uploaded file:", file); // Debugging: Log the uploaded file
     setReservationImage(file); // Set the file directly in the state
   };
+
+  const convertToUTC = (date: Date): string => {
+    return new Date(
+      date.getTime() + date.getTimezoneOffset() * 60000
+    ).toISOString(); // Convert to UTC
+  };
+
   return (
     <>
-      <div className="w-full border border-[#cccccc] rounded-[10px] flex flex-col justify-between">
-        <div className="px-[10%]">
+      <div className="w-full border-2 border-websiteSecondary rounded-[10px] flex flex-col justify-between">
+        <div className="">
           <Image
             src={van.van_image || "/default-image.png"}
             width={150}
             height={80}
             alt="Banner"
-            className="object-contain aspect-[150/80] w-full"
+            className="object-fill aspect-[150/80] w-full p-2 rounded-2xl"
           />
         </div>
 
@@ -423,29 +474,29 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
           </h1>
           <div className="flex md:gap-[10px] sm:gap-[5px] items-center ">
             <TbCurrencyPeso className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
-            <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
+            <p className="lg:text-[16px] md:text-[14px] sm:text-xs font-normal">
               {van.estimate_price} Estimate Price A Day
-            </p>
-          </div>
-          <div className="flex md:gap-[10px] sm:gap-[5px] items-center ">
-            <TbManualGearboxFilled className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
-            <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
-              {van.transmission_type}
             </p>
           </div>
           <div className="flex pt-2 md:gap-[20px] sm:gap-[5px]">
             <div className="flex gap-[10px] items-center justify-center">
               <IoPerson className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
-              <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
+              <p className="lg:text-[16px] md:text-[14px] sm:text-xs font-normal">
                 {van.people_capacity} People
               </p>
             </div>
             <div className="flex gap-[10px] items-center justify-center">
               <BiSolidShoppingBags className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
-              <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-medium">
+              <p className="lg:text-[18px] md:text-[14px] sm:text-xs font-normal">
                 {van.things_capacity} KG
               </p>
             </div>
+          </div>
+          <div className="flex md:gap-[10px] sm:gap-[5px] items-center pt-2">
+            <TbManualGearboxFilled className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
+            <p className="lg:text-[16px] md:text-[14px] sm:text-xs font-normal">
+              {van.transmission_type}
+            </p>
           </div>
           {showDescription && (
             <p className="mt-4 md:text-[16px] sm:text-xs font-normal tracking-[.5px]">
@@ -681,16 +732,10 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                   <Calendar
                     value={formData.pickupDateTime}
                     onChange={handlePickupDateChange}
-                    className={`w-full border font-Poppins text-[14px] rounded-[3px]  md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${formData.pickupDateTime ? "" : ""}`}
+                    className={`w-full border font-Poppins text-[14px] rounded-[3px] md:h-[35px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor`}
                     placeholder="Select Date"
                     minDate={new Date()}
                     disabledDates={disabledDates} // Disable booked dates
-                    pt={{
-                      input: {
-                        className:
-                          "p-2 border flex w-full items-center placeholder:text-[#CCCCCC] placeholder:font-light",
-                      },
-                    }}
                   />
                   <label htmlFor="pickupTime">
                     Pick-up Time{" "}
@@ -701,12 +746,14 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
                     name="pickupTime"
                     value={formData.pickupTime}
                     onChange={handleChange}
+                    placeholder="hh:mm AM/PM"
                     className={formData.pickupTime ? "" : ""}
-                    disabled={
-                      new Date().getHours() >
-                      parseInt(formData.pickupTime.split(":")[0])
-                    } // Disable if current hour is greater than selected hour
                   />
+                  {pickupTimeError && (
+                    <span className="text-red-500 text-[10px]">
+                      {pickupTimeError}
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="barangay">

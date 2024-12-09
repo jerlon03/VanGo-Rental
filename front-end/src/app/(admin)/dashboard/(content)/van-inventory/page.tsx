@@ -267,13 +267,22 @@ const VanInventory = () => {
     }
   };
 
-  const handleEditConfirmation = (rowData: Van) => {
-    const confirmed = SweetAlert.showConfirm(
+  const handleEditConfirmation = async (rowData: Van) => {
+    const confirmed = await SweetAlert.showConfirm(
       "Are you sure you want to edit this van?"
     );
-    if (!confirmed) {
-      // Change this condition to check if confirmed
+    if (confirmed) {
       setSelectedVan(rowData); // Set the selected van to edit
+      setNewVan({
+        // Set the newVan state with the selected van's details
+        van_name: rowData.van_name,
+        van_description: rowData.van_description,
+        people_capacity: rowData.people_capacity.toString(), // Convert to string for input
+        transmission_type: rowData.transmission_type,
+        things_capacity: rowData.things_capacity.toString(), // Convert to string for input
+        estimate_price: rowData.estimate_price.toString(), // Convert to string for input
+      });
+      setIsDetailsModalOpen(false); // Close the details modal
       setIsEditModalOpen(true); // Open the edit modal
     }
   };
@@ -775,7 +784,7 @@ const VanInventory = () => {
       {/* Details Modal */}
       <Modal
         isOpen={isDetailsModalOpen}
-        width="600px"
+        width="900px"
         onClose={() => setIsDetailsModalOpen(false)}
       >
         <div className="flex flex-col bg-white rounded-[5px] justify-between">
@@ -972,8 +981,10 @@ const VanInventory = () => {
         height="600px"
         onClose={() => setIsEditModalOpen(false)}
       >
-        <div className="h-full flex flex-col bg-white">
-          <h2 className="text-[20px] font-medium p-3 pb-2">Edit Van</h2>
+        <div className=" flex flex-col bg-white rounded-[5px]">
+          <div className="w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]">
+            <h2 className="text-[20px] text-white font-medium">EDIT VAN</h2>
+          </div>
           <form
             onSubmit={handleEditSubmit}
             className="flex-1 overflow-y-auto p-3 pt-2"
@@ -981,79 +992,109 @@ const VanInventory = () => {
             <div className="space-y-4">
               <InputField
                 type="text"
-                value={newVan.van_name}
-                onChange={handleInputChange}
-                placeholder="Van Name"
-              />
-              <input
-                type="text"
                 name="van_name"
                 value={newVan.van_name}
                 onChange={handleInputChange}
                 placeholder="Van Name"
-                className="w-full p-2 border rounded"
               />
-              <textarea
+              <TextArea
                 name="van_description"
                 value={newVan.van_description}
                 onChange={handleInputChange}
                 placeholder="Van Description"
-                className="w-full p-2 border rounded"
               />
-              <div className="space-y-1">
-                <input
-                  type="text"
-                  name="people_capacity"
-                  value={newVan.people_capacity}
-                  onChange={handleInputChange}
-                  placeholder="People Capacity"
-                  className="w-full p-2 border rounded"
-                  inputMode="numeric"
-                />
-                {inputErrors.people_capacity && (
-                  <p className="text-red-500 text-sm">
-                    {inputErrors.people_capacity}
-                  </p>
-                )}
+              <div className="flex gap-4 w-full">
+                <div className="w-full">
+                  <InputField
+                    type="number"
+                    name="people_capacity"
+                    value={newVan.people_capacity}
+                    onChange={handleInputChange}
+                    placeholder="People Capacity"
+                    inputMode="numeric"
+                  />
+                </div>
+                <div className="w-full">
+                  <InputField
+                    type="number"
+                    name="things_capacity"
+                    value={newVan.things_capacity}
+                    onChange={handleInputChange}
+                    placeholder="Things Capacity"
+                    inputMode="numeric"
+                  />
+                </div>
               </div>
-              <select
-                name="transmission_type"
-                value={newVan.transmission_type}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded text-gray-700"
-              >
-                <option value="">Select Transmission Type</option>
-                <option value="Manual">Manual</option>
-                <option value="Automatic">Automatic</option>
-              </select>
-              <div className="space-y-1">
-                <input
-                  type="text"
-                  name="things_capacity"
-                  value={newVan.things_capacity}
+              <div className="flex gap-4">
+                <select
+                  name="transmission_type"
+                  value={newVan.transmission_type}
                   onChange={handleInputChange}
-                  placeholder="Things Capacity"
-                  className="w-full p-2 border rounded"
-                  inputMode="numeric"
-                />
-                {inputErrors.things_capacity && (
-                  <p className="text-red-500 text-sm">
-                    {inputErrors.things_capacity}
-                  </p>
-                )}
+                  className={`w-full p-2 border rounded ${newVan.transmission_type ? "text-websiteBlack" : "text-[#cccccc] font-light"} outline-none`}
+                >
+                  <option value="" className="text-[#CCCCCC] font-light">
+                    Transmission Type:
+                  </option>
+                  <option value="Manual" className="text-[13px] text-[#CCCCCC]">
+                    Manual
+                  </option>
+                  <option
+                    value="Automatic"
+                    className="text-[13px] text-[#CCCCCC]"
+                  >
+                    Automatic
+                  </option>
+                </select>
+                <div className="w-full">
+                  <InputField
+                    type="number"
+                    name="estimate_price"
+                    value={newVan.estimate_price}
+                    onChange={handleInputChange}
+                    placeholder="Estimate Price"
+                    inputMode="numeric"
+                  />
+                </div>
               </div>
-              {/* Add any additional fields as necessary */}
+              {/* Image Preview and Upload */}
+              <div className="flex flex-col gap-2">
+                <p className="text-[#CCCCCC] font-light">Current Van Image</p>
+                <Image
+                  src={
+                    vanImage
+                      ? URL.createObjectURL(vanImage)
+                      : selectedVan?.van_image || "/default-image.png"
+                  }
+                  alt="Van Image Preview"
+                  className=" object-contain rounded"
+                  width={200}
+                  height={150}
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleImageUpload(e.target.files[0]); // Use the new image upload handler
+                    }
+                  }}
+                  className="border rounded p-2"
+                />
+              </div>
             </div>
-            <div className="py-2 px-6 border-t">
+            <div className="py-4 px-6 border-t">
               <div className="flex justify-end space-x-4">
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                >
-                  Cancel
-                </button>
-                <Button name="Update Van" type="submit"></Button>
+                  name="CANCEL"
+                  backgroundColor="error"
+                ></Button>
+                <Button
+                  name="UPDATE VAN"
+                  type="submit"
+                  backgroundColor="alert"
+                ></Button>
               </div>
             </div>
           </form>

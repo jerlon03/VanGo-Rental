@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-[#595959] text-white pt-[5px]">
+    <div className="w-full bg-primaryColor text-white pt-[5px]">
       <Container>
         <div className="flex flex-col gap-[10px] lg:flex-col md:flex-col md:gap-[5px]">
           <div className="flex lg:gap-[20px] lg:flex-row md:flex-col sm:flex-col md:gap-[10px]">
@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
             </div>
             <div>
               <div className="pb-4">
-                <h3 className="text-yellow border-b-2 lg:w-28 md:w-24 sm:w-28 border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px] tracking-[1px] sm:text-sm">
+                <h3 className="text-yellow border-b-2 lg:w-32 md:w-24 sm:w-28 border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px] tracking-[1px] sm:text-sm">
                   Our Services
                 </h3>
               </div>

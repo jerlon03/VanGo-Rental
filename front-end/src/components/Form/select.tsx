@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
 interface SelectProps {
   options: { value: string; label: string }[];
@@ -17,29 +17,65 @@ const Select: React.FC<SelectProps> = ({
   disabled,
   placeholder = "Select an option",
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onChange(event.target.value);
   };
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleOptionClick = (optionValue: string) => {
+    onChange(optionValue);
+    toggleDropdown();
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="w-full">
-      <select
-        value={value}
-        onChange={handleChange}
-        className={`w-full border font-Poppins text-[15px] outline-none rounded-[3px] px-2 md:h-[40px] sm:h-[35px] max-sm:rounded-0 max-sm:text-[14px] placeholder:text-[#CCCCCC] placeholder:font-light text-blackColor ${
-          disabled ? 'bg-gray-500 cursor-not-allowed' : ''
+    <div className="relative w-full" ref={dropdownRef}>
+      <div
+        onClick={toggleDropdown}
+        className={`border font-Poppins text-[15px] outline-none rounded-[3px] px-2 cursor-pointer flex items-center ${
+          disabled ? "bg-gray-500 cursor-not-allowed" : ""
         } ${className}`}
-        disabled={disabled}
+        style={{ height: "40px" }}
       >
-        <option value="" disabled hidden>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        {value || placeholder}
+      </div>
+      {isOpen && (
+        <div
+          className="absolute z-10 w-full border bg-white"
+          style={{ maxHeight: "150px", overflowY: "auto" }}
+        >
+          {options.map((option) => (
+            <div
+              key={option.value}
+              onClick={() => handleOptionClick(option.value)}
+              className="px-2 py-1 hover:bg-gray-200 cursor-pointer"
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
