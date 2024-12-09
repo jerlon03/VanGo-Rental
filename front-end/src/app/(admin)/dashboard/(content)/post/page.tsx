@@ -324,21 +324,18 @@ const AdminPost = () => {
   };
 
   const handleEditSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault();
+
     // Validate required fields
     if (!title && !description && !postImage) {
-      // Check if at least one field is provided
       SweetAlert.showError("Please fill out at least one field to update.");
       return;
     }
 
-    // Add SweetAlert confirmation before submission
     const confirmed = await SweetAlert.showConfirm(
       "Are you sure you want to update this blog post?"
     );
-    if (!confirmed) {
-      return; // Exit if the user cancels the submission
-    }
+    if (!confirmed) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -348,15 +345,15 @@ const AdminPost = () => {
       }
 
       const formData = new FormData();
-      if (title) formData.append("title", title); // Only append if the field is not empty
+      if (title) formData.append("title", title);
       if (description) formData.append("description", description);
       if (postImage) formData.append("post_image", postImage);
-      formData.append("status", selectedStatus); // Include status if needed
+      formData.append("status", selectedPost?.status || "DRAFT");
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/posting/update/${selectedPost?.post_id}`, // Update the URL to include the post ID
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posting/update/${selectedPost?.post_id}`,
         {
-          method: "PUT", // Use PUT for updating
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -34,12 +34,14 @@ const VanInventory = () => {
   const [newVan, setNewVan] = useState({
     van_name: "",
     van_description: "",
+    van_image: "",
     people_capacity: "",
     transmission_type: "",
     things_capacity: "",
     estimate_price: "",
   });
   const [vanImage, setVanImage] = useState<File | null>(null);
+  // const [udpateImage, setUpdateVanImage] = useState<File | null>(null);
   const [inputErrors, setInputErrors] = useState({
     people_capacity: "",
     things_capacity: "",
@@ -54,6 +56,8 @@ const VanInventory = () => {
   const [bookingStatusMap, setBookingStatusMap] = useState<{
     [key: string]: { confirmed: number; ongoing: number; pending: number };
   }>({}); // State to hold booking statuses
+  const [previousVanState, setPreviousVanState] = useState<Van | null>(null); // Add this line to store previous state
+  const [vanImagePreview, setVanImagePreview] = useState<string | null>(null); // Added vanImagePreview state
 
   const initialVanState = {
     van_name: "",
@@ -136,8 +140,14 @@ const VanInventory = () => {
     formData.append("driver_id", selectedDriver as any); // Ensure this is set correctly
 
     if (vanImage) {
-      formData.append("image", vanImage);
+      console.log("Appending image:", vanImage); // Debugging line
+      formData.append("image", vanImage); // This should append the file correctly
+    } else {
+      console.error("No image to append"); // Debugging line
+      console.error("selectedVan is null, cannot append image."); // Handle the case where selectedVan is null
     }
+
+    console.log("Van Image before submission:", vanImage); // Debugging line
 
     try {
       const token = localStorage.getItem("token");
@@ -236,7 +246,30 @@ const VanInventory = () => {
   // Function to handle the edit submission
   const handleEditSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Add your validation logic here if needed
+
+    if (!selectedVan) {
+      console.error("No van selected for update");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("van_id", selectedVan.van_id.toString());
+
+    // Append other fields to the FormData
+    Object.entries(newVan).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
+
+    // If a new image is selected, append it to FormData
+    if (vanImage) {
+      console.log("Appending updated image:", vanImage);
+      formData.append("van_image", vanImage);
+    } else {
+      console.log(
+        "No new image uploaded, keeping existing image:",
+        selectedVan.van_image
+      );
+    }
 
     try {
       const token = localStorage.getItem("token");
@@ -245,25 +278,42 @@ const VanInventory = () => {
         return;
       }
 
-      const formData = new FormData();
-      Object.entries(newVan).forEach(([key, value]) => {
-        formData.append(key, value.toString());
-      });
-
-      // {{ edit_1 }} - Call the new fetchUpdateVan function
-      const updatedVan = await fetchUpdateVan(
-        selectedVan?.van_id as any,
-        newVan as any
+      // Direct API call instead of using fetchUpdateVan
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/van/update/${selectedVan.van_id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
       );
-      // {{ edit_1 }}
 
-      SweetAlert.showSuccess("Van updated successfully");
-      setIsEditModalOpen(false);
-      const updatedVans = await fetchAllVan();
-      setVans(updatedVans.data);
+      const data = await response.json();
+
+      if (response.ok) {
+        SweetAlert.showSuccess("Van updated successfully");
+
+        // Fetch updated van list
+        const updatedVans = await fetchAllVan();
+        setVans(updatedVans.data);
+
+        // Reset states
+        setIsEditModalOpen(false);
+        setVanImage(null);
+        setVanImagePreview(null);
+        setSelectedVan(null);
+        setNewVan(initialVanState as any);
+
+        // Close any open modals
+        setIsDetailsModalOpen(false);
+      } else {
+        SweetAlert.showError(data.message || "Failed to update van");
+      }
     } catch (error) {
+      console.error("Error updating van:", error);
       SweetAlert.showError("Failed to update van");
-      console.error("Error:", error);
     }
   };
 
@@ -274,14 +324,15 @@ const VanInventory = () => {
     if (confirmed) {
       setSelectedVan(rowData); // Set the selected van to edit
       setNewVan({
-        // Set the newVan state with the selected van's details
         van_name: rowData.van_name,
+        van_image: rowData.van_image, // Set the current image
         van_description: rowData.van_description,
-        people_capacity: rowData.people_capacity.toString(), // Convert to string for input
+        people_capacity: rowData.people_capacity.toString(),
         transmission_type: rowData.transmission_type,
-        things_capacity: rowData.things_capacity.toString(), // Convert to string for input
-        estimate_price: rowData.estimate_price.toString(), // Convert to string for input
+        things_capacity: rowData.things_capacity.toString(),
+        estimate_price: rowData.estimate_price.toString(),
       });
+      setVanImage(null); // Reset the image state if you want to allow a new upload
       setIsDetailsModalOpen(false); // Close the details modal
       setIsEditModalOpen(true); // Open the edit modal
     }
@@ -414,6 +465,15 @@ const VanInventory = () => {
     }
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; // Get the selected file
+
+    if (file) {
+      setVanImage(file); // Update the image state
+      const previewUrl = URL.createObjectURL(file); // Create a preview URL for the image
+      setVanImagePreview(previewUrl); // Update preview state
+    }
+  };
   return (
     <div className="w-full">
       <div className="w-full pb-5">
@@ -981,7 +1041,7 @@ const VanInventory = () => {
         height="600px"
         onClose={() => setIsEditModalOpen(false)}
       >
-        <div className=" flex flex-col bg-white rounded-[5px]">
+        <div className="flex flex-col bg-white rounded-[5px]">
           <div className="w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]">
             <h2 className="text-[20px] text-white font-medium">EDIT VAN</h2>
           </div>
@@ -1056,30 +1116,24 @@ const VanInventory = () => {
                   />
                 </div>
               </div>
-              {/* Image Preview and Upload */}
               <div className="flex flex-col gap-2">
                 <p className="text-[#CCCCCC] font-light">Current Van Image</p>
-                <Image
-                  src={
-                    vanImage
-                      ? URL.createObjectURL(vanImage)
-                      : selectedVan?.van_image || "/default-image.png"
-                  }
-                  alt="Van Image Preview"
-                  className=" object-contain rounded"
-                  width={200}
-                  height={150}
-                />
+                {/* File input for selecting the image */}
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleImageUpload(e.target.files[0]); // Use the new image upload handler
-                    }
-                  }}
-                  className="border rounded p-2"
+                  onChange={handleImageChange}
+                  className="border p-2 rounded"
                 />
+
+                {/* Image preview if a file is selected */}
+                {vanImagePreview && (
+                  <img
+                    src={vanImagePreview}
+                    alt="Van preview"
+                    className="mt-2 w-32 h-32 object-cover rounded"
+                  />
+                )}
               </div>
             </div>
             <div className="py-4 px-6 border-t">
