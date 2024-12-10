@@ -150,9 +150,14 @@ const sendCompletedEmail = async (booking) => {
 
 const sendAdminNotificationEmail = async (booking) => {
   try {
+    if (!process.env.ADMIN_EMAIL) {
+      console.error("Admin email not configured");
+      throw new Error("Admin email configuration missing");
+    }
+
     await transporter.sendMail({
       from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
-      to: process.env.ADMIN_EMAIL,
+      to: process.env.SMTP_USER,
       subject: "New Booking Received",
       html: `
         <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
@@ -292,16 +297,19 @@ exports.createBooking = async (req, res) => {
       }
 
       try {
-        // Get the complete booking data with the new booking ID
         const completeBooking = { ...bookingData, booking_id: bookingId };
 
-        // Send notification to admin
-        await sendAdminNotificationEmail(completeBooking);
+        if (process.env.ADMIN_EMAIL) {
+          await sendAdminNotificationEmail(completeBooking);
+        } else {
+          console.warn(
+            "Admin email notification skipped - no admin email configured"
+          );
+        }
 
         res.status(201).json({ bookingId });
       } catch (emailError) {
         console.error("Error sending admin notification:", emailError);
-        // Still return success even if email fails
         res.status(201).json({
           bookingId,
           warning: "Booking created but admin notification email failed",
