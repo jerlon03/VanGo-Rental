@@ -562,11 +562,19 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
               </div>
             ))}
             <div className="flex p-4 gap-4">
+              <p className="text-[14px]">
+                If you have any questions, concerns, or feedback regarding our
+                services, please do not hesitate to contact us. Your input is
+                invaluable in helping us improve our offerings.
+              </p>
+            </div>
+            <div className="flex p-4 gap-4">
               <input
                 type="radio"
                 checked={isAgreed}
                 onChange={() => setIsAgreed(true)}
               />
+
               <p className="text-[14px]">
                 {" "}
                 I agree that I have read and accept the terms and conditions and

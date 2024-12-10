@@ -418,11 +418,11 @@ const AssignedTrips = () => {
                                   {booking.first_name} {booking.last_name}
                                 </span>
                               </div>
-                              <div className="grid grid-cols-2 items-center">
-                                <span className="text-gray-600 font-medium">
+                              <div className="grid grid-cols-2 items-center ">
+                                <span className="text-gray-600 font-medium ">
                                   Email Address:
                                 </span>
-                                <span className="text-gray-800">
+                                <span className="text-gray-800  truncate w-full max-w-[180px]">
                                   {booking.email || "N/A"}
                                 </span>
                               </div>

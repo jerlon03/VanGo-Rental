@@ -129,7 +129,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
       <ModalContainer onClose={onClose} isOpen={true}>
         <div
           ref={modalRef}
-          className="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl mx-auto text-gray-800"
+          className="bg-white rounded-lg shadow-lg p-6 w-full max-w-[900px] mx-auto text-gray-800"
         >
           <div className="w-full flex justify-between items-center">
             <h2 className="text-[18px] font-semibold text-center flex-1">
@@ -157,7 +157,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
               </p>
               <p>
                 <span className="font-medium">Email:</span>
-                <span className=""> {booking.email}</span>
+                <span className="w-full truncate"> {booking.email}</span>
               </p>
               <p>
                 <span className="font-medium">Phone:</span>{" "}

@@ -1,54 +1,40 @@
 const termsAndCons = [
   {
-    Termstitle: "Booking Policy:",
+    Termstitle: "Booking Policy",
     TermsContent:
-      "A reservation fee is required to confirm the booking and secure the schedule.",
-    AddedContent: "• Reservation Fee:",
+      "Reservation Fee: A reservation fee is required to confirm the booking and secure the schedule.",
   },
   {
     Termstitle: "Cancellation Policy:",
-    TermsContent:
-      "If the customer is not present at the scheduled reservation time, the fee is also non-refundable.",
-    AddedContent: "• Cancellations are non-refundable.",
+    TermsContent: "Cancellations from customers are non-refundable",
+    AddedContent: "• Declined booking from Admin are refundable",
+    AddedContent1:
+      "• If the customer is not present at the scheduled reservation time, the fee is also non-refundable.",
   },
   {
-    Termstitle: "Repairs and Maintenance:",
+    Termstitle: "Liability and Insurance",
     TermsContent:
-      "VanGO will cover all costs related to van repairs and maintenance.",
+      "Vango will cover all costs related to van repairs and maintenance.",
+    AddedContent: "Repairs and Maintenance:",
   },
   {
-    Termstitle: "Accidents and Damages:",
+    AddedContent: "Accidents and Damages:",
     TermsContent:
-      "In the event of an accident, damages will be covered by the company’s insurance.",
-    AddedContent: "• Passenger insurance will also be provided.",
+      " In the event of an accident, damages will be covered by the company’s insurance.",
+    AddedContent2: "• Passenger insurance will also be provided.",
   },
   {
-    Termstitle: "Repairs and Maintenance:",
-    TermsContent:
-      "VanGO will cover all costs related to van repairs and maintenance.",
-  },
-  {
-    TermsHeading: "Additional Terms :",
+    TermsHeading: "Additional Terms ",
     Termstitle: "Driver Conduct:",
     TermsContent:
       "Drivers are expected to maintain professional conduct at all times.",
-    AddedContent:
+    AddedContent1:
       "• Any inappropriate behavior may result in immediate termination of the service without a refund.",
-    AddedContent1: "• Must not allow the customer to drive the rented vehicle",
-    AddedContent2:
-      "• Must not bring the vehicle without the consent or approval of the company and must not use the vehicle if the activity is not related to the customer’s trip",
-  },
-  {
-    Termstitle: "Customer Conduct:",
-    TermsContent:
-      "For those under 18, a guardian is required when renting the van, as they cannot rent it alone.",
-    AddedContent:
-      "• Must return the rented van based on the contract agreement",
   },
   {
     Termstitle: "Passenger Responsibility:",
     TermsContent:
-      "Passengers are responsible for their belongings. VanGO is not liable for lost or damaged personal items during the trip.",
+      "Passengers are responsible for their belongings. Vango is not liable for lost or damaged personal items during the trip",
   },
   {
     Termstitle: "Schedule Changes:",
@@ -57,15 +43,19 @@ const termsAndCons = [
   },
   {
     Termstitle: "Payment Terms:",
-    TermsContent: "The remaining balance is due upon pick up or after service.",
-    AddedContent:
-      "• Payments can be made via cash through the drivers or via a bank account provided.",
+    TermsContent:
+      "Reservation fee or fall as downpayment minimum is 500 before can proceed to submit form via gcash or ML wallet QR code",
+    AddedContent1:
+      "• The remaining balance is due upon pick up or after service.",
+    AddedContent2:
+      "• Payments after service can be made via cash through the drivers or via a bank account provided",
   },
   {
     Termstitle: "Force Majeure:",
     TermsContent:
-      "Vango is not liable for any delays or cancellations due to events beyond its control, such as natural disasters, traffic accidents, or other emergencies.",
+      "Vango is not liable for any delays or cancellations due to events beyond its control, such as natural disasters, traffic accidents, or other emergencies",
   },
+
   {
     Termstitle: "Health and Safety:",
     TermsContent:

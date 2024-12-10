@@ -175,7 +175,7 @@ const HomePage = () => {
           </div>
         </Container>
         {/* VAN */}
-        <div className="bg-websiteSecondary/30 py-2">
+        <div className="bg-websiteSecondary/30 py-2 pb-4">
           <Container>
             <div className="md:py-8 sm:py-4">
               <TextHighlight text="OUR VAN" />

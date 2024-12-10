@@ -704,44 +704,29 @@ const VanInventory = () => {
         width="500px"
         onClose={() => setIsModalOpen(false)}
       >
-        <div className=" flex flex-col bg-white rounded-[5px]">
+        <div className="flex flex-col bg-white rounded-[5px] max-h-[80vh]">
           <div className="w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]">
             <h2 className="text-[20px] text-white font-medium">CREATE VAN</h2>
           </div>
           <form
             onSubmit={handleSubmit}
-            className="flex-1 overflow-y-auto p-3 pt-2 h-[400px]"
+            className="flex flex-col flex-1 overflow-y-auto "
           >
-            <div className="space-y-4">
-              <InputField
-                type="text"
-                name="van_name"
-                value={newVan.van_name}
-                onChange={handleInputChange}
-                placeholder="Van Name"
-              />
-              <div>
-                <TextArea
-                  value={newVan.van_description}
+            <div className="flex-1 p-3 pt-2">
+              <div className="space-y-4">
+                <InputField
+                  type="text"
+                  name="van_name"
+                  value={newVan.van_name}
                   onChange={handleInputChange}
-                  placeholder="Van Description"
-                  name="van_description"
+                  placeholder="Van Name"
                 />
-                {inputErrors.people_capacity && (
-                  <p className="text-red-500 text-sm">
-                    {inputErrors.people_capacity}
-                  </p>
-                )}
-              </div>
-              <div className="flex gap-4 w-full">
-                <div className="w-full">
-                  <InputField
-                    type="number"
-                    name="people_capacity"
-                    value={newVan.people_capacity}
+                <div>
+                  <TextArea
+                    value={newVan.van_description}
                     onChange={handleInputChange}
-                    placeholder="People Capacity"
-                    inputMode="numeric"
+                    placeholder="Van Description"
+                    name="van_description"
                   />
                   {inputErrors.people_capacity && (
                     <p className="text-red-500 text-sm">
@@ -749,81 +734,101 @@ const VanInventory = () => {
                     </p>
                   )}
                 </div>
-                <div className="w-full">
-                  <InputField
-                    type="number"
-                    name="things_capacity"
-                    value={newVan.things_capacity}
-                    onChange={handleInputChange}
-                    placeholder="Things Capacity"
-                    inputMode="numeric"
-                  />
-                  {inputErrors.things_capacity && (
-                    <p className="text-red-500 text-sm">
-                      {inputErrors.things_capacity}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <select
-                  name="transmission_type"
-                  value={newVan.transmission_type}
-                  onChange={handleInputChange}
-                  className={`w-full p-2 border rounded ${newVan.transmission_type ? "text-websiteBlack" : "text-[#cccccc] font-light"} outline-none`}
-                >
-                  <option value="" className="text-[#CCCCCC] font-light">
-                    Transmission Type:
-                  </option>
-                  <option value="Manual" className="text-[13px] text-[#CCCCCC]">
-                    Manual
-                  </option>
-                  <option
-                    value="Automatic"
-                    className="text-[13px] text-[#CCCCCC]"
-                  >
-                    Automatic
-                  </option>
-                </select>
-                <div className="w-full">
-                  <InputField
-                    type="number"
-                    name="estimate_price"
-                    value={newVan.estimate_price}
-                    onChange={handleInputChange}
-                    placeholder="Estimate Price"
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
-              <div className="flex w-full justify-between gap-4">
-                <div className="flex flex-col gap-[.5rem] w-[55%]">
-                  <p className="text-[#CCCCCC] font-light">Van Image</p>
-                  <ImagesUploader onUpload={handleImageUpload} />
-                </div>
-                <div className="w-[45%] gap-[.5rem] flex flex-col">
-                  <p className="text-[#CCCCCC] font-light">Driver Assignee</p>
-                  {loadingDrivers ? ( // Show loading state
-                    <p>Loading drivers...</p>
-                  ) : (
-                    <Dropdown
-                      id="driver"
-                      value={selectedDriver}
-                      onChange={(e) => {
-                        console.log("Selected Driver:", e.value); // Log the selected driver
-                        setSelectedDriver(e.value); // Set the selected driver
-                      }}
-                      options={drivers} // Ensure this is an array of driver objects
-                      optionLabel="full_name" // Ensure this matches the property in your driver object
-                      optionValue="driver_id" // Ensure this matches the property in your driver object
-                      placeholder="Select a Driver"
-                      className="border"
+                <div className="flex gap-4 w-full">
+                  <div className="w-full">
+                    <InputField
+                      type="number"
+                      name="people_capacity"
+                      value={newVan.people_capacity}
+                      onChange={handleInputChange}
+                      placeholder="People Capacity"
+                      inputMode="numeric"
                     />
-                  )}
+                    {inputErrors.people_capacity && (
+                      <p className="text-red-500 text-sm">
+                        {inputErrors.people_capacity}
+                      </p>
+                    )}
+                  </div>
+                  <div className="w-full">
+                    <InputField
+                      type="number"
+                      name="things_capacity"
+                      value={newVan.things_capacity}
+                      onChange={handleInputChange}
+                      placeholder="Things Capacity"
+                      inputMode="numeric"
+                    />
+                    {inputErrors.things_capacity && (
+                      <p className="text-red-500 text-sm">
+                        {inputErrors.things_capacity}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <select
+                    name="transmission_type"
+                    value={newVan.transmission_type}
+                    onChange={handleInputChange}
+                    className={`w-full p-2 border rounded ${newVan.transmission_type ? "text-websiteBlack" : "text-[#cccccc] font-light"} outline-none`}
+                  >
+                    <option value="" className="text-[#CCCCCC] font-light">
+                      Transmission Type:
+                    </option>
+                    <option
+                      value="Manual"
+                      className="text-[13px] text-[#CCCCCC]"
+                    >
+                      Manual
+                    </option>
+                    <option
+                      value="Automatic"
+                      className="text-[13px] text-[#CCCCCC]"
+                    >
+                      Automatic
+                    </option>
+                  </select>
+                  <div className="w-full">
+                    <InputField
+                      type="number"
+                      name="estimate_price"
+                      value={newVan.estimate_price}
+                      onChange={handleInputChange}
+                      placeholder="Estimate Price"
+                      inputMode="numeric"
+                    />
+                  </div>
+                </div>
+                <div className="flex w-full justify-between gap-4">
+                  <div className="flex flex-col gap-[.5rem] w-[55%]">
+                    <p className="text-[#CCCCCC] font-light">Van Image</p>
+                    <ImagesUploader onUpload={handleImageUpload} />
+                  </div>
+                  <div className="w-[45%] gap-[.5rem] flex flex-col">
+                    <p className="text-[#CCCCCC] font-light">Driver Assignee</p>
+                    {loadingDrivers ? ( // Show loading state
+                      <p>Loading drivers...</p>
+                    ) : (
+                      <Dropdown
+                        id="driver"
+                        value={selectedDriver}
+                        onChange={(e) => {
+                          console.log("Selected Driver:", e.value); // Log the selected driver
+                          setSelectedDriver(e.value); // Set the selected driver
+                        }}
+                        options={drivers} // Ensure this is an array of driver objects
+                        optionLabel="full_name" // Ensure this matches the property in your driver object
+                        optionValue="driver_id" // Ensure this matches the property in your driver object
+                        placeholder="Select a Driver"
+                        className="border"
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="py-4 px-6 border-t">
+            <div className="py-4 px-6 border-t mt-auto">
               <div className="flex justify-end space-x-4">
                 <Button
                   type="button"
@@ -847,15 +852,15 @@ const VanInventory = () => {
         width="900px"
         onClose={() => setIsDetailsModalOpen(false)}
       >
-        <div className="flex flex-col bg-white rounded-[5px] justify-between">
+        <div className="flex flex-col bg-white rounded-[5px] max-h-[80vh]">
           <div className="flex justify-between items-center bg-primaryColor rounded-t-[5px] p-2">
             <h2 className="text-[18px] font-semibold text-white">
               VAN DETAILS
             </h2>
           </div>
           {selectedVan && (
-            <div className="w-full">
-              <div className=" flex justify-center pt-4">
+            <div className="w-full overflow-y-auto">
+              <div className="flex justify-center pt-4">
                 <Image
                   src={selectedVan.van_image || "/default-image.png"}
                   alt={`${selectedVan.van_name} image`}
@@ -959,7 +964,7 @@ const VanInventory = () => {
               </div>
             </div>
           )}
-          <div className="py-2 px-6 border-t">
+          <div className="py-2 px-6 border-t mt-auto">
             <div className="flex justify-end space-x-2">
               {selectedVan &&
                 selectedVan.status === "available" && ( // Show edit and delete buttons only if available
@@ -1038,105 +1043,137 @@ const VanInventory = () => {
       <Modal
         isOpen={isEditModalOpen}
         width="500px"
-        height="600px"
         onClose={() => setIsEditModalOpen(false)}
       >
-        <div className="flex flex-col bg-white rounded-[5px]">
+        <div className="flex flex-col bg-white rounded-[5px] max-h-[80vh]">
           <div className="w-full h-[50px] flex pl-4 items-center bg-primaryColor rounded-t-[5px]">
             <h2 className="text-[20px] text-white font-medium">EDIT VAN</h2>
           </div>
           <form
             onSubmit={handleEditSubmit}
-            className="flex-1 overflow-y-auto p-3 pt-2"
+            className="flex flex-col flex-1 overflow-y-auto"
           >
-            <div className="space-y-4">
-              <InputField
-                type="text"
-                name="van_name"
-                value={newVan.van_name}
-                onChange={handleInputChange}
-                placeholder="Van Name"
-              />
-              <TextArea
-                name="van_description"
-                value={newVan.van_description}
-                onChange={handleInputChange}
-                placeholder="Van Description"
-              />
-              <div className="flex gap-4 w-full">
-                <div className="w-full">
-                  <InputField
-                    type="number"
-                    name="people_capacity"
-                    value={newVan.people_capacity}
-                    onChange={handleInputChange}
-                    placeholder="People Capacity"
-                    inputMode="numeric"
-                  />
-                </div>
-                <div className="w-full">
-                  <InputField
-                    type="number"
-                    name="things_capacity"
-                    value={newVan.things_capacity}
-                    onChange={handleInputChange}
-                    placeholder="Things Capacity"
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <select
-                  name="transmission_type"
-                  value={newVan.transmission_type}
+            <div className="flex-1 p-3 pt-2">
+              <div className="space-y-4">
+                <InputField
+                  type="text"
+                  name="van_name"
+                  value={newVan.van_name}
                   onChange={handleInputChange}
-                  className={`w-full p-2 border rounded ${newVan.transmission_type ? "text-websiteBlack" : "text-[#cccccc] font-light"} outline-none`}
-                >
-                  <option value="" className="text-[#CCCCCC] font-light">
-                    Transmission Type:
-                  </option>
-                  <option value="Manual" className="text-[13px] text-[#CCCCCC]">
-                    Manual
-                  </option>
-                  <option
-                    value="Automatic"
-                    className="text-[13px] text-[#CCCCCC]"
-                  >
-                    Automatic
-                  </option>
-                </select>
-                <div className="w-full">
-                  <InputField
-                    type="number"
-                    name="estimate_price"
-                    value={newVan.estimate_price}
-                    onChange={handleInputChange}
-                    placeholder="Estimate Price"
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <p className="text-[#CCCCCC] font-light">Current Van Image</p>
-                {/* File input for selecting the image */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="border p-2 rounded"
+                  placeholder="Van Name"
                 />
+                <TextArea
+                  name="van_description"
+                  value={newVan.van_description}
+                  onChange={handleInputChange}
+                  placeholder="Van Description"
+                />
+                <div className="flex gap-4 w-full">
+                  <div className="w-full">
+                    <InputField
+                      type="number"
+                      name="people_capacity"
+                      value={newVan.people_capacity}
+                      onChange={handleInputChange}
+                      placeholder="People Capacity"
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <InputField
+                      type="number"
+                      name="things_capacity"
+                      value={newVan.things_capacity}
+                      onChange={handleInputChange}
+                      placeholder="Things Capacity"
+                      inputMode="numeric"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <select
+                    name="transmission_type"
+                    value={newVan.transmission_type}
+                    onChange={handleInputChange}
+                    className={`w-full p-2 border rounded ${newVan.transmission_type ? "text-websiteBlack" : "text-[#cccccc] font-light"} outline-none`}
+                  >
+                    <option value="" className="text-[#CCCCCC] font-light">
+                      Transmission Type:
+                    </option>
+                    <option
+                      value="Manual"
+                      className="text-[13px] text-[#CCCCCC]"
+                    >
+                      Manual
+                    </option>
+                    <option
+                      value="Automatic"
+                      className="text-[13px] text-[#CCCCCC]"
+                    >
+                      Automatic
+                    </option>
+                  </select>
+                  <div className="w-full">
+                    <InputField
+                      type="number"
+                      name="estimate_price"
+                      value={newVan.estimate_price}
+                      onChange={handleInputChange}
+                      placeholder="Estimate Price"
+                      inputMode="numeric"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <p className="text-[#CCCCCC] font-light">Van Image</p>
 
-                {/* Image preview if a file is selected */}
-                {vanImagePreview && (
-                  <img
-                    src={vanImagePreview}
-                    alt="Van preview"
-                    className="mt-2 w-32 h-32 object-cover rounded"
-                  />
-                )}
+                  <div className="flex justity-between w-full">
+                    <div className="w-full">
+                      <p className="text-sm text-gray-600 mb-1">
+                        Current Image:
+                      </p>
+                      <Image
+                        src={selectedVan?.van_image || "/default-image.png"}
+                        alt="Current van image"
+                        width={200}
+                        height={150}
+                        className="rounded-lg object-cover"
+                      />
+                    </div>
+                    {vanImagePreview && (
+                      <div className="w-full">
+                        <p className="text-sm text-gray-600 mb-1">
+                          New Image Preview:
+                        </p>
+                        <Image
+                          src={vanImagePreview}
+                          alt="New van preview"
+                          width={200}
+                          height={150}
+                          className="rounded-lg object-cover"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* New image upload section */}
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">
+                      Upload New Image:
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="border p-2 rounded w-full"
+                    />
+                  </div>
+
+                  {/* New image preview */}
+                </div>
               </div>
             </div>
-            <div className="py-4 px-6 border-t">
+            <div className="py-4 px-6 border-t mt-auto">
               <div className="flex justify-end space-x-4">
                 <Button
                   type="button"

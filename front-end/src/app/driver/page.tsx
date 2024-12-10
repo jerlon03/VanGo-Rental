@@ -144,71 +144,48 @@ const DriverDashboard = () => {
   };
 
   const handleUpdateDriver = async () => {
-    // Confirmation before submission
-    const confirmUpdate = SweetAlert.showConfirm(
+    // First confirm with the user
+    const isConfirmed = await SweetAlert.showConfirm(
       "Are you sure you want to update your information?"
     );
-    if (!confirmUpdate) return; // Exit if the user cancels
+    if (!isConfirmed) return;
 
-    // Validate required fields
-    if (!firstName) {
-      SweetAlert.showWarning("First name is required.");
-      return;
+    // Validate fields
+    const requiredFields = [
+      { value: firstName, message: "First name is required." },
+      { value: lastName, message: "Last name is required." },
+      { value: email, message: "Email is required." },
+      { value: location, message: "Location is required." },
+      { value: phoneNumber, message: "Phone number is required." },
+      { value: experience > 0, message: "Experience must be greater than 0." },
+    ];
+
+    for (const field of requiredFields) {
+      if (!field.value) {
+        SweetAlert.showWarning(field.message);
+        return;
+      }
     }
 
-    if (!lastName) {
-      SweetAlert.showWarning("Last name is required.");
-      return;
-    }
-
-    if (!email) {
-      SweetAlert.showWarning("Email is required.");
-      return;
-    }
-
-    if (!location) {
-      SweetAlert.showWarning("Location is required.");
-      return;
-    }
-
-    if (!phoneNumber) {
-      SweetAlert.showWarning("Phone number is required.");
-      return;
-    }
-
-    if (experience <= 0) {
-      // Check if experience is not greater than 0
-      SweetAlert.showWarning(
-        "Experience is required and must be greater than 0."
-      );
-      return;
-    }
-
-    const updatedData: any = {
+    const updatedData = {
       first_name: firstName,
       last_name: lastName,
       email: email,
       vehicle_assigned: "VAN-05",
       phoneNumber: phoneNumber,
       location: location,
+      experience_years: experience,
     };
 
-    // Only add experience_years if it's greater than 0
-    if (experience > 0) {
-      updatedData.experience_years = experience;
-    }
-
-    console.log("Updated Data:", updatedData); // Debugging line
-
     try {
-      await updateDriver(userId as any, updatedData);
-      setIsModalOpen(false);
-      const result = await getDriver(userId as any);
+      await updateDriver(Number(userId), updatedData);
+      const result = await getDriver(Number(userId));
       setData(result);
+      setIsModalOpen(false);
       toast.success("Information updated successfully!");
     } catch (err) {
-      SweetAlert.showWarning("Error updating driver information");
       console.error(err);
+      SweetAlert.showWarning("Error updating driver information");
     }
   };
 
@@ -286,8 +263,8 @@ const DriverDashboard = () => {
         <div className="flex w-full md:w-[50%]">
           <div className="bg-white shadow-lg rounded-lg md:p-6 sm:p-3 w-full ">
             <h1 className="md:text-[18px] sm:text-[15px] font-bold mb-4 text-blackColor">
-              {/* {data?.user.first_name} {data?.user.last_name} */} Your
-              Information :
+              {" "}
+              Your Information :
             </h1>
             <p className="text-gray-700 flex gap-4 md:text-[16px] sm:text-[14px]">
               <strong>ID:</strong>DR-0{data?.driver.driver_id}
@@ -295,12 +272,8 @@ const DriverDashboard = () => {
             <div className="table w-full md:text-[16px] sm:text-[14px]">
               <div className="table-row">
                 <p className="table-cell font-semibold">Email:</p>
-                <span className="table-cell">{data?.user.email}</span>
-              </div>
-              <div className="table-row md:text-[16px] sm:text-[14px]">
-                <p className="table-cell font-semibold">Van Assigned:</p>
-                <span className="table-cell">
-                  VAN-O{data?.driver.van_id || "N/A"}
+                <span className="table-cell truncate w-full max-w-[180px] ">
+                  {data?.user.email}
                 </span>
               </div>
               <div className="table-row md:text-[16px] sm:text-[14px]">
@@ -321,7 +294,7 @@ const DriverDashboard = () => {
                 </span>
               </div>
               <div className="table-row md:text-[16px] sm:text-[14px]">
-                <p className="table-cell font-semibold">Location:</p>
+                <p className="table-cell font-semibold">Address:</p>
                 <span className="table-cell">
                   {data?.driver.Location || "N/A"}
                 </span>
@@ -408,64 +381,68 @@ const DriverDashboard = () => {
               Here you can update your information.
             </p>
           </div>
-          <div className="w-full p-4 flex flex-col gap-2">
-            {[
-              {
-                label: "First Name",
-                value: firstName,
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFirstName(e.target.value),
-              },
-              {
-                label: "Last Name",
-                value: lastName,
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                  setLastName(e.target.value),
-              },
-              {
-                label: "Email",
-                value: email,
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value),
-              },
-              {
-                label: "Location",
-                value: location,
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                  setLocation(e.target.value),
-              },
-              {
-                label: "Phone Number",
-                value: phoneNumber,
-                onChange: handlePhoneNumberChange,
-                maxLength: 13,
-              },
-              {
-                label:
-                  "How many years or months of driving experience do you have? (required)",
-                value: experience.toString(),
-                onChange: handleExperienceChange,
-                placeholder: "Enter a number only",
-                required: true, // Make the input required
-              },
-            ].map((input, index) => (
-              <div className="w-full" key={index}>
-                <label htmlFor="" className="text-[14px]">
-                  {input.label}
-                </label>
-                <InputField
-                  type="tel"
-                  value={input.value}
-                  onChange={input.onChange}
-                  maxLength={input.maxLength}
-                  placeholder={input.placeholder}
-                  required={input.required}
-                />
-                {input.label === "Phone Number" && phoneNumberError && (
-                  <p className="text-red-500 text-[12px]">{phoneNumberError}</p>
-                )}
-              </div>
-            ))}
+          <div className="w-full max-h-[400px] overflow-y-auto">
+            <div className="w-full p-4 flex flex-col gap-2">
+              {[
+                {
+                  label: "First Name",
+                  value: firstName,
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setFirstName(e.target.value),
+                },
+                {
+                  label: "Last Name",
+                  value: lastName,
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setLastName(e.target.value),
+                },
+                {
+                  label: "Email",
+                  value: email,
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEmail(e.target.value),
+                },
+                {
+                  label: "Location",
+                  value: location,
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setLocation(e.target.value),
+                },
+                {
+                  label: "Phone Number",
+                  value: phoneNumber,
+                  onChange: handlePhoneNumberChange,
+                  maxLength: 13,
+                },
+                {
+                  label:
+                    "How many years or months of driving experience do you have? (required)",
+                  value: experience.toString(),
+                  onChange: handleExperienceChange,
+                  placeholder: "Enter a number only",
+                  required: true, // Make the input required
+                },
+              ].map((input, index) => (
+                <div className="w-full" key={index}>
+                  <label htmlFor="" className="text-[14px]">
+                    {input.label}
+                  </label>
+                  <InputField
+                    type="tel"
+                    value={input.value}
+                    onChange={input.onChange}
+                    maxLength={input.maxLength}
+                    placeholder={input.placeholder}
+                    required={input.required}
+                  />
+                  {input.label === "Phone Number" && phoneNumberError && (
+                    <p className="text-red-500 text-[12px]">
+                      {phoneNumberError}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           <div className="w-full flex gap-4 p-2 px-[2rem]">
             <Button name="CANCEL" onClick={handleCloseModal}></Button>
