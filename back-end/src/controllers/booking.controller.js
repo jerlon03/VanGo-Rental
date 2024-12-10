@@ -149,60 +149,118 @@ const sendCompletedEmail = async (booking) => {
 };
 
 exports.createBooking = async (req, res) => {
-  // Check if the file is uploaded
   if (!req.file) {
     return res
       .status(400)
       .json({ error: "Proof of payment image is required." });
   }
 
-  // Get the URL of the uploaded image
-  const imagePath = req.file.path; // Ensure this is the correct path
+  const imagePath = req.file.path;
 
-  // Set the proof_of_payment and ensure van_id and booking_end_date are included
-  const bookingData = {
-    ...req.body,
-    proof_of_payment: imagePath,
-    pickup_date_time: moment
-      .tz(req.body.pickup_date_time, "Asia/Manila")
-      .toISOString(), // Convert to Asia/Manila timezone
-    booking_end_date: moment
-      .tz(req.body.booking_end_date, "Asia/Manila")
-      .toISOString(), // Convert to Asia/Manila timezone
-    date_of_birth: moment
-      .tz(req.body.date_of_birth, "Asia/Manila")
-      .toISOString(), // Convert to Asia/Manila timezone
-  };
+  try {
+    // Helper function to format date string
+    const formatDateTime = (dateTimeStr) => {
+      if (!dateTimeStr) return null;
 
-  // Ensure all required fields are included in bookingData
-  const requiredFields = [
-    "first_name",
-    "last_name",
-    "email",
-    "phone_number",
-    "date_of_birth",
-    "pickup_location",
-    "city_or_municipality",
-    "pickup_date_time",
-    "barangay",
-    "van_id",
-    "booking_end_date", // Added booking_end_date to required fields
-  ];
-  for (const field of requiredFields) {
-    if (!bookingData[field]) {
-      return res
-        .status(400)
-        .json({ error: `${field.replace("_", " ")} is required.` });
+      // Log incoming date string for debugging
+      console.log("Incoming datetime:", dateTimeStr);
+
+      // Handle the specific format "YYYY-MM-DDTHH:MM AM/PM"
+      if (dateTimeStr.includes("AM") || dateTimeStr.includes("PM")) {
+        // Split the date and time parts
+        const [datePart, timePart] = dateTimeStr.split("T");
+        const [timePortion, meridiem] = timePart.split(" ");
+        const [hours, minutes] = timePortion.split(":");
+
+        // Convert to 24-hour format
+        let hour = parseInt(hours);
+        if (meridiem === "PM" && hour < 12) hour += 12;
+        if (meridiem === "AM" && hour === 12) hour = 0;
+
+        // Add 4 hours to the time
+        hour = (hour + 4) % 24;
+
+        // Create the formatted datetime string
+        const formattedTime = `${hour
+          .toString()
+          .padStart(2, "0")}:${minutes}:00`;
+        const formattedDateTime = `${datePart} ${formattedTime}`;
+
+        // Parse with moment and convert to Manila time
+        const date = moment.tz(
+          formattedDateTime,
+          "YYYY-MM-DD HH:mm:ss",
+          "Asia/Manila"
+        );
+
+        if (!date.isValid()) {
+          throw new Error(`Could not parse date: ${dateTimeStr}`);
+        }
+
+        return date.format("YYYY-MM-DD HH:mm:ss");
+      }
+
+      // Handle regular date format
+      const date = moment.tz(dateTimeStr, "Asia/Manila");
+      if (!date.isValid()) {
+        throw new Error(`Invalid date format for: ${dateTimeStr}`);
+      }
+      return date.format("YYYY-MM-DD HH:mm:ss");
+    };
+
+    // Format all dates
+    const bookingData = {
+      ...req.body,
+      proof_of_payment: imagePath,
+      pickup_date_time: formatDateTime(req.body.pickup_date_time),
+      booking_end_date: formatDateTime(req.body.booking_end_date),
+      date_of_birth: moment(req.body.date_of_birth).format("YYYY-MM-DD"), // Format DOB as date only
+    };
+
+    // Log the formatted dates for debugging
+    console.log("Formatted Dates:", {
+      pickup: bookingData.pickup_date_time,
+      end: bookingData.booking_end_date,
+      dob: bookingData.date_of_birth,
+    });
+
+    // Ensure all required fields are included in bookingData
+    const requiredFields = [
+      "first_name",
+      "last_name",
+      "email",
+      "phone_number",
+      "date_of_birth",
+      "pickup_location",
+      "city_or_municipality",
+      "pickup_date_time",
+      "barangay",
+      "van_id",
+      "booking_end_date",
+    ];
+
+    for (const field of requiredFields) {
+      if (!bookingData[field]) {
+        return res.status(400).json({
+          error: `${field.replace("_", " ")} is required.`,
+        });
+      }
     }
+
+    Booking.createBooking(bookingData, (err, bookingId) => {
+      if (err) {
+        console.error("Database Error:", err);
+        return res.status(400).json({ error: err.message });
+      }
+      res.status(201).json({ bookingId });
+    });
+  } catch (error) {
+    console.error("Date Processing Error:", error);
+    return res.status(400).json({
+      error: "Invalid date format provided",
+      details: error.message,
+    });
   }
-
-  Booking.createBooking(bookingData, (err, bookingId) => {
-    if (err) {
-      console.error("Database Error:", err); // Log the error
-      return res.status(400).json({ error: err.message });
-    }
-    res.status(201).json({ bookingId });
-  });
 };
 
 exports.getAllBookings = (req, res) => {

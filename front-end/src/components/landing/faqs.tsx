@@ -14,39 +14,29 @@ const Faqs = () => {
 
   const faqData = [
     {
-      question: "Can I modify or cancel my reservation?",
-      answer:
-        "Yes, customers can modify or cancel their reservations. Our website provides options for modifications, such as changing rental dates or vehicle types. For cancellations, please check our policy regarding fees and timing. Customers can manage their reservations online or contact our customer service for assistance.",
+      question: "Can I cancel my reservation?",
+      answer: "Yes, you can cancel your reservation, but it is non-refundable.",
     },
     {
       question: "Is there a minimum age to rent a van?",
       answer:
-        "The minimum age to rent a van is typically 21 years old, but this can vary depending on the rental company and location. Additional fees or restrictions may apply for drivers under 25.",
-    },
-    {
-      question: "What are your rental rates?",
-      answer:
-        "Rental rates vary depending on the type of van, rental duration, and location. Please visit our website or contact our customer service for detailed pricing information.",
+        "You must be 18 years old or above to rent a van. For those below 18, a guardian is required.",
     },
     {
       question: "What happens if I return the van late?",
-      answer:
-        "Returning the van late may incur additional charges. It is important to return the van on time or contact us to extend your rental period to avoid any late fees.",
+      answer: "A penalty of PHP 300 per hour will be applied for late returns.",
     },
     {
       question: "Are there restrictions on where I can take the rental van?",
-      answer:
-        "Yes, there may be restrictions on taking rental vans out of certain areas or across borders. Please check with us for any specific restrictions or requirements.",
+      answer: "The van can be used anywhere within Cebu.",
     },
     {
       question: "Can I transport pets in a rental van?",
-      answer:
-        "Yes, you can transport pets in our rental vans. However, we require that pets be kept in a carrier or crate, and the van should be returned clean and free of pet hair to avoid cleaning fees.",
+      answer: "Yes, you can transport pets, but please be a responsible owner.",
     },
     {
-      question: "How do I make a reservation with VanGO rental?",
-      answer:
-        "You can make a reservation with VanGO Rental by visiting our website, selecting your desired van, rental dates, and completing the booking process online. You can also contact our customer service for assistance with reservations.",
+      question: "How do I make a reservation with VanGo Rental?",
+      answer: `You can go to the <span className='font-bold'>Van</span> feature and click <span className='font-bold'>Book Now</span>. A guided process on how to book a van will assist you from there.`,
     },
   ];
 
@@ -79,9 +69,10 @@ const Faqs = () => {
               </div>
               {openQuestion === index && (
                 <div className="border-t-2 border-yellow">
-                  <p className="md:text-[15px] sm:text-xs pl-4 pt-2">
-                    {faq.answer}
-                  </p>
+                  <p
+                    className="md:text-[15px] sm:text-xs pl-4 pt-4"
+                    dangerouslySetInnerHTML={{ __html: faq.answer }}
+                  />
                 </div>
               )}
             </div>

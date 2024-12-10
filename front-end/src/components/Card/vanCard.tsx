@@ -450,9 +450,24 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
   };
 
   const convertToUTC = (date: Date): string => {
-    return new Date(
-      date.getTime() + date.getTimezoneOffset() * 60000
-    ).toISOString(); // Convert to UTC
+    // Convert to UTC
+    const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+
+    // Get hours in 12-hour format
+    let hours = utcDate.getHours();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+    // Format minutes with leading zero if needed
+    const minutes = utcDate.getMinutes().toString().padStart(2, "0");
+
+    // Create formatted time string
+    const timeString = `${hours}:${minutes} ${ampm}`;
+
+    // Combine date and formatted time
+    const formattedDate = utcDate.toISOString().split("T")[0];
+    return `${formattedDate}T${timeString}`;
   };
 
   return (
@@ -475,7 +490,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
           <div className="flex md:gap-[10px] sm:gap-[5px] items-center ">
             <TbCurrencyPeso className="lg:text-[24px] md:text-[18px] sm:text-xs text-yellow" />
             <p className="lg:text-[16px] md:text-[14px] sm:text-xs font-normal">
-              {van.estimate_price} Estimate Price A Day
+              {van.estimate_price} Estimate Daily Rate
             </p>
           </div>
           <div className="flex pt-2 md:gap-[20px] sm:gap-[5px]">

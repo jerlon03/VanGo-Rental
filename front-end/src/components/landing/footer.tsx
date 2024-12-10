@@ -1,7 +1,8 @@
 import React from "react";
 import Container from "@/components/landing/Container";
 import Image from "next/image";
-import { GiCheckMark } from "../icons";
+import { FaFacebook, GiCheckMark } from "../icons";
+import Link from "next/link";
 
 const Footer: React.FC = () => {
   const contactInfo = [
@@ -15,7 +16,7 @@ const Footer: React.FC = () => {
       src: "/icon/email.svg",
       alt: "Email",
       text: "Email us at",
-      details: "vango.rental@gmail.com",
+      details: "vangorental2022@gmail.com",
     },
   ];
 
@@ -101,6 +102,21 @@ const Footer: React.FC = () => {
                   </div>
                 ))}
               </div>
+            </div>
+            <div>
+              <div className="pb-4">
+                <h3 className="text-yellow border-b-2 lg:w-40 md:w-32 sm:w-32 border-yellow font-semibold xl:text-[16px] lg:text-[14px] md:text-[13px] sm:text-sm mb-2">
+                  Social Media Link
+                </h3>
+              </div>
+
+              <Link
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaFacebook className="text-white text-4xl transition-transform transform hover:scale-110 hover:text-blue-700" />
+              </Link>
             </div>
           </div>
         </div>

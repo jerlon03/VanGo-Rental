@@ -29,24 +29,7 @@ const createBooking = (data, callback) => {
     booking_end_date,
   } = data;
 
-  // Format date_of_birth to 'YYYY-MM-DD'
-  const formattedDateOfBirth = new Date(date_of_birth)
-    .toISOString()
-    .split("T")[0];
-
-  // Format pickup_date_time to 'YYYY-MM-DD HH:MM:SS'
-  const formattedPickupDateTime = new Date(pickup_date_time)
-    .toISOString()
-    .slice(0, 19)
-    .replace("T", " ");
-
-  // Format booking_end_date to 'YYYY-MM-DD HH:MM:SS'
-  const formattedBookingEndDate = new Date(booking_end_date)
-    .toISOString()
-    .slice(0, 19)
-    .replace("T", " ");
-
-  // SQL query to insert booking data
+  // The dates are already formatted in the controller, so we can use them directly
   const query = `
         INSERT INTO bookings (
             first_name, 
@@ -66,7 +49,7 @@ const createBooking = (data, callback) => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
     `;
 
-  // Execute the query
+  // Execute the query with the pre-formatted dates
   dbConn.query(
     query,
     [
@@ -74,14 +57,14 @@ const createBooking = (data, callback) => {
       last_name,
       email,
       phone_number,
-      formattedDateOfBirth, // Use the formatted date of birth
+      date_of_birth,
       pickup_location,
       city_or_municipality,
-      formattedPickupDateTime, // Use the formatted pickup date time
+      pickup_date_time,
       barangay,
       proof_of_payment,
       van_id,
-      formattedBookingEndDate, // Use the formatted booking end date
+      booking_end_date,
     ],
     (err, result) => {
       if (err) {
@@ -96,7 +79,7 @@ const createBooking = (data, callback) => {
           console.error("Error updating van reference:", updateErr);
           return callback(updateErr, null);
         }
-        callback(null, result.insertId); // Return the inserted booking ID
+        callback(null, result.insertId);
       });
     }
   );

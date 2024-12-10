@@ -10,7 +10,7 @@ router.get("/", vanController.getAllVans);
 // Route for updating a van
 router.put(
   "/update/:van_id",
-  uploadVan.single("image"),
+  uploadVan.single("van_image"),
   vanController.updateVan
 );
 router.get("/van/:van_id", vanController.getVanByID);

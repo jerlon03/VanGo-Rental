@@ -180,7 +180,7 @@ const HomePage = () => {
             <div className="md:py-8 sm:py-4">
               <TextHighlight text="OUR VAN" />
               <Heading
-                text="Pick your van and hit the road with confidence."
+                text="Select your van and start your journey"
                 className="lg:text-[32px] md:text-[24px] sm:text-[16px]"
               />
             </div>

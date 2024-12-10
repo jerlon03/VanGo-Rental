@@ -157,9 +157,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
               </p>
               <p>
                 <span className="font-medium">Email:</span>
-                <span className="block w-full break-words">
-                  {booking.email}
-                </span>
+                <span className=""> {booking.email}</span>
               </p>
               <p>
                 <span className="font-medium">Phone:</span>{" "}
@@ -252,7 +250,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                 </p>
                 <p>
                   <span className="font-medium text-wrap">Email:</span>
-                  <span className="block w-full break-words">{data.email}</span>
+                  <span className="">{data.email}</span>
                 </p>
                 <p>
                   <span className="font-medium">Phone:</span> {data.phoneNumber}

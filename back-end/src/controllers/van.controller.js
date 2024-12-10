@@ -62,18 +62,20 @@ exports.updateVan = (req, res) => {
     transmission_type,
     things_capacity,
     status,
+    estimate_price,
   } = req.body;
-  const imagePath = req.file?.path;
+  const imagePath = req.file?.path; // Get the new image path if uploaded
 
   // Create an updated Van object
   const updatedVan = new Van({
     van_name,
     van_description,
-    van_image: imagePath || null, // Use existing image if not provided
+    van_image: imagePath, // Use new image path or set to null if not provided
     people_capacity,
     transmission_type,
     things_capacity,
     status,
+    estimate_price,
   });
 
   // Update the Van object in the database
@@ -91,6 +93,9 @@ exports.updateVan = (req, res) => {
         message: "Failed to update van",
       });
     }
+
+    // Debugging statement to log the result of the update
+    console.log("Update successful:", data);
     res.status(200).json({ status: "ok", data: data });
   });
 };

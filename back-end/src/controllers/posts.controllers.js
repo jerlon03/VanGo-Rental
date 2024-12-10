@@ -51,18 +51,46 @@ exports.createPost = (req, res) => {
 };
 
 exports.updatePost = (req, res) => {
-  console.log("Request Body:", req.body); // Log the request body for debugging
+  console.log("Request Body:", req.body);
   const postId = req.params.id;
-  const { title, description, status } = req.body; // Removed post_image from here
+  const { title, description, status } = req.body;
 
   // Create an object to hold the fields to update
   const updates = {};
-  if (title !== undefined) updates.title = title;
-  if (description !== undefined) updates.description = description;
-  if (req.file) updates.post_image = req.file.path; // Use the file path from multer
-  if (status !== undefined) updates.status = status.trim(); // Trim whitespace
 
-  console.log("Status Value:", updates.status); // Log the status value
+  // Validate title if provided
+  if (title !== undefined) {
+    if (typeof title !== "string" || !title.trim()) {
+      return res.status(400).json({
+        message: "Title must be a non-empty string",
+      });
+    }
+    updates.title = title.trim();
+  }
+
+  // Validate description if provided
+  if (description !== undefined) {
+    if (typeof description !== "string" || !description.trim()) {
+      return res.status(400).json({
+        message: "Description must be a non-empty string",
+      });
+    }
+    updates.description = description.trim();
+  }
+
+  // Validate status if provided
+  if (status !== undefined) {
+    if (typeof status !== "string" || !status.trim()) {
+      return res.status(400).json({
+        message: "Status must be a non-empty string",
+      });
+    }
+    updates.status = status.trim();
+  }
+
+  if (req.file) {
+    updates.post_image = req.file.path;
+  }
 
   // Call the database update function with the updates object
   Posts.updatePost(postId, updates, (err, affectedRows) => {

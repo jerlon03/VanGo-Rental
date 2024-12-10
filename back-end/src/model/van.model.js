@@ -54,35 +54,69 @@ Van.create = (newVan, driver_id, result) => {
 };
 
 Van.update = (van_id, van, result) => {
-  dbConn.query(
-    "UPDATE van SET van_name = ?, van_description = ?, van_image = ?, people_capacity = ?, transmission_type = ?, things_capacity = ?, status = ? WHERE van_id = ?",
-    [
-      van.van_name,
-      van.van_description,
-      van.van_image,
-      van.people_capacity,
-      van.transmission_type,
-      van.things_capacity,
-      van.status,
-      van_id,
-    ],
-    (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(err, null);
-        return;
-      }
+  console.log("Updating van with ID:", van_id);
+  console.log("New van data:", van);
 
-      if (res.affectedRows == 0) {
-        // Van with the id not found
-        result({ kind: "not_found" }, null);
-        return;
-      }
+  // Prepare the update query dynamically based on provided fields
+  const fields = [];
+  const values = [];
 
-      console.log("updated van: ", { van_id: van_id, ...van });
-      result(null, { van_id: van_id, ...van });
+  if (van.van_name) {
+    fields.push("van_name = ?");
+    values.push(van.van_name);
+  }
+  if (van.van_description) {
+    fields.push("van_description = ?");
+    values.push(van.van_description);
+  }
+  if (van.van_image !== undefined) {
+    // Check for undefined instead of null
+    fields.push("van_image = ?");
+    values.push(van.van_image);
+  }
+  if (van.people_capacity) {
+    fields.push("people_capacity = ?");
+    values.push(van.people_capacity);
+  }
+  if (van.transmission_type) {
+    fields.push("transmission_type = ?");
+    values.push(van.transmission_type);
+  }
+  if (van.things_capacity) {
+    fields.push("things_capacity = ?");
+    values.push(van.things_capacity);
+  }
+  if (van.status) {
+    fields.push("status = ?");
+    values.push(van.status);
+  }
+  if (van.estimate_price) {
+    fields.push("estimate_price = ?");
+    values.push(van.estimate_price);
+  }
+
+  // Add the van_id to the values array
+  values.push(van_id);
+
+  // Construct the final query
+  const query = `UPDATE van SET ${fields.join(", ")} WHERE van_id = ?`;
+
+  dbConn.query(query, values, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
     }
-  );
+
+    if (res.affectedRows == 0) {
+      // Van with the id not found
+      result({ kind: "not_found" }, null);
+      return;
+    }
+
+    console.log("Updated van: ", { van_id: van_id, ...van });
+    result(null, { van_id: van_id, ...van });
+  });
 };
 
 Van.findById = (van_id, result) => {
