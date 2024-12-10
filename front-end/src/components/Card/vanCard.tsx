@@ -299,35 +299,37 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
 
     // Check if pickupDateTime is set
     if (!formData.pickupDateTime) {
-      SweetAlert.showError("Pickup date_time is required."); // Show error if pickupDateTime is not set
-      return; // Exit the function if validation fails
+      SweetAlert.showWarning("Pickup date_time is required.");
+      return;
     }
 
     // Validate pick-up location
     if (!formData.pickupLocation) {
-      SweetAlert.showError("Pick-up Location is required."); // Show error if location is not provided
-      return; // Exit the function if validation fails
+      SweetAlert.showWarning("Pick-up Location is required.");
+      return;
     }
 
     // Validate booking end date
     if (formData.bookingEndDate && formData.pickupDateTime) {
       if (formData.bookingEndDate < formData.pickupDateTime) {
-        SweetAlert.showError("Booking end date must be after the pickup date.");
-        return; // Exit the function if validation fails
+        SweetAlert.showWarning(
+          "Booking end date must be after the pickup date."
+        );
+        return;
       }
 
       // Check for overlapping bookings
       if (isDateRangeBooked(formData.pickupDateTime, formData.bookingEndDate)) {
-        SweetAlert.showError("The selected date range is already booked.");
-        return; // Exit the function if validation fails
+        SweetAlert.showWarning("The selected date range is already booked.");
+        return;
       }
     }
 
     // Check if dateOfBirth is set before submission
     if (!formData.dateOfBirth) {
-      SweetAlert.showError("Date of birth is required.");
-      setIsLoading(false); // Reset loading state
-      return; // Exit the function if validation fails
+      SweetAlert.showWarning("Date of birth is required.");
+      setIsLoading(false);
+      return;
     }
 
     // Confirmation dialog using SweetAlert
@@ -335,8 +337,8 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
       "Are you sure you want to submit your booking?"
     );
     if (!isConfirmed) {
-      setIsLoading(false); // Reset loading state
-      return; // Exit the function if the user cancels
+      setIsLoading(false);
+      return;
     }
 
     const formDataToSubmit = new FormData();
@@ -362,7 +364,10 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
         utcPickupDateTime // Use the converted UTC time
       );
     } else {
-      formDataToSubmit.append("pickup_date_time", new Date().toISOString());
+      formDataToSubmit.append(
+        "pickup_date_time",
+        new Date().toISOString() // Default to current date if not set
+      );
     }
 
     // Include booking_end_date
@@ -397,48 +402,51 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
       console.log(
         "Submitting booking with data:",
         Array.from(formDataToSubmit.entries())
-      ); // Log FormData contents
+      );
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/public/booking/`,
         {
           method: "POST",
           body: formDataToSubmit,
         }
-      ); // Pass the FormData object
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        SweetAlert.showError(errorData.error || "Failed to submit booking."); // Show error from backend
-        return;
+        SweetAlert.showError(errorData.error || "Failed to submit booking.");
+        setIsLoading(false); // Reset loading state but don't close modal
+        return; // Exit without closing modal
       }
 
+      // Only if successful:
       SweetAlert.showSuccess(
         "Thank you for submitting your rental request! Please allow up to 24 hours for confirmation to be sent to your email."
       );
-    } catch (error: any) {
-      console.error("Error submitting booking:", error); // Log the entire error object
-      SweetAlert.showError("Failed to submit booking. Please try again.");
-    } finally {
-      setIsLoading(false); // Reset loading state
-      setCurrentModal(null); // Close the modal after submission
-    }
 
-    // Reset form fields
-    setFormData({
-      firstname: "",
-      lastname: "",
-      email: "",
-      phoneNumber: "",
-      province: "CEBU",
-      barangay: "",
-      pickupLocation: "",
-      pickupDateTime: null,
-      dateOfBirth: null,
-      pickupTime: "",
-      bookingEndDate: null,
-      reservationImage: null,
-      municipality: "",
-    });
+      // Reset form and close modal only on success
+      setFormData({
+        firstname: "",
+        lastname: "",
+        email: "",
+        phoneNumber: "",
+        province: "CEBU",
+        barangay: "",
+        pickupLocation: "",
+        pickupDateTime: null,
+        dateOfBirth: null,
+        pickupTime: "",
+        bookingEndDate: null,
+        reservationImage: null,
+        municipality: "",
+      });
+      setCurrentModal(null); // Close modal only on success
+    } catch (error: any) {
+      console.error("Error submitting booking:", error);
+      SweetAlert.showError("Failed to submit booking. Please try again.");
+      setIsLoading(false); // Reset loading state but don't close modal
+    } finally {
+      setIsLoading(false); // Always reset loading state
+    }
   };
 
   const handleImageUpload = (file: File) => {

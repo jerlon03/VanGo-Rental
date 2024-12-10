@@ -177,18 +177,14 @@ exports.createBooking = async (req, res) => {
         if (meridiem === "PM" && hour < 12) hour += 12;
         if (meridiem === "AM" && hour === 12) hour = 0;
 
-        // Add 4 hours to the time
-        hour = (hour + 4) % 24;
-
         // Create the formatted datetime string
         const formattedTime = `${hour
           .toString()
           .padStart(2, "0")}:${minutes}:00`;
-        const formattedDateTime = `${datePart} ${formattedTime}`;
 
-        // Parse with moment and convert to Manila time
+        // Use moment.tz to create the date in Manila timezone
         const date = moment.tz(
-          formattedDateTime,
+          `${datePart} ${formattedTime}`,
           "YYYY-MM-DD HH:mm:ss",
           "Asia/Manila"
         );
@@ -200,8 +196,8 @@ exports.createBooking = async (req, res) => {
         return date.format("YYYY-MM-DD HH:mm:ss");
       }
 
-      // Handle regular date format
-      const date = moment.tz(dateTimeStr, "Asia/Manila");
+      // Handle regular date format - explicitly set the timezone to Manila
+      const date = moment(dateTimeStr).tz("Asia/Manila");
       if (!date.isValid()) {
         throw new Error(`Invalid date format for: ${dateTimeStr}`);
       }
@@ -212,9 +208,15 @@ exports.createBooking = async (req, res) => {
     const bookingData = {
       ...req.body,
       proof_of_payment: imagePath,
-      pickup_date_time: formatDateTime(req.body.pickup_date_time),
-      booking_end_date: formatDateTime(req.body.booking_end_date),
-      date_of_birth: moment(req.body.date_of_birth).format("YYYY-MM-DD"), // Format DOB as date only
+      pickup_date_time: moment(formatDateTime(req.body.pickup_date_time))
+        .add(4, "hours")
+        .format("YYYY-MM-DD HH:mm:ss"),
+      booking_end_date: moment(req.body.booking_end_date)
+        .tz("Asia/Manila")
+        .format("YYYY-MM-DD"),
+      date_of_birth: moment(req.body.date_of_birth)
+        .tz("Asia/Manila")
+        .format("YYYY-MM-DD"),
     };
 
     // Log the formatted dates for debugging
