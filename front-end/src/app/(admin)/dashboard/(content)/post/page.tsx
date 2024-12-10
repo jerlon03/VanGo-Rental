@@ -663,7 +663,7 @@ const AdminPost = () => {
                 pt={{
                   bodyCell: {
                     className:
-                      "border text-blackColor p-2 text-[15px] text-center truncate",
+                      "border text-blackColor p-2 text-[15px] text-center ",
                   },
                   headerCell: {
                     className:
