@@ -362,10 +362,7 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
         utcPickupDateTime // Use the converted UTC time
       );
     } else {
-      formDataToSubmit.append(
-        "pickup_date_time",
-        new Date().toISOString() // Default to current date if not set
-      );
+      formDataToSubmit.append("pickup_date_time", new Date().toISOString());
     }
 
     // Include booking_end_date
@@ -450,24 +447,9 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
   };
 
   const convertToUTC = (date: Date): string => {
-    // Convert to UTC
-    const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-
-    // Get hours in 12-hour format
-    let hours = utcDate.getHours();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12;
-    hours = hours ? hours : 12; // Handle midnight (0 hours)
-
-    // Format minutes with leading zero if needed
-    const minutes = utcDate.getMinutes().toString().padStart(2, "0");
-
-    // Create formatted time string
-    const timeString = `${hours}:${minutes} ${ampm}`;
-
-    // Combine date and formatted time
-    const formattedDate = utcDate.toISOString().split("T")[0];
-    return `${formattedDate}T${timeString}`;
+    return new Date(
+      date.getTime() + date.getTimezoneOffset() * 60000
+    ).toISOString(); // Convert to UTC
   };
 
   return (
@@ -562,19 +544,11 @@ const VanCard: React.FC<VanCardProps> = ({ van, showDescription = false }) => {
               </div>
             ))}
             <div className="flex p-4 gap-4">
-              <p className="text-[14px]">
-                If you have any questions, concerns, or feedback regarding our
-                services, please do not hesitate to contact us. Your input is
-                invaluable in helping us improve our offerings.
-              </p>
-            </div>
-            <div className="flex p-4 gap-4">
               <input
                 type="radio"
                 checked={isAgreed}
                 onChange={() => setIsAgreed(true)}
               />
-
               <p className="text-[14px]">
                 {" "}
                 I agree that I have read and accept the terms and conditions and
