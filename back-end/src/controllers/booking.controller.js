@@ -38,7 +38,7 @@ const sendConfirmationEmail = async (booking) => {
                     </div>
 
                     <div style="text-align: center; font-size: 12px; color: #777; margin-top: 20px;">
-                        <p>If you have any questions, please <a href="mailto:jerlonabayon16@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
+                        <p>If you have any questions, please <a href="mailto:vangorental2022@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
                         <p>&copy; ${new Date().getFullYear()} VanGO Rental Services. All rights reserved.</p>
                     </div>
 
@@ -75,7 +75,7 @@ const sendDeclinedEmail = async (booking, reason) => {
                     </div>
 
                     <div style="text-align: center; font-size: 12px; color: #777; margin-top: 20px;">
-                        <p>For inquiries, please <a href="mailto:jerlonabayon16@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
+                        <p>For inquiries, please <a href="vangorental2022@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
                         <p>&copy; ${new Date().getFullYear()} VanGO Rental Services. All rights reserved.</p>
                     </div>
 
@@ -135,7 +135,7 @@ const sendCompletedEmail = async (booking) => {
                     </div>
 
                     <div style="text-align: center; font-size: 12px; color: #777; margin-top: 20px;">
-                        <p>If you have any questions, please <a href="mailto:jerlonabayon16@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
+                        <p>If you have any questions, please <a href="mailto:vangorental2022@gmail.com" style="color: #007BFF; text-decoration: none;">contact us</a>.</p>
                         <p>&copy; ${new Date().getFullYear()} VanGO Rental Services. All rights reserved.</p>
                     </div>
 
@@ -144,6 +144,42 @@ const sendCompletedEmail = async (booking) => {
     });
   } catch (error) {
     console.error("Error sending completed email:", error);
+    throw error;
+  }
+};
+
+const sendAdminNotificationEmail = async (booking) => {
+  try {
+    await transporter.sendMail({
+      from: `"VanGO Rental Services" <${process.env.SMTP_USER}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: "New Booking Received",
+      html: `
+        <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+          <div style="background-color: #003459; color: #fff; padding: 15px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">New Booking Received!</h1>
+          </div>
+
+          <div style="padding: 20px;">
+            <p style="font-size: 16px; margin: 10px 0;">A new booking has been submitted with the following details:</p>
+
+            <ul style="list-style-type: none; padding: 0; font-size: 14px; margin: 10px 0;">
+              <li style="margin: 8px 0;"><strong>Booking ID:</strong> ${booking.booking_id}</li>
+              <li style="margin: 8px 0;"><strong>Customer Name:</strong> ${booking.first_name} ${booking.last_name}</li>
+              <li style="margin: 8px 0;"><strong>Email:</strong> ${booking.email}</li>
+              <li style="margin: 8px 0;"><strong>Phone:</strong> ${booking.phone_number}</li>
+              <li style="margin: 8px 0;"><strong>Pickup Date:</strong> ${booking.pickup_date_time}</li>
+              <li style="margin: 8px 0;"><strong>End Date:</strong> ${booking.booking_end_date}</li>
+              <li style="margin: 8px 0;"><strong>Location:</strong> ${booking.pickup_location}, ${booking.barangay}, ${booking.city_or_municipality}</li>
+            </ul>
+
+            <p style="font-size: 16px; margin: 10px 0;">Please review this booking and update its status accordingly.</p>
+          </div>
+        </div>
+      `,
+    });
+  } catch (error) {
+    console.error("Error sending admin notification email:", error);
     throw error;
   }
 };
@@ -249,12 +285,28 @@ exports.createBooking = async (req, res) => {
       }
     }
 
-    Booking.createBooking(bookingData, (err, bookingId) => {
+    Booking.createBooking(bookingData, async (err, bookingId) => {
       if (err) {
         console.error("Database Error:", err);
         return res.status(400).json({ error: err.message });
       }
-      res.status(201).json({ bookingId });
+
+      try {
+        // Get the complete booking data with the new booking ID
+        const completeBooking = { ...bookingData, booking_id: bookingId };
+
+        // Send notification to admin
+        await sendAdminNotificationEmail(completeBooking);
+
+        res.status(201).json({ bookingId });
+      } catch (emailError) {
+        console.error("Error sending admin notification:", emailError);
+        // Still return success even if email fails
+        res.status(201).json({
+          bookingId,
+          warning: "Booking created but admin notification email failed",
+        });
+      }
     });
   } catch (error) {
     console.error("Date Processing Error:", error);
